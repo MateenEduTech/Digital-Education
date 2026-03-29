@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Manual – IdeaSpark</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Nunito:wght@300;400;500;600;700&display=swap');
+:root {
+  --ink:#0f1923;--ink2:#1a2a3a;--lime:#b5e853;--sky:#4db8ff;--violet:#9b7cff;
+  --amber:#ffb830;--mint:#2ee8b5;--txt:#e8e0d0;--muted:#7a8fa0;
+  --border:rgba(181,232,83,0.18);--r:14px;
+  --ff:'Syne','Georgia',serif;--fb:'Nunito','Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--ink);color:var(--txt);font-family:var(--fb);line-height:1.7;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 50% 40% at 80% 20%,rgba(155,124,255,0.06) 0%,transparent 60%);}
+.wrap{max-width:860px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:1;}
+.back-link{display:inline-flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:0.82rem;margin-bottom:32px;border:1px solid var(--border);padding:8px 16px;border-radius:50px;transition:color 0.2s;}
+.back-link:hover{color:var(--lime);border-color:var(--lime);}
+.doc-header{text-align:center;margin-bottom:44px;padding-bottom:32px;border-bottom:1px solid var(--border);}
+.badge-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:20px;}
+.badge{background:rgba(181,232,83,0.1);border:1px solid var(--border);color:var(--lime);font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 13px;border-radius:50px;}
+h1.dt{font-family:var(--ff);font-size:clamp(2rem,5vw,3rem);color:var(--lime);margin-bottom:10px;letter-spacing:-1px;}
+.dsub{font-size:0.9rem;color:var(--muted);max-width:560px;margin:0 auto 22px;}
+.author-block{display:inline-flex;align-items:center;gap:16px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--r);padding:13px 20px;}
+.author-block img{width:54px;height:54px;border-radius:50%;border:2px solid var(--lime);object-fit:cover;}
+.an{font-family:var(--ff);font-size:0.92rem;}.at{font-size:0.7rem;color:var(--lime);font-weight:600;margin-top:2px;}
+.toc{background:var(--ink2);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;margin-bottom:40px;}
+.toc-t{font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:10px;}
+.toc ol{padding-left:18px;}
+.toc li{font-size:0.84rem;color:var(--muted);padding:2px 0;}
+.toc a{color:var(--muted);text-decoration:none;transition:color 0.2s;}.toc a:hover{color:var(--lime);}
+.section{margin-bottom:48px;}
+.eyebrow{font-size:0.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+h2{font-family:var(--ff);font-size:clamp(1.3rem,3vw,1.8rem);color:var(--txt);margin-bottom:12px;}
+h3{font-family:var(--ff);font-size:1.05rem;color:var(--lime);margin:20px 0 8px;}
+p{font-size:0.86rem;color:var(--muted);margin-bottom:10px;}
+strong{color:var(--txt);font-weight:600;}
+.steps{display:flex;flex-direction:column;gap:10px;margin:12px 0;}
+.step{display:flex;gap:13px;align-items:flex-start;background:var(--ink2);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r);padding:13px 16px;}
+.sn{width:26px;height:26px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:700;font-size:0.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.st{font-size:0.86rem;font-weight:700;color:var(--txt);margin-bottom:2px;}
+.sd{font-size:0.78rem;color:var(--muted);}
+.table-wrap{overflow-x:auto;margin:12px 0;}
+table{width:100%;border-collapse:collapse;font-size:0.8rem;}
+th{background:var(--ink2);color:var(--lime);font-weight:700;padding:9px 13px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:9px 13px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--muted);vertical-align:top;}
+td strong{color:var(--txt);}
+tr:last-child td{border-bottom:none;}
+.tip-box{background:rgba(0,201,167,0.06);border:1px solid rgba(0,201,167,0.2);border-radius:var(--r);padding:13px 16px;margin:12px 0;display:flex;gap:10px;align-items:flex-start;}
+.tip-box p{font-size:0.8rem;margin:0;}
+.warn-box{background:rgba(255,184,48,0.06);border:1px solid rgba(255,184,48,0.2);border-radius:var(--r);padding:13px 16px;margin:12px 0;display:flex;gap:10px;align-items:flex-start;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:12px 0;}
+.feat{background:var(--ink2);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r);padding:15px;}
+.fi{font-size:1.4rem;margin-bottom:7px;}
+.ft{font-size:0.83rem;font-weight:700;margin-bottom:3px;}
+.fd{font-size:0.74rem;color:var(--muted);line-height:1.5;}
+.install-card{background:var(--ink2);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r);padding:18px;margin:10px 0;}
+.ip{font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sky);margin-bottom:7px;}
+.it{font-size:0.9rem;font-weight:700;margin-bottom:8px;}
+.is ol{padding-left:18px;}.is li{font-size:0.8rem;color:var(--muted);padding:2px 0;}
+@media(max-width:600px){.wrap{padding:30px 13px 60px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" class="back-link">← Back to IdeaSpark</a>
+
+  <div class="doc-header">
+    <div class="badge-row">
+      <span class="badge">User Manual</span><span class="badge">Complete Guide</span>
+      <span class="badge">NEP 2020 · NCF 2023</span>
+    </div>
+    <h1 class="dt">User Manual</h1>
+    <p class="dsub">Complete guide to every feature, tab, and module of the IdeaSpark Creative Idea Generator PWA</p>
+    <div class="author-block">
+      <img src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'">
+      <div>
+        <div class="an">Mateen Yousuf</div>
+        <div class="at">Teacher – School Education Department, J&K</div>
+        <div style="font-size:0.68rem;color:var(--muted);margin-top:2px;">IdeaSpark · NEP 2020 & NCF 2023 Aligned</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-t">Table of Contents</div>
+    <ol>
+      <li><a href="#overview">1. App Overview</a></li>
+      <li><a href="#install">2. Installing the App</a></li>
+      <li><a href="#home">3. Home Tab</a></li>
+      <li><a href="#science">4. Science Projects Tab</a></li>
+      <li><a href="#entrepreneur">5. Entrepreneurship Tab</a></li>
+      <li><a href="#social">6. Social Innovation Tab</a></li>
+      <li><a href="#combine">7. Combine Ideas Tab</a></li>
+      <li><a href="#portfolio">8. Portfolio Tab</a></li>
+      <li><a href="#classroom">9. Classroom Use Guide</a></li>
+      <li><a href="#troubleshoot">10. Troubleshooting</a></li>
+    </ol>
+  </div>
+
+  <!-- 1 -->
+  <div class="section" id="overview">
+    <div class="eyebrow">Section 01</div>
+    <h2>App Overview</h2>
+    <p>IdeaSpark is a fully offline Progressive Web App that generates creative project ideas across science, entrepreneurship, social innovation, and interdisciplinary domains. It is built with HTML, CSS, and JavaScript — no backend, no login, no internet required after first load.</p>
+    <div class="feat-grid">
+      <div class="feat"><div class="fi">🔬</div><div class="ft">Science Projects</div><div class="fd">50+ project ideas across 5 science fields and 3 difficulty levels.</div></div>
+      <div class="feat"><div class="fi">💼</div><div class="ft">Entrepreneurship</div><div class="fd">Business ideas from small-scale to large vision, across 4 business types.</div></div>
+      <div class="feat"><div class="fi">🌱</div><div class="ft">Social Innovation</div><div class="fd">Community impact ideas addressing environment, education, health and waste.</div></div>
+      <div class="feat"><div class="fi">🔀</div><div class="ft">Combine Ideas</div><div class="fd">Mix any 2 of 10 domains for interdisciplinary breakthrough ideas.</div></div>
+      <div class="feat"><div class="fi">🏅</div><div class="ft">Portfolio</div><div class="fd">Save ideas, track stats, and earn 8 innovation achievement badges.</div></div>
+      <div class="feat"><div class="fi">📱</div><div class="ft">Offline PWA</div><div class="fd">Installs on Android & desktop. Works without internet after first load.</div></div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="section" id="install">
+    <div class="eyebrow">Section 02</div>
+    <h2>Installing the App</h2>
+    <div class="install-card">
+      <div class="ip">Android (Chrome)</div>
+      <div class="it">📱 Install on Android</div>
+      <div class="is"><ol>
+        <li>Open in <strong>Google Chrome</strong> on Android.</li>
+        <li>After a few seconds, an <strong>"Install IdeaSpark"</strong> banner appears at the bottom.</li>
+        <li>Tap <strong>Install</strong>. The app icon appears on your Home Screen.</li>
+        <li>Alternatively: tap ⋮ menu → <strong>"Add to Home Screen"</strong>.</li>
+      </ol></div>
+    </div>
+    <div class="install-card">
+      <div class="ip">Desktop (Windows / Mac)</div>
+      <div class="it">🖥 Install on Desktop</div>
+      <div class="is"><ol>
+        <li>Open in <strong>Chrome</strong> or <strong>Edge</strong>.</li>
+        <li>Click the install icon <strong>(⊕)</strong> in the address bar.</li>
+        <li>Select <strong>Install</strong>. Opens as standalone app.</li>
+      </ol></div>
+    </div>
+    <div class="install-card">
+      <div class="ip">Local / Classroom Server</div>
+      <div class="it">🏫 Run on School Network</div>
+      <div class="is"><ol>
+        <li>Place all files in one folder on a computer.</li>
+        <li>Run: <code style="background:var(--ink);padding:2px 6px;border-radius:4px;">python -m http.server 8000</code></li>
+        <li>Students connect via: <code style="background:var(--ink);padding:2px 6px;border-radius:4px;">http://[teacher-IP]:8000</code> on school Wi-Fi.</li>
+        <li>Works fully offline — no internet needed once loaded.</li>
+      </ol></div>
+    </div>
+    <div class="tip-box"><span>💡</span><p><strong>Free Online Hosting:</strong> Deploy to <strong>GitHub Pages</strong> or <strong>Netlify</strong> for a permanent shareable link. Netlify: drag-and-drop the folder → get a live URL in 30 seconds.</p></div>
+  </div>
+
+  <!-- 3 -->
+  <div class="section" id="home">
+    <div class="eyebrow">Section 03</div>
+    <h2>Home Tab 🏠</h2>
+    <p>The landing page introduces IdeaSpark and provides quick access to all modules.</p>
+    <div class="steps">
+      <div class="step"><div class="sn">1</div><div><div class="st">Hero Section</div><div class="sd">App tagline, description, and NEP 2020/NCF 2023 policy alignment badges.</div></div></div>
+      <div class="step"><div class="sn">2</div><div><div class="st">Author Card</div><div class="sd">Mateen Yousuf's photo and credentials as concept developer and educator.</div></div></div>
+      <div class="step"><div class="sn">3</div><div><div class="st">Module Cards</div><div class="sd">Four coloured cards linking to each module. Tap any to navigate directly.</div></div></div>
+      <div class="step"><div class="sn">4</div><div><div class="st">Policy Callout</div><div class="sd">Brief explanation of NEP 2020 and NCF 2023 alignment for teachers and parents.</div></div></div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="section" id="science">
+    <div class="eyebrow">Section 04</div>
+    <h2>Science Projects Tab 🔬</h2>
+    <p>Generates original science project ideas with full outlines. Aligned with NCF 2023 science themes.</p>
+    <h3>Category & Difficulty Filters</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Category</th><th>Field Covered</th><th>Example Topic</th></tr>
+      <tr><td>⚡ Physics</td><td>Forces, energy, optics, electricity</td><td>Wind turbine blade geometry study</td></tr>
+      <tr><td>🧪 Chemistry</td><td>Reactions, materials, analysis</td><td>Biodegradable plastic from starch</td></tr>
+      <tr><td>🌿 Biology</td><td>Plants, cells, ecology, genetics</td><td>Microplastics impact on plant growth</td></tr>
+      <tr><td>🌍 Environment</td><td>Pollution, climate, water, soil</td><td>Urban heat island study</td></tr>
+      <tr><td>💡 Technology</td><td>Electronics, sensors, automation</td><td>Gesture-controlled wheelchair prototype</td></tr>
+    </table></div>
+    <div class="table-wrap"><table>
+      <tr><th>Difficulty</th><th>Classes</th><th>Materials Required</th></tr>
+      <tr><td>🟢 Beginner</td><td>6–8</td><td>Household / easily available items</td></tr>
+      <tr><td>🟡 Intermediate</td><td>9–10</td><td>Lab equipment and basic electronics</td></tr>
+      <tr><td>🔴 Advanced</td><td>11–12</td><td>Specialised components and instruments</td></tr>
+    </table></div>
+    <h3>Using the Expand Full Outline Feature</h3>
+    <p>After generating an idea, press <strong>"📋 Expand Full Outline"</strong> to reveal a complete project framework including Objective, Materials, Step-by-Step Process, and Expected Outcome. This gives students everything needed to start the project immediately.</p>
+    <div class="tip-box"><span>🎓</span><p><strong>Classroom Use:</strong> Project the Science tab on the board. Generate 3 ideas on Intermediate difficulty. Ask students to vote on their favourite and then use the Expand Outline to assign it as a class project over 2 weeks.</p></div>
+  </div>
+
+  <!-- 5 -->
+  <div class="section" id="entrepreneur">
+    <div class="eyebrow">Section 05</div>
+    <h2>Entrepreneurship Tab 💼</h2>
+    <p>Generates business and innovation ideas for young entrepreneurs across four types and three scale levels.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Type</th><th>Description</th></tr>
+      <tr><td>🛒 <strong>Product</strong></td><td>Physical goods — handmade, manufactured, or agricultural</td></tr>
+      <tr><td>📱 <strong>Digital</strong></td><td>Apps, content, online services, platforms</td></tr>
+      <tr><td>🤝 <strong>Social Enterprise</strong></td><td>Businesses that solve social problems while generating income</td></tr>
+      <tr><td>♻️ <strong>Green Business</strong></td><td>Environmentally sustainable enterprises</td></tr>
+    </table></div>
+    <div class="table-wrap"><table>
+      <tr><th>Scale</th><th>Meaning</th><th>Ideal For</th></tr>
+      <tr><td>🟢 Small Scale</td><td>Can be started by one student with minimal investment</td><td>Class 8–10 students</td></tr>
+      <tr><td>🟡 Medium Scale</td><td>Requires a small team and modest resources</td><td>Class 11–12 students</td></tr>
+      <tr><td>🔴 Large Vision</td><td>Full business model for aspiring young entrepreneurs</td><td>College-level / competitions</td></tr>
+    </table></div>
+    <p>Each idea includes <strong>Problem Solved, Target Customers, Launch Steps, and Revenue Model</strong> — the four elements of a minimal viable business plan.</p>
+    <div class="tip-box"><span>💡</span><p><strong>NEP 2020 Connection:</strong> NEP mandates entrepreneurship exposure by Class 8. Use this module for school Enterprise Days, business plan competitions, or as a basis for the Atal Tinkering Lab's innovation challenges.</p></div>
+  </div>
+
+  <!-- 6 -->
+  <div class="section" id="social">
+    <div class="eyebrow">Section 06</div>
+    <h2>Social Innovation Tab 🌱</h2>
+    <p>Generates ideas for solving real community problems. Builds civic engagement and social awareness aligned with NCF 2023's social science goals.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Issue Area</th><th>Problems Addressed</th></tr>
+      <tr><td>🌿 Environment</td><td>Plastic waste, urban heat, water, biodiversity</td></tr>
+      <tr><td>📚 Education Access</td><td>Learning gaps, digital divide, library access</td></tr>
+      <tr><td>❤️ Health</td><td>Hygiene awareness, mental health, rural diagnostics</td></tr>
+      <tr><td>♻️ Waste & Energy</td><td>Composting, solar power, e-waste, efficiency</td></tr>
+    </table></div>
+    <p>The <strong>Scope selector</strong> (Local / District / National) adjusts the scale and ambition of the idea:</p>
+    <ul style="padding-left:20px;font-size:0.83rem;color:var(--muted);line-height:2;">
+      <li><strong style="color:var(--txt)">Local:</strong> Village or school-level project, achievable by 1–5 students in 1 month</li>
+      <li><strong style="color:var(--txt)">District:</strong> Multi-school or panchayat-level initiative requiring teacher/parent support</li>
+      <li><strong style="color:var(--txt)">National:</strong> Policy-level ideas suitable for essay competitions and youth forums</li>
+    </ul>
+    <p>Each idea includes: <strong>Community Problem, Beneficiaries, Implementation Steps, and Expected Impact</strong>.</p>
+    <div class="tip-box"><span>🌱</span><p><strong>Classroom Use:</strong> Assign each student group a different issue area. Have them generate a Local idea and present a 5-minute implementation plan. This creates an instant service-learning project bank for the school.</p></div>
+  </div>
+
+  <!-- 7 -->
+  <div class="section" id="combine">
+    <div class="eyebrow">Section 07</div>
+    <h2>Combine Ideas Tab 🔀</h2>
+    <p>The most advanced module — mix any two of ten domains to generate interdisciplinary innovation ideas. Directly supports NCF 2023's cross-curricular learning goals.</p>
+    <h3>How to Use</h3>
+    <div class="steps">
+      <div class="step"><div class="sn">1</div><div><div class="st">Select Domain 1</div><div class="sd">Use the first dropdown — 10 options including Science, Technology, Agriculture, Arts, Community, etc.</div></div></div>
+      <div class="step"><div class="sn">2</div><div><div class="st">Select Domain 2</div><div class="sd">Choose a different domain from the second dropdown. The × symbol represents the combination.</div></div></div>
+      <div class="step"><div class="sn">3</div><div><div class="st">Press "Combine & Generate"</div><div class="sd">The app generates a specific interdisciplinary project idea tailored to your combination.</div></div></div>
+      <div class="step"><div class="sn">4</div><div><div class="st">Expand the Outline</div><div class="sd">Use "📋 Expand" to reveal the Connection, How It Works, Real-World Example, and Next Step.</div></div></div>
+    </div>
+    <h3>Featured Combinations</h3>
+    <div class="table-wrap"><table>
+      <tr><th>Combination</th><th>Generated Idea</th></tr>
+      <tr><td>Science × Technology</td><td>IoT Soil Health Monitor</td></tr>
+      <tr><td>Technology × Environment</td><td>AI-Powered Waste Sorter</td></tr>
+      <tr><td>Business × Environment</td><td>Carbon Credit Aggregator for Farmers</td></tr>
+      <tr><td>Education × Technology</td><td>Offline Peer Learning App Network</td></tr>
+      <tr><td>Arts × Technology</td><td>Augmented Reality Heritage Trail</td></tr>
+      <tr><td>Sports × Technology</td><td>AI Coaching Assistant for Rural Athletes</td></tr>
+    </table></div>
+    <div class="tip-box"><span>🔀</span><p><strong>Advanced Activity:</strong> Ask students to generate 5 different combinations and explain in writing why the two domains connect for each. This builds the interdisciplinary thinking that NCF 2023 identifies as a core 21st-century skill.</p></div>
+  </div>
+
+  <!-- 8 -->
+  <div class="section" id="portfolio">
+    <div class="eyebrow">Section 08</div>
+    <h2>Portfolio Tab 🏅</h2>
+    <p>Tracks all activity and rewards consistent creative practice with achievement badges aligned with PARAKH's competency development framework.</p>
+    <div class="table-wrap"><table>
+      <tr><th>Badge</th><th>Name</th><th>Requirement</th></tr>
+      <tr><td>💡</td><td>First Idea</td><td>Generate 1 idea in any module</td></tr>
+      <tr><td>🔬</td><td>Science Explorer</td><td>Generate 5 science ideas</td></tr>
+      <tr><td>💼</td><td>Young Entrepreneur</td><td>Generate 3 business ideas</td></tr>
+      <tr><td>🌱</td><td>Changemaker</td><td>Generate 3 social innovation ideas</td></tr>
+      <tr><td>🔀</td><td>Interdisciplinarian</td><td>Generate 5 combined ideas</td></tr>
+      <tr><td>🔖</td><td>Idea Collector</td><td>Save 5 ideas to portfolio</td></tr>
+      <tr><td>🚀</td><td>Idea Machine</td><td>Generate 20 ideas total</td></tr>
+      <tr><td>🏆</td><td>Complete Innovator</td><td>Use all 4 modules</td></tr>
+    </table></div>
+    <div class="warn-box"><span>⚠️</span><p><strong>Data Reset:</strong> The "Reset All Data" button permanently deletes all statistics, badges, and saved ideas. Cannot be undone. Advise students to copy important ideas to a notebook before resetting.</p></div>
+  </div>
+
+  <!-- 9 -->
+  <div class="section" id="classroom">
+    <div class="eyebrow">Section 09</div>
+    <h2>Classroom Use Guide</h2>
+    <h3>Suggested 45-Minute Session Plan</h3>
+    <div class="steps">
+      <div class="step"><div class="sn">1</div><div><div class="st">Warm-Up: Idea Shower (5 min)</div><div class="sd">Teacher generates 4 ideas using different modules on the projector. Students discuss which seems most interesting and why.</div></div></div>
+      <div class="step"><div class="sn">2</div><div><div class="st">Individual Exploration (10 min)</div><div class="sd">Each student generates at least 3 ideas across any modules. They save their favourite.</div></div></div>
+      <div class="step"><div class="sn">3</div><div><div class="st">Expand & Plan (15 min)</div><div class="sd">Students expand their saved idea using the Full Outline feature. They write a 1-page project plan in a notebook.</div></div></div>
+      <div class="step"><div class="sn">4</div><div><div class="st">Combine Challenge (10 min)</div><div class="sd">Teacher assigns random domain pairs to groups. Each group generates and presents their combined idea in 2 minutes.</div></div></div>
+      <div class="step"><div class="sn">5</div><div><div class="st">Reflection (5 min)</div><div class="sd">Discussion: Which idea is most relevant to our community? How does this connect to NEP 2020's vision of creative, innovative learners?</div></div></div>
+    </div>
+    <h3>Long-Term Student Projects</h3>
+    <p>IdeaSpark works best as the <em>starting point</em> for real student projects spanning several weeks:</p>
+    <ul style="padding-left:20px;font-size:0.82rem;color:var(--muted);line-height:2.2;">
+      <li>Week 1: Generate and save 5 ideas. Choose one for a project.</li>
+      <li>Week 2: Expand the outline. List required materials. Make an action plan.</li>
+      <li>Week 3–4: Implement the project. Document with photos/notes.</li>
+      <li>Week 5: Present findings to class. Connect back to the project idea card.</li>
+    </ul>
+  </div>
+
+  <!-- 10 -->
+  <div class="section" id="troubleshoot">
+    <div class="eyebrow">Section 10</div>
+    <h2>Troubleshooting</h2>
+    <div class="table-wrap"><table>
+      <tr><th>Issue</th><th>Solution</th></tr>
+      <tr><td><strong>App not working offline</strong></td><td>Open once with internet to trigger caching. After that, works fully offline.</td></tr>
+      <tr><td><strong>Install prompt not showing</strong></td><td>Use Google Chrome or Edge. Safari (iOS) has limited PWA support.</td></tr>
+      <tr><td><strong>"Try a different combination" message</strong></td><td>Some category + difficulty combinations have fewer entries. Try "All" category or a different difficulty.</td></tr>
+      <tr><td><strong>Saved ideas disappeared</strong></td><td>Saved ideas use browser LocalStorage. Clearing browser data removes them. Export by copying to notes app first.</td></tr>
+      <tr><td><strong>Photo not showing</strong></td><td>Ensure author.jpg is in the same folder as index.html. App shows a placeholder if not found.</td></tr>
+      <tr><td><strong>Console error (SW 404)</strong></td><td>The app uses an inline service worker fallback. This error is harmless in preview — works normally when hosted.</td></tr>
+    </table></div>
+  </div>
+
+  <div style="text-align:center;padding-top:36px;border-top:1px solid var(--border);">
+    <a href="index.html" class="back-link" style="display:inline-flex;">← Return to IdeaSpark</a>
+    <a href="conceptual-background.html" class="back-link" style="display:inline-flex;margin-left:10px;">📖 Conceptual Background</a>
+    <p style="font-size:0.7rem;color:var(--muted);margin-top:14px;">Mateen Yousuf · Teacher, School Education Department, J&K<br>IdeaSpark · Aligned with NEP 2020, NCF 2023 & PARAKH</p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0f1a">
+<meta name="description" content="DEWIS – Dropout Early Warning Intelligence System. Offline PWA by Mateen Yousuf, NEP 2020 aligned.">
+<title>DEWIS – Dropout Early Warning System</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ===== DESIGN: Intelligence dashboard — dark industrial, data-forward, alert-driven ===== */
+:root {
+  --bg:       #080c14;
+  --bg2:      #0d1220;
+  --bg3:      #121a2e;
+  --panel:    #0f1828;
+  --card:     #111a2c;
+  --card2:    #162038;
+
+  --low:      #00e5a0;
+  --mod:      #f5c400;
+  --high:     #ff8c00;
+  --crit:     #ff2d55;
+
+  --accent:   #2d9cff;
+  --purple:   #8b5cf6;
+  --text:     #e8f0ff;
+  --muted:    #5a7090;
+  --border:   rgba(45,156,255,0.12);
+  --gridline: rgba(45,156,255,0.05);
+
+  --r:        16px;
+  --fh:       'Rajdhani', sans-serif;
+  --fb:       'Inter', sans-serif;
+  --fm:       'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--fb);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* GRID BACKGROUND */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--gridline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gridline) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 10% 10%, rgba(45,156,255,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 85%, rgba(255,45,85,0.06) 0%, transparent 50%);
+}
+
+/* === SPLASH === */
+#splash {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px;
+  transition: opacity 0.7s ease;
+}
+#splash.out { opacity: 0; pointer-events: none; }
+
+.sp-shield {
+  font-size: 4.5rem;
+  filter: drop-shadow(0 0 24px rgba(45,156,255,0.6));
+  animation: shieldPulse 2s ease-in-out infinite;
+}
+@keyframes shieldPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+
+.sp-title {
+  font-family: var(--fh);
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(45,156,255,0.5);
+}
+.sp-sub {
+  font-family: var(--fm);
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.sp-scanline {
+  width: 240px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: scan 1.5s ease-in-out infinite;
+}
+@keyframes scan { 0%{opacity:0.3;transform:scaleX(0.3);} 50%{opacity:1;transform:scaleX(1);} 100%{opacity:0.3;transform:scaleX(0.3);} }
+
+.sp-alerts {
+  display: flex; gap: 8px;
+}
+.sp-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  animation: blink 1s step-start infinite;
+}
+.sp-dot:nth-child(1) { background: var(--low); animation-delay: 0s; }
+.sp-dot:nth-child(2) { background: var(--mod); animation-delay: 0.25s; }
+.sp-dot:nth-child(3) { background: var(--high); animation-delay: 0.5s; }
+.sp-dot:nth-child(4) { background: var(--crit); animation-delay: 0.75s; }
+@keyframes blink { 0%,50%{opacity:1;} 51%,100%{opacity:0.2;} }
+
+/* === HEADER === */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,12,20,0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; z-index: 100;
+}
+.logo {
+  font-family: var(--fh);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--accent);
+  display: flex; align-items: center; gap: 8px;
+}
+.logo-tag {
+  font-family: var(--fm);
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  display: block;
+}
+.hdr-r { display: flex; align-items: center; gap: 8px; }
+.sys-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(45,156,255,0.1);
+  border: 1px solid rgba(45,156,255,0.25);
+  color: var(--accent);
+  border-radius: 6px; padding: 3px 10px;
+  font-family: var(--fm); font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 1px;
+}
+.sys-led { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink2 2s ease infinite; }
+@keyframes blink2 { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+/* === BOTTOM NAV === */
+.bnav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(8,12,20,0.98);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 6px 0 14px;
+}
+.nb {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  cursor: pointer; padding: 6px 2px;
+  border: none; background: transparent;
+  color: var(--muted);
+  font-size: 0.55rem; font-family: var(--fm); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  transition: all 0.3s;
+}
+.nb .ni { font-size: 1.15rem; transition: all 0.3s; }
+.nb.on { color: var(--accent); }
+.nb.on .ni { filter: drop-shadow(0 0 6px rgba(45,156,255,0.7)); transform: translateY(-3px); }
+
+/* === MAIN === */
+main { padding: 14px 14px 90px; max-width: 480px; margin: 0 auto; position: relative; z-index: 1; }
+
+/* === PAGES === */
+.pg { display: none; animation: pgIn 0.3s ease; }
+.pg.on { display: block; }
+@keyframes pgIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+
+/* === PANEL/CARD === */
+.panel {
+  background: var(--panel);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative; overflow: hidden;
+}
+.panel-accent::before {
+  content: '';
+  position: absolute; top: 0; left: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--accent), var(--purple));
+}
+.ptitle {
+  font-family: var(--fh);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+  color: var(--accent);
+}
+.ptitle-sm { font-size: 0.75rem; letter-spacing: 1px; color: var(--muted); }
+
+/* === ALERT COLORS === */
+.c-low   { color: var(--low); }
+.c-mod   { color: var(--mod); }
+.c-high  { color: var(--high); }
+.c-crit  { color: var(--crit); }
+.bg-low  { background: rgba(0,229,160,0.12); border-color: rgba(0,229,160,0.25); }
+.bg-mod  { background: rgba(245,196,0,0.1);  border-color: rgba(245,196,0,0.25); }
+.bg-high { background: rgba(255,140,0,0.1);  border-color: rgba(255,140,0,0.25); }
+.bg-crit { background: rgba(255,45,85,0.12); border-color: rgba(255,45,85,0.3); }
+
+/* === HOME DASHBOARD === */
+.cmd-banner {
+  background: linear-gradient(135deg, #0d1828, #0a1020);
+  border-radius: var(--r);
+  padding: 20px 16px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(45,156,255,0.2);
+  position: relative; overflow: hidden;
+}
+.cmd-banner::after {
+  content: '⚠';
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 5rem; opacity: 0.04;
+}
+.cmd-label {
+  font-family: var(--fm);
+  font-size: 0.65rem;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.cmd-title {
+  font-family: var(--fh);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.cmd-sub { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.stag {
+  background: rgba(45,156,255,0.1);
+  border: 1px solid rgba(45,156,255,0.2);
+  color: var(--accent);
+  padding: 2px 8px; border-radius: 4px;
+  font-family: var(--fm); font-size: 0.6rem;
+}
+
+/* Alert stats row */
+.alert-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 12px; }
+.astat {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.astat:hover { transform: translateY(-2px); }
+.astat-val {
+  font-family: var(--fh);
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: block;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.astat-label { font-family: var(--fm); font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.astat-led {
+  width: 6px; height: 6px; border-radius: 50%;
+  margin: 4px auto 0;
+  animation: blink2 2s infinite;
+}
+
+/* Risk donut */
+.risk-overview { display: flex; align-items: center; gap: 16px; padding: 14px; background: var(--card2); border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border); }
+.donut-w { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+.donut-svg { transform: rotate(-90deg); }
+.donut-svg circle { fill: none; stroke-width: 10; }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-pct { font-family: var(--fh); font-size: 1.1rem; font-weight: 700; color: var(--crit); line-height: 1; }
+.donut-lbl { font-family: var(--fm); font-size: 0.5rem; color: var(--muted); }
+.risk-legend { flex: 1; }
+.rleg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 0.75rem; }
+.rleg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.rleg-label { flex: 1; color: var(--muted); }
+.rleg-count { font-family: var(--fm); font-weight: 600; }
+
+/* === STUDENT LIST === */
+.filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.fbtn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted);
+  font-family: var(--fm); font-size: 0.65rem; font-weight: 600;
+  cursor: pointer; transition: all 0.3s;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.fbtn.on { background: rgba(45,156,255,0.15); color: var(--accent); border-color: rgba(45,156,255,0.4); }
+
+.stu-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px;
+  background: var(--card);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.stu-row::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.stu-row.risk-low::before { background: var(--low); }
+.stu-row.risk-mod::before { background: var(--mod); }
+.stu-row.risk-high::before { background: var(--high); }
+.stu-row.risk-crit::before { background: var(--crit); }
+.stu-row:hover { transform: translateX(4px); }
+
+.stu-av {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+  border: 2px solid var(--border);
+}
+.stu-name { font-family: var(--fh); font-size: 0.92rem; font-weight: 600; letter-spacing: 0.5px; }
+.stu-meta { font-family: var(--fm); font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+.stu-score {
+  margin-left: auto; flex-shrink: 0;
+  font-family: var(--fh); font-size: 1rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 6px; border: 1px solid;
+}
+
+/* === STUDENT CASE FILE === */
+.case-header {
+  background: linear-gradient(135deg, var(--panel), var(--card2));
+  border-radius: var(--r);
+  padding: 18px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px;
+}
+.case-av { font-size: 2.5rem; flex-shrink: 0; }
+.case-name { font-family: var(--fh); font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+.case-meta { font-family: var(--fm); font-size: 0.68rem; color: var(--muted); }
+.case-score-badge {
+  margin-left: auto;
+  display: flex; flex-direction: column; align-items: center;
+  flex-shrink: 0;
+}
+.csb-val { font-family: var(--fh); font-size: 2rem; font-weight: 700; line-height: 1; }
+.csb-label { font-family: var(--fm); font-size: 0.58rem; color: var(--muted); margin-top: 2px; }
+
+.indicator-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.indicator-row:last-child { border-bottom: none; }
+.ind-icon { font-size: 1.1rem; flex-shrink: 0; width: 28px; text-align: center; }
+.ind-label { flex: 1; font-size: 0.82rem; color: var(--muted); }
+.ind-val { font-family: var(--fm); font-size: 0.8rem; font-weight: 600; }
+.ind-bar-w { width: 60px; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+.ind-bar { height: 100%; border-radius: 3px; }
+
+/* Intervention items */
+.int-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px;
+  background: var(--card2);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+.int-item:hover { border-color: var(--accent); }
+.int-item.done-i { opacity: 0.55; }
+.int-icon { font-size: 1.4rem; flex-shrink: 0; }
+.int-action { font-family: var(--fh); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 3px; }
+.int-detail { font-size: 0.73rem; color: var(--muted); line-height: 1.5; }
+.int-status { margin-left: auto; font-size: 0.9rem; flex-shrink: 0; }
+
+/* === RISK ENGINE PAGE === */
+.re-form { }
+.re-field { margin-bottom: 14px; }
+.re-label {
+  font-family: var(--fm);
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+.re-range {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg3);
+  outline: none;
+  cursor: pointer;
+}
+.re-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(45,156,255,0.5);
+}
+.re-range-val {
+  font-family: var(--fm);
+  font-size: 0.78rem;
+  color: var(--accent);
+  text-align: right;
+  margin-top: 4px;
+}
+
+.re-select {
+  width: 100%;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--fm);
+  font-size: 0.8rem;
+  padding: 10px 12px;
+  outline: none;
+}
+.re-select:focus { border-color: var(--accent); }
+
+.risk-result {
+  display: none;
+  border-radius: var(--r);
+  padding: 22px;
+  text-align: center;
+  margin-bottom: 12px;
+  border: 2px solid;
+  animation: pgIn 0.4s ease;
+}
+.risk-result.show { display: block; }
+.rr-icon { font-size: 3rem; margin-bottom: 8px; }
+.rr-score { font-family: var(--fh); font-size: 3.5rem; font-weight: 700; line-height: 1; }
+.rr-level { font-family: var(--fm); font-size: 0.85rem; font-weight: 600; margin-top: 4px; letter-spacing: 2px; text-transform: uppercase; }
+.rr-breakdown { margin-top: 14px; text-align: left; }
+
+/* === ANALYTICS === */
+.trend-bar-item { margin-bottom: 10px; }
+.tbi-label { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px; color: var(--muted); }
+.tbi-track { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+.tbi-fill { height: 100%; border-radius: 4px; transition: width 1.5s ease; }
+
+.heatmap-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 5px; }
+.hm-cell {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fm); font-size: 0.6rem; font-weight: 600;
+  cursor: pointer; transition: all 0.3s;
+}
+.hm-cell:hover { transform: scale(1.1); }
+
+/* === PROFILE === */
+.pf-top { text-align: center; margin-bottom: 16px; }
+.av-ring {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px rgba(45,156,255,0.1), 0 0 20px rgba(45,156,255,0.2);
+  overflow: hidden;
+  position: relative; cursor: pointer;
+}
+.av-ring img { width:100%; height:100%; object-fit:cover; object-position:top; }
+.av-ov {
+  position:absolute; inset:0;
+  background: rgba(0,0,0,0.6);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:0.3s; font-size:1.3rem;
+}
+.av-ring:hover .av-ov { opacity:1; }
+.pf-name { font-family:var(--fh); font-size:1.3rem; font-weight:700; letter-spacing:1px; color:var(--accent); }
+.pf-role { font-family:var(--fm); font-size:0.65rem; color:var(--muted); letter-spacing:1px; margin-top:4px; }
+
+.metrics-row { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.metric-c {
+  background:var(--card2); border-radius:10px;
+  padding:12px 8px; text-align:center; border:1px solid var(--border);
+}
+.metric-v { font-family:var(--fh); font-size:1.4rem; font-weight:700; color:var(--accent); }
+.metric-l { font-family:var(--fm); font-size:0.58rem; color:var(--muted); margin-top:3px; text-transform:uppercase; letter-spacing:0.05em; }
+
+.case-notes {
+  width:100%; background:var(--card2);
+  border:1px solid var(--border); border-radius:10px;
+  color:var(--text); font-family:var(--fb); font-size:0.85rem;
+  padding:12px 14px; resize:vertical; min-height:100px; outline:none;
+  margin-bottom:10px;
+}
+.case-notes:focus { border-color:var(--accent); }
+
+/* === BUTTONS === */
+.btn {
+  width:100%; padding:12px 18px;
+  border-radius:10px; border:none;
+  font-family:var(--fh); font-size:0.9rem; font-weight:700;
+  letter-spacing:1px; cursor:pointer;
+  transition:all 0.3s; display:block;
+  text-align:center; margin-bottom:8px;
+  text-transform:uppercase;
+}
+.btn-a { background:linear-gradient(135deg, var(--accent), var(--purple)); color:white; }
+.btn-r { background:linear-gradient(135deg, var(--high), var(--crit)); color:white; }
+.btn-o { background:var(--card2); color:var(--text); border:1px solid var(--border); }
+.btn:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,0,0,0.4); }
+
+/* === TOAST === */
+#toast {
+  position:fixed; bottom:88px; left:50%; transform:translateX(-50%);
+  background:var(--panel);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:9px 16px; border-radius:8px;
+  font-family:var(--fm); font-size:0.75rem; font-weight:600;
+  letter-spacing:0.5px; z-index:9999;
+  opacity:0; transition:opacity 0.3s;
+  pointer-events:none; white-space:nowrap;
+}
+#toast.show { opacity:1; }
+
+/* Back button */
+.back-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:8px; padding:7px 12px;
+  font-family:var(--fm); font-size:0.7rem; color:var(--muted);
+  cursor:pointer; margin-bottom:12px; transition:all 0.3s;
+}
+.back-btn:hover { color:var(--accent); border-color:rgba(45,156,255,0.3); }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-shield">🛡️</div>
+  <div class="sp-title">DEWIS</div>
+  <div class="sp-sub">Dropout Early Warning Intelligence System</div>
+  <div class="sp-scanline"></div>
+  <div class="sp-alerts">
+    <div class="sp-dot"></div>
+    <div class="sp-dot"></div>
+    <div class="sp-dot"></div>
+    <div class="sp-dot"></div>
+  </div>
+  <div class="sys-pill"><span class="sys-led"></span> SYSTEM ONLINE · OFFLINE READY</div>
+</div>
+
+<div id="toast"></div>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="logo">🛡️ DEWIS</div>
+    <div class="logo-tag">DROPOUT EARLY WARNING INTELLIGENCE SYSTEM</div>
+  </div>
+  <div class="hdr-r">
+    <div class="sys-pill"><span class="sys-led"></span> OFFLINE</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- DASHBOARD PAGE -->
+  <div class="pg on" id="pg-dash">
+    <div class="cmd-banner">
+      <div class="cmd-label">SYSTEM STATUS · NEP 2020 · PARAKH · SAMAGRA SHIKSHA</div>
+      <div class="cmd-title">Early Warning<br>Intelligence</div>
+      <div class="cmd-sub">Proactively identify hidden dropout risks before disengagement occurs. Data-driven teacher decision support.</div>
+      <div class="tag-row">
+        <span class="stag">NEP 2020</span>
+        <span class="stag">NCF 2023</span>
+        <span class="stag">PARAKH</span>
+        <span class="stag">FLN MISSION</span>
+        <span class="stag">SAMAGRA SHIKSHA</span>
+      </div>
+    </div>
+
+    <!-- Alert Stats -->
+    <div class="alert-stats">
+      <div class="astat" onclick="filterBy('crit')">
+        <span class="astat-val c-crit">4</span>
+        <div class="astat-label">Critical</div>
+        <div class="astat-led" style="background:var(--crit)"></div>
+      </div>
+      <div class="astat" onclick="filterBy('high')">
+        <span class="astat-val c-high">7</span>
+        <div class="astat-label">High Risk</div>
+        <div class="astat-led" style="background:var(--high)"></div>
+      </div>
+      <div class="astat" onclick="filterBy('mod')">
+        <span class="astat-val c-mod">9</span>
+        <div class="astat-label">Moderate</div>
+        <div class="astat-led" style="background:var(--mod)"></div>
+      </div>
+      <div class="astat" onclick="filterBy('low')">
+        <span class="astat-val c-low">14</span>
+        <div class="astat-label">Low Risk</div>
+        <div class="astat-led" style="background:var(--low)"></div>
+      </div>
+    </div>
+
+    <!-- Risk donut -->
+    <div class="risk-overview">
+      <div class="donut-w">
+        <svg class="donut-svg" width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="30" stroke="#1a2540" stroke-dasharray="188.5" stroke-dashoffset="0"/>
+          <circle cx="40" cy="40" r="30" stroke="#00e5a0" stroke-dasharray="188.5" stroke-dashoffset="141" stroke-linecap="round"/>
+          <circle cx="40" cy="40" r="30" stroke="#f5c400" stroke-dasharray="188.5" stroke-dashoffset="84" stroke-linecap="round" style="transform:rotate(94deg);transform-origin:40px 40px"/>
+          <circle cx="40" cy="40" r="30" stroke="#ff8c00" stroke-dasharray="188.5" stroke-dashoffset="134" stroke-linecap="round" style="transform:rotate(160deg);transform-origin:40px 40px"/>
+          <circle cx="40" cy="40" r="30" stroke="#ff2d55" stroke-dasharray="188.5" stroke-dashoffset="162" stroke-linecap="round" style="transform:rotate(200deg);transform-origin:40px 40px"/>
+        </svg>
+        <div class="donut-center">
+          <div class="donut-pct">34</div>
+          <div class="donut-lbl">AT RISK</div>
+        </div>
+      </div>
+      <div class="risk-legend">
+        <div class="rleg-row"><div class="rleg-dot" style="background:var(--crit)"></div><div class="rleg-label">Critical Risk</div><div class="rleg-count c-crit">4 students</div></div>
+        <div class="rleg-row"><div class="rleg-dot" style="background:var(--high)"></div><div class="rleg-label">High Risk</div><div class="rleg-count c-high">7 students</div></div>
+        <div class="rleg-row"><div class="rleg-dot" style="background:var(--mod)"></div><div class="rleg-label">Moderate Risk</div><div class="rleg-count c-mod">9 students</div></div>
+        <div class="rleg-row"><div class="rleg-dot" style="background:var(--low)"></div><div class="rleg-label">Low Risk</div><div class="rleg-count c-low">14 students</div></div>
+      </div>
+    </div>
+
+    <!-- Top critical alert -->
+    <div class="panel" style="background:rgba(255,45,85,0.07);border-color:rgba(255,45,85,0.3);margin-bottom:12px">
+      <div class="ptitle" style="color:var(--crit)">🚨 CRITICAL ALERT</div>
+      <div style="font-size:0.82rem;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--text)">Farrukh Mir</strong> — Risk Score <strong style="color:var(--crit)">88/100</strong><br>
+        Attendance dropped to <strong style="color:var(--crit)">41%</strong> · No competency progress in 6 weeks · Reported migration intent<br>
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <span onclick="openCase(0)" style="cursor:pointer;background:rgba(255,45,85,0.2);border:1px solid rgba(255,45,85,0.4);color:var(--crit);padding:4px 10px;border-radius:6px;font-family:var(--fm);font-size:0.68px;font-size:0.68rem">VIEW CASE →</span>
+          <span onclick="showToast('📞 Home visit scheduled')" style="cursor:pointer;background:rgba(45,156,255,0.1);border:1px solid rgba(45,156,255,0.25);color:var(--accent);padding:4px 10px;border-radius:6px;font-family:var(--fm);font-size:0.68rem">SCHEDULE VISIT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDENT LIST PAGE -->
+  <div class="pg" id="pg-students">
+    <div class="panel panel-accent">
+      <div class="ptitle">👥 STUDENT RISK PROFILES</div>
+      <div class="filter-bar">
+        <div class="fbtn on" onclick="filterBy('all',this)">ALL (34)</div>
+        <div class="fbtn" onclick="filterBy('crit',this)">🔴 CRITICAL</div>
+        <div class="fbtn" onclick="filterBy('high',this)">🟠 HIGH</div>
+        <div class="fbtn" onclick="filterBy('mod',this)">🟡 MOD</div>
+        <div class="fbtn" onclick="filterBy('low',this)">🟢 LOW</div>
+      </div>
+    </div>
+    <div id="studentList"></div>
+  </div>
+
+  <!-- STUDENT CASE FILE PAGE -->
+  <div class="pg" id="pg-case">
+    <div class="back-btn" onclick="goPage('students')">← BACK TO LIST</div>
+    <div id="caseContent"></div>
+  </div>
+
+  <!-- RISK ENGINE PAGE -->
+  <div class="pg" id="pg-engine">
+    <div class="panel panel-accent">
+      <div class="ptitle">⚙️ RISK SCORING ENGINE</div>
+      <div style="font-family:var(--fm);font-size:0.68rem;color:var(--muted)">Input student indicators · Engine generates weighted risk score</div>
+    </div>
+
+    <div class="panel">
+      <div class="ptitle-sm" style="color:var(--muted);font-family:var(--fm);letter-spacing:1px;text-transform:uppercase;font-size:0.7rem;margin-bottom:12px">STUDENT INDICATORS</div>
+      <div class="re-form">
+        <div class="re-field">
+          <label class="re-label">📅 Attendance Rate (%)</label>
+          <input type="range" class="re-range" id="rAttend" min="0" max="100" value="72" oninput="updateRE()">
+          <div class="re-range-val" id="vAttend">72%</div>
+        </div>
+        <div class="re-field">
+          <label class="re-label">📚 Competency Progress (%)</label>
+          <input type="range" class="re-range" id="rComp" min="0" max="100" value="55" oninput="updateRE()">
+          <div class="re-range-val" id="vComp">55%</div>
+        </div>
+        <div class="re-field">
+          <label class="re-label">🏘️ Migration Risk</label>
+          <select class="re-select" id="rMigration" onchange="updateRE()">
+            <option value="0">No migration history</option>
+            <option value="1">Past migration (1 year)</option>
+            <option value="2">Recent migration (< 6 months)</option>
+            <option value="3">Active migration intent</option>
+          </select>
+        </div>
+        <div class="re-field">
+          <label class="re-label">😔 Behavioral Changes Observed</label>
+          <select class="re-select" id="rBehavior" onchange="updateRE()">
+            <option value="0">No changes observed</option>
+            <option value="1">Mild withdrawal</option>
+            <option value="2">Significant disengagement</option>
+            <option value="3">Complete disengagement</option>
+          </select>
+        </div>
+        <div class="re-field">
+          <label class="re-label">🏥 Health-Related Absences</label>
+          <select class="re-select" id="rHealth" onchange="updateRE()">
+            <option value="0">None</option>
+            <option value="1">1–2 episodes</option>
+            <option value="2">3–5 episodes</option>
+            <option value="3">Chronic / 6+ episodes</option>
+          </select>
+        </div>
+        <div class="re-field">
+          <label class="re-label">💰 Socio-Economic Stress</label>
+          <select class="re-select" id="rSocio" onchange="updateRE()">
+            <option value="0">Stable</option>
+            <option value="1">Mild stress</option>
+            <option value="2">Moderate stress (child labor risk)</option>
+            <option value="3">Severe stress (immediate risk)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-a" onclick="computeRisk()">⚙️ COMPUTE RISK SCORE</button>
+    </div>
+
+    <div class="risk-result" id="riskResult">
+      <div class="rr-icon" id="rrIcon">⚠️</div>
+      <div class="rr-score" id="rrScore">--</div>
+      <div class="rr-level" id="rrLevel">COMPUTING...</div>
+      <div class="rr-breakdown" id="rrBreakdown"></div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS PAGE -->
+  <div class="pg" id="pg-analytics">
+    <div class="panel panel-accent">
+      <div class="ptitle">📈 RISK TREND ANALYTICS</div>
+    </div>
+
+    <div class="panel">
+      <div class="ptitle-sm" style="color:var(--accent);font-family:var(--fm);letter-spacing:1px;text-transform:uppercase;font-size:0.72rem;margin-bottom:12px">MONTHLY RISK TRENDS</div>
+      <div id="trendBars"></div>
+    </div>
+
+    <div class="panel">
+      <div class="ptitle-sm" style="color:var(--accent);font-family:var(--fm);letter-spacing:1px;text-transform:uppercase;font-size:0.72rem;margin-bottom:10px">CLUSTER RISK HEATMAP</div>
+      <div style="font-family:var(--fm);font-size:0.62rem;color:var(--muted);margin-bottom:8px">Tap a cell to see school name · Colour = avg risk level</div>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
+    </div>
+
+    <div class="panel">
+      <div class="ptitle-sm" style="color:var(--accent);font-family:var(--fm);letter-spacing:1px;text-transform:uppercase;font-size:0.72rem;margin-bottom:12px">TOP RISK INDICATORS (CLASS)</div>
+      <div id="indicatorAnalytics"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE PAGE -->
+  <div class="pg" id="pg-profile">
+    <div class="pf-top">
+      <div class="av-ring" onclick="document.getElementById('phUp').click()">
+        <img id="authImg" src="author.jpg" alt="Mateen Yousuf"
+          onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'90\' height=\'90\'><rect fill=\'%230f1828\' width=\'90\' height=\'90\'/><text y=\'54\' x=\'45\' text-anchor=\'middle\' font-size=\'34\'>👤</text></svg>'">
+        <div class="av-ov">📷</div>
+      </div>
+      <input type="file" id="phUp" accept="image/*" style="display:none" onchange="uploadPhoto(event)">
+      <div class="pf-name">MATEEN YOUSUF</div>
+      <div class="pf-role">TEACHER · SCHOOL EDUCATION DEPT J&K · DEWIS OPERATOR</div>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric-c"><div class="metric-v" id="mCases">34</div><div class="metric-l">Cases Active</div></div>
+      <div class="metric-c"><div class="metric-v" id="mInterv">18</div><div class="metric-l">Interventions</div></div>
+      <div class="metric-c"><div class="metric-v" id="mSaved">6</div><div class="metric-l">Retained</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="ptitle">📋 CASE NOTES</div>
+      <textarea class="case-notes" id="cnotes" placeholder="Enter case observations, intervention notes…" oninput="saveNotes()"></textarea>
+      <button class="btn btn-a" onclick="saveNotes();showToast('NOTES SAVED ✓')">💾 SAVE NOTES</button>
+    </div>
+
+    <div class="panel">
+      <div class="ptitle">📌 SYSTEM INFO</div>
+      <div style="font-family:var(--fm);font-size:0.68rem;color:var(--muted);line-height:2">
+        VERSION: DEWIS v1.0<br>
+        ALIGNMENT: NEP 2020 · NCF 2023 · PARAKH · Samagra Shiksha<br>
+        MODE: Offline-First PWA<br>
+        RISK ENGINE: Weighted Multi-Factor Model<br>
+        AUTHOR: Mateen Yousuf, S.E.D J&K<br>
+        PHASE: 1 – Pilot Schools
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="nb on" onclick="goPage('dash')"><span class="ni">🛡️</span>COMMAND</button>
+  <button class="nb" onclick="goPage('students')"><span class="ni">👥</span>STUDENTS</button>
+  <button class="nb" onclick="goPage('engine')"><span class="ni">⚙️</span>ENGINE</button>
+  <button class="nb" onclick="goPage('analytics')"><span class="ni">📈</span>ANALYTICS</button>
+  <button class="nb" onclick="goPage('profile')"><span class="ni">👤</span>PROFILE</button>
+</nav>
+
+<script>
+// ===== STUDENT DATA =====
+const students = [
+  { id:0,  name:'Farrukh Mir',     class:'Class 7', score:88, level:'crit', emoji:'👦', attend:41, comp:20, migration:3, behavior:3, health:2, socio:3, interventions:['Parent Meeting Scheduled','Home Visit Pending'], notes:'Student absent for 3 consecutive weeks. Family reported migration intent to Jammu for seasonal work.' },
+  { id:1,  name:'Hina Bashir',     class:'Class 6', score:79, level:'crit', emoji:'👧', attend:48, comp:30, migration:1, behavior:2, health:3, socio:2, interventions:['Remedial Class Enrolled'], notes:'Chronic health issues. Missed 14 days this month. Mother unemployed.' },
+  { id:2,  name:'Tariq Lone',      class:'Class 7', score:76, level:'crit', emoji:'👦', attend:52, comp:25, migration:2, behavior:3, health:1, socio:3, interventions:[], notes:'Father migrated. Single-parent household. Observed working at local shop after school.' },
+  { id:3,  name:'Saba Qadri',      class:'Class 5', score:72, level:'crit', emoji:'👧', attend:55, comp:22, migration:0, behavior:3, health:2, socio:3, interventions:['SMC Referral Made'], notes:'Extreme withdrawal in class. Stopped submitting homework entirely.' },
+  { id:4,  name:'Umar Rashid',     class:'Class 8', score:65, level:'high', emoji:'👦', attend:60, comp:40, migration:1, behavior:2, health:1, socio:2, interventions:['Peer Support Assigned'], notes:'Declining performance since last term.' },
+  { id:5,  name:'Naseema Akhtar',  class:'Class 6', score:62, level:'high', emoji:'👧', attend:62, comp:38, migration:0, behavior:2, health:2, socio:1, interventions:[], notes:'Frequent absence spikes. No clear reason given.' },
+  { id:6,  name:'Bilal Ahmed',     class:'Class 7', score:58, level:'high', emoji:'👦', attend:65, comp:45, migration:1, behavior:1, health:0, socio:2, interventions:['Counselling Session'], notes:'Performance drop after family income loss.' },
+  { id:7,  name:'Rukhsar Jan',     class:'Class 5', score:55, level:'high', emoji:'👧', attend:67, comp:42, migration:0, behavior:1, health:1, socio:2, interventions:[], notes:'Mild disengagement. Monitor closely.' },
+  { id:8,  name:'Aamir Hussain',   class:'Class 6', score:44, level:'mod',  emoji:'👦', attend:72, comp:55, migration:0, behavior:1, health:0, socio:1, interventions:[], notes:'Moderate concern. Needs academic support.' },
+  { id:9,  name:'Zara Malik',      class:'Class 8', score:38, level:'mod',  emoji:'👧', attend:78, comp:60, migration:0, behavior:0, health:1, socio:0, interventions:[], notes:'Stable but slipping in Maths.' },
+  { id:10, name:'Imran Khan',      class:'Class 7', score:22, level:'low',  emoji:'👦', attend:88, comp:72, migration:0, behavior:0, health:0, socio:0, interventions:[], notes:'Performing well. Continue monitoring.' },
+  { id:11, name:'Asifa Bano',      class:'Class 5', score:18, level:'low',  emoji:'👧', attend:92, comp:78, migration:0, behavior:0, health:0, socio:0, interventions:[], notes:'No risk indicators. Model student.' },
+];
+
+const interventionMap = {
+  crit: [
+    { icon:'🏠', action:'Emergency Home Visit', detail:'Conduct immediate home visit. Assess family situation and barriers.' },
+    { icon:'👨‍👩‍👧', action:'Parent Emergency Meeting', detail:'Call urgent parent meeting within 48 hours. Involve SMC if needed.' },
+    { icon:'🏛️', action:'SMC Referral', detail:'Escalate to School Management Committee for support intervention.' },
+    { icon:'💊', action:'Health Support Referral', detail:'Connect with ASHA worker for health screening and support.' },
+    { icon:'📚', action:'Intensive Remedial Program', detail:'Enroll in daily 1-hour remedial session with dedicated teacher.' },
+  ],
+  high: [
+    { icon:'👨‍👩‍👧', action:'Parent Counselling Meeting', detail:'Schedule parent meeting to discuss learning support at home.' },
+    { icon:'👫', action:'Peer Buddy System', detail:'Assign a stronger peer as study buddy for academic support.' },
+    { icon:'📚', action:'Remedial Class Enrollment', detail:'Enroll in weekly remedial sessions focused on weak areas.' },
+    { icon:'🧠', action:'Counselling Session', detail:'One-on-one counselling to identify social-emotional barriers.' },
+  ],
+  mod: [
+    { icon:'👁️', action:'Close Monitoring', detail:'Track attendance and performance weekly. Flag any deterioration.' },
+    { icon:'📝', action:'Learning Gap Assessment', detail:'Conduct diagnostic test to identify specific learning gaps.' },
+    { icon:'👫', action:'Peer Study Group', detail:'Include in peer study group for collaborative learning.' },
+  ],
+  low: [
+    { icon:'✅', action:'Routine Monitoring', detail:'Standard monthly check-in. No immediate action required.' },
+    { icon:'🌟', action:'Positive Reinforcement', detail:'Acknowledge good attendance and performance to maintain motivation.' },
+  ]
+};
+
+// ===== STATE =====
+let currentFilter = 'all';
+let interventionsDone = JSON.parse(localStorage.getItem('dewis_int') || '{}');
+
+// ===== INIT =====
+window.onload = () => {
+  setTimeout(() => { document.getElementById('splash').classList.add('out'); setTimeout(()=>document.getElementById('splash').remove(), 700); }, 2900);
+  renderStudentList(students);
+  renderTrends();
+  renderHeatmap();
+  renderIndicatorAnalytics();
+  loadStorage();
+};
+
+// ===== NAV =====
+function goPage(page) {
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+page).classList.add('on');
+  const map = {dash:0,students:1,engine:2,analytics:3,profile:4};
+  if (map[page]!==undefined) document.querySelectorAll('.nb')[map[page]].classList.add('on');
+}
+
+// ===== STUDENTS =====
+function renderStudentList(list) {
+  const colorMap = { crit:['risk-crit','c-crit','bg-crit'], high:['risk-high','c-high','bg-high'], mod:['risk-mod','c-mod','bg-mod'], low:['risk-low','c-low','bg-low'] };
+  document.getElementById('studentList').innerHTML = list.map(s => {
+    const [rc,cc] = colorMap[s.level];
+    return `
+      <div class="stu-row ${rc}" onclick="openCase(${s.id})">
+        <div class="stu-av">${s.emoji}</div>
+        <div>
+          <div class="stu-name">${s.name}</div>
+          <div class="stu-meta">${s.class} · Attend: ${s.attend}% · ${s.level.toUpperCase()} RISK</div>
+        </div>
+        <div class="stu-score ${cc}" style="border-color:currentColor">${s.score}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterBy(level, el) {
+  currentFilter = level;
+  if (el) {
+    document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+    el.classList.add('on');
+  }
+  const filtered = level==='all' ? students : students.filter(s=>s.level===level);
+  renderStudentList(filtered);
+  if (level !== 'all') goPage('students');
+}
+
+// ===== CASE FILE =====
+function openCase(id) {
+  const s = students[id];
+  const colorMap = { crit:['var(--crit)','bg-crit'], high:['var(--high)','bg-high'], mod:['var(--mod)','bg-mod'], low:['var(--low)','bg-low') }];
+
+  const cmap = { crit:['var(--crit)','Critical'], high:['var(--high)','High Risk'], mod:['var(--mod)','Moderate'], low:['var(--low)','Low Risk'] };
+  const [color, label] = cmap[s.level];
+
+  const interventions = interventionMap[s.level] || [];
+
+  document.getElementById('caseContent').innerHTML = `
+    <div class="case-header">
+      <div class="case-av">${s.emoji}</div>
+      <div>
+        <div class="case-name">${s.name}</div>
+        <div class="case-meta">${s.class} · CASE ID: STU-${String(id+1).padStart(3,'0')}</div>
+        <div style="margin-top:6px;font-family:var(--fm);font-size:0.65rem;color:${color};background:rgba(0,0,0,0.3);border:1px solid ${color};padding:2px 8px;border-radius:4px;display:inline-block">⚠ ${label.toUpperCase()}</div>
+      </div>
+      <div class="case-score-badge">
+        <div class="csb-val" style="color:${color}">${s.score}</div>
+        <div class="csb-label">RISK SCORE</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ptitle">📊 RISK INDICATORS</div>
+      ${makeIndicator('📅','Attendance',s.attend+'%',s.attend,100,'low')}
+      ${makeIndicator('📚','Competency Progress',s.comp+'%',s.comp,100,'low')}
+      ${makeIndicator('🏘️','Migration Risk',['None','Past','Recent','Active'][s.migration],s.migration*33,100,'high')}
+      ${makeIndicator('😔','Behavioral Change',['None','Mild','Significant','Severe'][s.behavior],s.behavior*33,100,'high')}
+      ${makeIndicator('🏥','Health Absences',['None','1-2','3-5','6+'][s.health],s.health*33,100,'high')}
+      ${makeIndicator('💰','Socio-Economic Stress',['Stable','Mild','Moderate','Severe'][s.socio],s.socio*33,100,'high')}
+    </div>
+
+    <div class="panel" style="border-color:rgba(255,45,85,0.2)">
+      <div class="ptitle" style="color:var(--crit)">📝 CASE NOTES</div>
+      <div style="font-size:0.82rem;color:var(--muted);line-height:1.7;font-style:italic">"${s.notes}"</div>
+    </div>
+
+    <div class="panel">
+      <div class="ptitle">🎯 INTERVENTION PLAN</div>
+      ${interventions.map((intv,i) => {
+        const key = `${id}-${i}`;
+        const done = (interventionsDone[key] === true);
+        return `
+          <div class="int-item ${done?'done-i':''}" onclick="toggleIntervention('${key}',this)">
+            <div class="int-icon">${intv.icon}</div>
+            <div style="flex:1">
+              <div class="int-action">${intv.action}</div>
+              <div class="int-detail">${intv.detail}</div>
+            </div>
+            <div class="int-status">${done?'✅':'⭕'}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  goPage('case');
+}
+
+function makeIndicator(icon, label, val, pct, max, dir) {
+  const barColor = dir==='low'
+    ? (pct > 75 ? 'var(--low)' : pct > 50 ? 'var(--mod)' : pct > 30 ? 'var(--high)' : 'var(--crit)')
+    : (pct < 30 ? 'var(--low)' : pct < 60 ? 'var(--mod)' : pct < 85 ? 'var(--high)' : 'var(--crit)');
+  return `
+    <div class="indicator-row">
+      <div class="ind-icon">${icon}</div>
+      <div class="ind-label">${label}</div>
+      <div class="ind-bar-w"><div class="ind-bar" style="width:${pct}%;background:${barColor}"></div></div>
+      <div class="ind-val" style="color:${barColor}">${val}</div>
+    </div>
+  `;
+}
+
+function toggleIntervention(key, el) {
+  interventionsDone[key] = !interventionsDone[key];
+  localStorage.setItem('dewis_int', JSON.stringify(interventionsDone));
+  el.classList.toggle('done-i', interventionsDone[key]);
+  el.querySelector('.int-status').textContent = interventionsDone[key] ? '✅' : '⭕';
+  if (interventionsDone[key]) showToast('✅ INTERVENTION MARKED COMPLETE');
+}
+
+// ===== RISK ENGINE =====
+function updateRE() {
+  document.getElementById('vAttend').textContent = document.getElementById('rAttend').value+'%';
+  document.getElementById('vComp').textContent = document.getElementById('rComp').value+'%';
+}
+
+function computeRisk() {
+  const attend = parseInt(document.getElementById('rAttend').value);
+  const comp = parseInt(document.getElementById('rComp').value);
+  const migration = parseInt(document.getElementById('rMigration').value);
+  const behavior = parseInt(document.getElementById('rBehavior').value);
+  const health = parseInt(document.getElementById('rHealth').value);
+  const socio = parseInt(document.getElementById('rSocio').value);
+
+  let score = 0;
+  let breakdown = [];
+
+  // Attendance weight: 25
+  const aRisk = attend < 60 ? 25 : attend < 75 ? 15 : attend < 85 ? 8 : 0;
+  score += aRisk; if (aRisk > 0) breakdown.push({ label:'Attendance ('+attend+'%)', pts:aRisk, color:aRisk>20?'var(--crit)':aRisk>10?'var(--high)':'var(--mod)' });
+
+  // Competency weight: 25
+  const cRisk = comp < 30 ? 25 : comp < 50 ? 15 : comp < 65 ? 8 : 0;
+  score += cRisk; if (cRisk > 0) breakdown.push({ label:'Competency ('+comp+'%)', pts:cRisk, color:cRisk>20?'var(--crit)':cRisk>10?'var(--high)':'var(--mod)' });
+
+  // Migration weight: 15
+  const mRisk = [0, 5, 10, 15][migration];
+  score += mRisk; if (mRisk > 0) breakdown.push({ label:'Migration Risk', pts:mRisk, color:'var(--high)' });
+
+  // Behavior weight: 15
+  const bRisk = [0, 5, 10, 15][behavior];
+  score += bRisk; if (bRisk > 0) breakdown.push({ label:'Behavioral Change', pts:bRisk, color:bRisk>10?'var(--crit)':'var(--high)' });
+
+  // Health weight: 10
+  const hRisk = [0, 3, 6, 10][health];
+  score += hRisk; if (hRisk > 0) breakdown.push({ label:'Health Absences', pts:hRisk, color:'var(--mod)' });
+
+  // Socio weight: 10
+  const sRisk = [0, 3, 6, 10][socio];
+  score += sRisk; if (sRisk > 0) breakdown.push({ label:'Socio-Economic', pts:sRisk, color:'var(--mod)' });
+
+  let level, icon, color;
+  if (score >= 70)      { level='CRITICAL RISK'; icon='🚨'; color='var(--crit)'; }
+  else if (score >= 50) { level='HIGH RISK';     icon='⚠️'; color='var(--high)'; }
+  else if (score >= 30) { level='MODERATE RISK'; icon='🟡'; color='var(--mod)'; }
+  else                  { level='LOW RISK';      icon='✅'; color='var(--low)'; }
+
+  const rr = document.getElementById('riskResult');
+  rr.style.cssText = `background:${color}18;border-color:${color}44;display:block`;
+  document.getElementById('rrIcon').textContent = icon;
+  document.getElementById('rrScore').textContent = score;
+  document.getElementById('rrScore').style.color = color;
+  document.getElementById('rrLevel').textContent = level;
+  document.getElementById('rrLevel').style.color = color;
+  document.getElementById('rrBreakdown').innerHTML = `
+    <div style="font-family:var(--fm);font-size:0.65rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">SCORE BREAKDOWN</div>
+    ${breakdown.map(b=>`
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="flex:1;font-size:0.75rem;color:var(--muted)">${b.label}</div>
+        <div style="font-family:var(--fm);font-size:0.75rem;font-weight:700;color:${b.color}">+${b.pts} pts</div>
+      </div>
+    `).join('')}
+  `;
+  rr.classList.add('show');
+  showToast('⚙️ RISK SCORE COMPUTED: '+score+'/100');
+}
+
+// ===== ANALYTICS =====
+function renderTrends() {
+  const months = ['AUG','SEP','OCT','NOV','DEC','JAN','FEB','MAR'];
+  const data = [
+    { label:'Critical Cases', vals:[2,3,4,5,4,3,4,4], color:'var(--crit)' },
+    { label:'High Risk',      vals:[5,6,7,8,7,6,7,7], color:'var(--high)' },
+    { label:'Moderate',       vals:[8,9,10,9,8,9,9,9],color:'var(--mod)' },
+  ];
+  document.getElementById('trendBars').innerHTML = data.map(d=>`
+    <div class="trend-bar-item">
+      <div class="tbi-label"><span>${d.label}</span><span style="color:${d.color}">${d.vals[d.vals.length-1]} this month</span></div>
+      <div class="tbi-track"><div class="tbi-fill" style="width:${(d.vals[d.vals.length-1]/15)*100}%;background:${d.color}"></div></div>
+    </div>
+  `).join('');
+}
+
+function renderHeatmap() {
+  const schools = ['GHS Sopore','GMS Baramulla','GHS Pattan','GMS Uri','GHS Rafiabad','GHS Bandipora','GMS Gurez','GHS Hajin','GMS Sumbal','GHS Bandipore-2','GHS Tulail','GMS Shadi Khowr','GHS Keeran','GMS Drugmulla','GHS Kreeri'];
+  const risks = ['crit','crit','high','mod','low','high','crit','mod','low','high','mod','crit','high','mod','low'];
+  const colorMap = { crit:'rgba(255,45,85,0.7)', high:'rgba(255,140,0,0.6)', mod:'rgba(245,196,0,0.5)', low:'rgba(0,229,160,0.4)' };
+  const textMap = { crit:'var(--crit)', high:'var(--high)', mod:'var(--mod)', low:'var(--low)' };
+  document.getElementById('heatmapGrid').innerHTML = schools.map((s,i)=>`
+    <div class="hm-cell" style="background:${colorMap[risks[i]]};color:${textMap[risks[i]]}" onclick="showToast('${s}')">
+      ${s.split(' ')[0].substring(0,3)}
+    </div>
+  `).join('');
+}
+
+function renderIndicatorAnalytics() {
+  const indicators = [
+    { label:'Irregular Attendance',     pct:67, color:'var(--crit)' },
+    { label:'No Device Access',          pct:55, color:'var(--high)' },
+    { label:'Learning Stagnation',       pct:52, color:'var(--high)' },
+    { label:'Migration Risk',            pct:38, color:'var(--mod)' },
+    { label:'Behavioral Withdrawal',     pct:35, color:'var(--mod)' },
+    { label:'Socio-Economic Stress',     pct:42, color:'var(--high)' },
+    { label:'Health Absences',           pct:29, color:'var(--mod)' },
+  ];
+  document.getElementById('indicatorAnalytics').innerHTML = indicators.map(i=>`
+    <div class="trend-bar-item">
+      <div class="tbi-label"><span>${i.label}</span><span style="color:${i.color}">${i.pct}% of class</span></div>
+      <div class="tbi-track"><div class="tbi-fill" style="width:${i.pct}%;background:${i.color}"></div></div>
+    </div>
+  `).join('');
+}
+
+// ===== PHOTO + STORAGE =====
+function uploadPhoto(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => { localStorage.setItem('dewis_photo', ev.target.result); document.getElementById('authImg').src = ev.target.result; showToast('PHOTO UPDATED ✓'); };
+  r.readAsDataURL(f);
+}
+function saveNotes() { localStorage.setItem('dewis_notes', document.getElementById('cnotes').value); }
+function loadStorage() {
+  const p = localStorage.getItem('dewis_photo'); if (p) document.getElementById('authImg').src = p;
+  const n = localStorage.getItem('dewis_notes'); if (n) document.getElementById('cnotes').value = n;
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ===== SERVICE WORKER =====
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+}
+</script>
+</body>
+</html>

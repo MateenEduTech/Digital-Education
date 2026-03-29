@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a1628">
+<meta name="description" content="Digital Education & EdTech Transformation Official Framework Reader - NEP 2020 | DIKSHA | ICT Initiatives">
+<title>Digital Education & EdTech Transformation | Framework Reader</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Source+Serif+4:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a1628;
+  --navy-light: #112240;
+  --navy-mid: #1a3a6e;
+  --cyan: #00c8ff;
+  --cyan-light: #7ee8ff;
+  --cyan-dim: rgba(0,200,255,0.15);
+  --saffron: #f4a623;
+  --saffron-light: #ffd580;
+  --saffron-dim: rgba(244,166,35,0.12);
+  --white: #f0f4ff;
+  --text: #c8d8f0;
+  --text-dim: #7a96c4;
+  --panel: rgba(17,34,64,0.85);
+  --panel-border: rgba(0,200,255,0.18);
+  --sidebar-w: 300px;
+  --progress-h: 3px;
+  --serif: 'Playfair Display', Georgia, serif;
+  --body: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+  --radius: 8px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+[data-theme="light"] {
+  --navy: #f0f4ff;
+  --navy-light: #e0e8f8;
+  --navy-mid: #2a5298;
+  --cyan: #0066cc;
+  --cyan-light: #004499;
+  --cyan-dim: rgba(0,100,200,0.1);
+  --saffron: #c8680a;
+  --saffron-dim: rgba(200,104,10,0.08);
+  --white: #0a1628;
+  --text: #1a2a4a;
+  --text-dim: #4a6080;
+  --panel: rgba(240,244,255,0.9);
+  --panel-border: rgba(0,100,200,0.2);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--body);
+  background: var(--navy);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* PROGRESS BAR */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: var(--progress-h);
+  background: linear-gradient(90deg, var(--cyan), var(--saffron));
+  width: 0%;
+  z-index: 9999;
+  transition: width 0.1s;
+  box-shadow: 0 0 12px var(--cyan);
+}
+
+/* TOP NAV */
+.topnav {
+  position: fixed;
+  top: var(--progress-h);
+  left: 0; right: 0;
+  height: 56px;
+  background: rgba(10,22,40,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--panel-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+}
+
+[data-theme="light"] .topnav {
+  background: rgba(240,244,255,0.96);
+}
+
+.topnav-brand {
+  font-family: var(--serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.5px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.topnav-brand .dot {
+  width: 8px; height: 8px;
+  background: var(--saffron);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.topnav-actions {
+  display: flex; align-items: center; gap: 12px;
+}
+
+.btn-icon {
+  background: none;
+  border: 1px solid var(--panel-border);
+  color: var(--text-dim);
+  width: 36px; height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover { border-color: var(--cyan); color: var(--cyan); }
+
+#search-bar-container {
+  position: relative;
+  display: flex; align-items: center;
+}
+
+#search-input {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  color: var(--text);
+  padding: 6px 12px 6px 34px;
+  border-radius: 6px;
+  font-family: var(--body);
+  font-size: 0.8rem;
+  width: 220px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#search-input:focus { border-color: var(--cyan); }
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+/* LAYOUT */
+.layout {
+  display: flex;
+  padding-top: calc(56px + var(--progress-h));
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  position: fixed;
+  top: calc(56px + var(--progress-h));
+  left: 0;
+  bottom: 0;
+  background: var(--navy-light);
+  border-right: 1px solid var(--panel-border);
+  overflow-y: auto;
+  z-index: 900;
+  transition: transform 0.3s;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 2px; }
+
+.sidebar-header {
+  padding: 20px 16px 12px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.sidebar-header h3 {
+  font-family: var(--serif);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.filter-pills {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+
+.pill {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-family: var(--mono);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.pill-nep { border-color: var(--cyan); color: var(--cyan); }
+.pill-nep.active, .pill-nep:hover { background: var(--cyan-dim); }
+.pill-diksha { border-color: var(--saffron); color: var(--saffron); }
+.pill-diksha.active, .pill-diksha:hover { background: var(--saffron-dim); }
+.pill-ict { border-color: #a78bfa; color: #a78bfa; }
+.pill-ict.active, .pill-ict:hover { background: rgba(167,139,250,0.12); }
+.pill-all { border-color: var(--text-dim); color: var(--text-dim); }
+.pill-all.active, .pill-all:hover { background: rgba(122,150,196,0.15); color: var(--text); }
+
+.nav-section {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.nav-section-title {
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.nav-section-title span {
+  font-family: var(--serif);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.nav-section-title .badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.badge-nep { background: var(--cyan-dim); color: var(--cyan); }
+.badge-diksha { background: var(--saffron-dim); color: var(--saffron); }
+.badge-ict { background: rgba(167,139,250,0.12); color: #a78bfa; }
+
+.nav-toggle { color: var(--text-dim); font-size: 0.7rem; transition: transform 0.2s; }
+.nav-toggle.open { transform: rotate(90deg); }
+
+.nav-items { overflow: hidden; transition: max-height 0.3s ease; }
+.nav-items.collapsed { max-height: 0 !important; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px 7px 24px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+  text-decoration: none;
+}
+
+.nav-item:hover { color: var(--white); background: rgba(0,200,255,0.05); }
+.nav-item.active { color: var(--cyan); border-left-color: var(--cyan); background: var(--cyan-dim); }
+.nav-item .num { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); min-width: 20px; }
+.nav-item .bk { margin-left: auto; opacity: 0.6; }
+
+/* MAIN CONTENT */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  max-width: 900px;
+  padding: 0;
+}
+
+/* COVER PAGE */
+.cover {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #050d1a 0%, #0a1628 40%, #0d2a4a 70%, #0a3060 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 60% 60% at 20% 80%, rgba(0,200,255,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 20%, rgba(244,166,35,0.05) 0%, transparent 70%);
+}
+
+.cover-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.cover-content { position: relative; z-index: 2; max-width: 700px; }
+
+.cover-emblem {
+  width: 80px; height: 80px;
+  border: 2px solid var(--cyan);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 30px;
+  position: relative;
+}
+
+.cover-emblem::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 1px solid rgba(0,200,255,0.3);
+  border-radius: 50%;
+}
+
+.cover-emblem svg { width: 40px; height: 40px; }
+
+.cover-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  color: var(--saffron);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.cover h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--white);
+  margin-bottom: 16px;
+  text-shadow: 0 2px 20px rgba(0,200,255,0.2);
+}
+
+.cover h1 .accent { color: var(--cyan); }
+
+.cover-divider {
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  margin: 20px auto;
+}
+
+.cover-sub {
+  font-size: 1rem;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.cover-tags {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  margin: 16px 0 40px;
+}
+
+.cover-tag {
+  padding: 4px 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.author-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(17,34,64,0.8);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 20px 28px;
+  backdrop-filter: blur(8px);
+  margin-top: 20px;
+  text-align: left;
+}
+
+.author-photo {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  border: 2px solid var(--cyan);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--navy-mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+}
+
+.author-photo img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.author-name {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.author-title {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  font-family: var(--mono);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-6px)} }
+
+/* SECTIONS */
+.section {
+  padding: 60px 50px;
+  border-bottom: 1px solid var(--panel-border);
+  position: relative;
+}
+
+.section-number {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.section-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.source-nep { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(0,200,255,0.3); }
+.source-diksha { background: var(--saffron-dim); color: var(--saffron); border: 1px solid rgba(244,166,35,0.3); }
+.source-ict { background: rgba(167,139,250,0.1); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.25;
+}
+
+.bk-btn {
+  background: none;
+  border: 1px solid var(--panel-border);
+  color: var(--text-dim);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 5px;
+}
+
+.bk-btn:hover { border-color: var(--saffron); color: var(--saffron); }
+.bk-btn.bookmarked { border-color: var(--saffron); color: var(--saffron); background: var(--saffron-dim); }
+
+.reading-time {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+}
+
+/* CONTENT STYLES */
+.content-block {
+  line-height: 1.85;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.content-block p { margin-bottom: 16px; }
+
+.content-block h3 {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--white);
+  margin: 28px 0 12px;
+  padding-left: 14px;
+  border-left: 3px solid var(--cyan);
+}
+
+.content-block h4 {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--cyan-light);
+  margin: 20px 0 10px;
+}
+
+.content-block ul, .content-block ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.content-block li {
+  margin-bottom: 8px;
+  line-height: 1.7;
+}
+
+.callout {
+  background: var(--saffron-dim);
+  border-left: 4px solid var(--saffron);
+  border-radius: 0 6px 6px 0;
+  padding: 16px 20px;
+  margin: 24px 0;
+  font-style: italic;
+  color: var(--saffron-light);
+}
+
+.callout-cyan {
+  background: var(--cyan-dim);
+  border-left: 4px solid var(--cyan);
+  border-radius: 0 6px 6px 0;
+  padding: 16px 20px;
+  margin: 24px 0;
+  color: var(--cyan-light);
+}
+
+/* PART HEADERS */
+.part-header {
+  background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+  padding: 50px 50px;
+  border-bottom: 1px solid var(--panel-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.part-header::after {
+  content: '';
+  position: absolute;
+  right: -40px; top: -40px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,200,255,0.1);
+}
+
+.part-number {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.part-title {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.part-desc {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+/* SVG DIAGRAMS */
+.diagram-wrap {
+  margin: 32px 0;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  overflow-x: auto;
+}
+
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.diagram-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--panel-border);
+}
+
+/* SEARCH RESULTS */
+#search-results {
+  display: none;
+  position: fixed;
+  top: calc(56px + var(--progress-h) + 8px);
+  left: var(--sidebar-w);
+  right: 0;
+  z-index: 800;
+  background: var(--navy-light);
+  border-bottom: 1px solid var(--panel-border);
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.search-result-item {
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.search-result-item:hover { background: var(--cyan-dim); }
+.search-result-title { font-size: 0.85rem; color: var(--white); font-family: var(--serif); }
+.search-result-snippet { font-size: 0.75rem; color: var(--text-dim); margin-top: 3px; }
+mark { background: var(--saffron-dim); color: var(--saffron); border-radius: 2px; }
+
+/* BOOKMARKS PANEL */
+#bookmarks-panel {
+  display: none;
+  position: fixed;
+  top: calc(56px + var(--progress-h));
+  right: 0;
+  width: 280px;
+  bottom: 0;
+  background: var(--navy-light);
+  border-left: 1px solid var(--panel-border);
+  z-index: 850;
+  overflow-y: auto;
+  padding: 20px 16px;
+}
+
+.bk-panel-title {
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  color: var(--white);
+  margin-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.bk-item {
+  padding: 10px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.bk-item:hover { border-color: var(--saffron); }
+.bk-item-title { color: var(--white); font-size: 0.85rem; margin-bottom: 4px; font-family: var(--serif); }
+
+/* PRINT */
+@media print {
+  .topnav, .sidebar, #progress-bar, .bk-btn, .topnav-actions { display: none !important; }
+  .main { margin-left: 0 !important; }
+  .section { page-break-inside: avoid; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .section { padding: 40px 20px; }
+  .part-header { padding: 40px 20px; }
+  #search-results { left: 0; }
+}
+
+/* MISC */
+.section-divider {
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+  margin: 20px 0 28px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--cyan);
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.toc-item {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+}
+
+.toc-item:hover { border-color: var(--cyan); background: var(--cyan-dim); }
+.toc-num { font-family: var(--mono); font-size: 0.6rem; color: var(--text-dim); margin-bottom: 4px; }
+.toc-name { font-size: 0.82rem; color: var(--white); line-height: 1.4; }
+
+.mobile-menu-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn { display: flex; }
+}
+
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="topnav-brand">
+    <div class="dot"></div>
+    Digital Ed Framework Reader
+  </div>
+  <div class="topnav-actions">
+    <div id="search-bar-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search framework…" oninput="doSearch(this.value)" autocomplete="off">
+    </div>
+    <button class="btn-icon" onclick="toggleBookmarksPanel()" title="Bookmarks">🔖</button>
+    <button class="btn-icon" onclick="toggleDark()" title="Toggle dark/light" id="theme-btn">☀️</button>
+    <button class="btn-icon" onclick="window.print()" title="Print">🖨️</button>
+    <button class="btn-icon mobile-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
+  </div>
+</nav>
+
+<div id="search-results"></div>
+
+<!-- BOOKMARKS PANEL -->
+<div id="bookmarks-panel">
+  <div class="bk-panel-title">
+    Your Bookmarks
+    <button class="btn-icon" onclick="toggleBookmarksPanel()">✕</button>
+  </div>
+  <div id="bookmarks-list"></div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3>Filter by Source</h3>
+      <div class="filter-pills">
+        <span class="pill pill-all active" onclick="filterSource('all',this)">All</span>
+        <span class="pill pill-nep" onclick="filterSource('nep',this)">NEP 2020</span>
+        <span class="pill pill-diksha" onclick="filterSource('diksha',this)">DIKSHA</span>
+        <span class="pill pill-ict" onclick="filterSource('ict',this)">ICT/NCERT</span>
+      </div>
+    </div>
+
+    <!-- NAV SECTION I -->
+    <div class="nav-section" data-source="nep">
+      <div class="nav-section-title" onclick="toggleNav(this)">
+        <span>Section I — NEP 2020</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="badge badge-nep">NEP</span>
+          <span class="nav-toggle open">▶</span>
+        </div>
+      </div>
+      <div class="nav-items" style="max-height:600px">
+        <a class="nav-item" href="#s1" onclick="closeSidebarMobile()"><span class="num">1</span>Technology in Education Vision</a>
+        <a class="nav-item" href="#s2" onclick="closeSidebarMobile()"><span class="num">2</span>Digital Infrastructure</a>
+        <a class="nav-item" href="#s3" onclick="closeSidebarMobile()"><span class="num">3</span>Online & Blended Learning</a>
+        <a class="nav-item" href="#s4" onclick="closeSidebarMobile()"><span class="num">4</span>Virtual Labs</a>
+        <a class="nav-item" href="#s5" onclick="closeSidebarMobile()"><span class="num">5</span>NETF — National Ed Tech Forum</a>
+        <a class="nav-item" href="#s6" onclick="closeSidebarMobile()"><span class="num">6</span>Digital Content Creation</a>
+        <a class="nav-item" href="#s7" onclick="closeSidebarMobile()"><span class="num">7</span>Teacher Digital Training</a>
+        <a class="nav-item" href="#s8" onclick="closeSidebarMobile()"><span class="num">8</span>Inclusive Digital Access</a>
+      </div>
+    </div>
+
+    <!-- NAV SECTION II -->
+    <div class="nav-section" data-source="diksha">
+      <div class="nav-section-title" onclick="toggleNav(this)">
+        <span>Section II — DIKSHA</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="badge badge-diksha">DIKSHA</span>
+          <span class="nav-toggle open">▶</span>
+        </div>
+      </div>
+      <div class="nav-items" style="max-height:600px">
+        <a class="nav-item" href="#s9" onclick="closeSidebarMobile()"><span class="num">9</span>Overview of DIKSHA</a>
+        <a class="nav-item" href="#s10" onclick="closeSidebarMobile()"><span class="num">10</span>Teacher Resource Platform</a>
+        <a class="nav-item" href="#s11" onclick="closeSidebarMobile()"><span class="num">11</span>QR Code Textbook Integration</a>
+        <a class="nav-item" href="#s12" onclick="closeSidebarMobile()"><span class="num">12</span>Capacity Building Modules</a>
+        <a class="nav-item" href="#s13" onclick="closeSidebarMobile()"><span class="num">13</span>Learning Management Features</a>
+        <a class="nav-item" href="#s14" onclick="closeSidebarMobile()"><span class="num">14</span>State Integration Model</a>
+        <a class="nav-item" href="#s15" onclick="closeSidebarMobile()"><span class="num">15</span>Content Governance</a>
+        <a class="nav-item" href="#s16" onclick="closeSidebarMobile()"><span class="num">16</span>Digital Certification</a>
+      </div>
+    </div>
+
+    <!-- NAV SECTION III -->
+    <div class="nav-section" data-source="ict">
+      <div class="nav-section-title" onclick="toggleNav(this)">
+        <span>Section III — ICT & NCERT</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="badge badge-ict">ICT</span>
+          <span class="nav-toggle open">▶</span>
+        </div>
+      </div>
+      <div class="nav-items" style="max-height:600px">
+        <a class="nav-item" href="#s17" onclick="closeSidebarMobile()"><span class="num">17</span>ICT in Schools</a>
+        <a class="nav-item" href="#s18" onclick="closeSidebarMobile()"><span class="num">18</span>e-Content Development</a>
+        <a class="nav-item" href="#s19" onclick="closeSidebarMobile()"><span class="num">19</span>Digital Repository</a>
+        <a class="nav-item" href="#s20" onclick="closeSidebarMobile()"><span class="num">20</span>Online Assessment Systems</a>
+        <a class="nav-item" href="#s21" onclick="closeSidebarMobile()"><span class="num">21</span>Educational Broadcasting</a>
+        <a class="nav-item" href="#s22" onclick="closeSidebarMobile()"><span class="num">22</span>Open Educational Resources</a>
+        <a class="nav-item" href="#s23" onclick="closeSidebarMobile()"><span class="num">23</span>Digital Pedagogy</a>
+        <a class="nav-item" href="#s24" onclick="closeSidebarMobile()"><span class="num">24</span>Digital Equity & Inclusion</a>
+        <a class="nav-item" href="#s25" onclick="closeSidebarMobile()"><span class="num">25</span>Cybersecurity in Education</a>
+        <a class="nav-item" href="#s26" onclick="closeSidebarMobile()"><span class="num">26</span>Data-Driven School Management</a>
+        <a class="nav-item" href="#s27" onclick="closeSidebarMobile()"><span class="num">27</span>EdTech Ecosystem Framework</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main-content">
+
+    <!-- COVER -->
+    <div class="cover" id="cover">
+      <div class="cover-grid"></div>
+      <div class="cover-content">
+        <div class="cover-emblem">
+          <svg viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="18" stroke="#00c8ff" stroke-width="1.5"/>
+            <path d="M10 20 L20 10 L30 20 L20 30 Z" stroke="#00c8ff" stroke-width="1" fill="rgba(0,200,255,0.1)"/>
+            <circle cx="20" cy="20" r="3" fill="#f4a623"/>
+          </svg>
+        </div>
+
+        <div class="cover-label">Official Policy Framework Reader · 2024</div>
+
+        <h1>Digital Education &amp;<br><span class="accent">EdTech Transformation</span></h1>
+
+        <div class="cover-divider"></div>
+
+        <p class="cover-sub">Official Policy Framework Reader</p>
+
+        <div class="cover-tags">
+          <span class="cover-tag">NEP 2020</span>
+          <span class="cover-tag">DIKSHA</span>
+          <span class="cover-tag">ICT Initiatives</span>
+          <span class="cover-tag">NCERT</span>
+        </div>
+
+        <div class="author-card">
+          <div class="author-photo">
+            <img src="mateen.jpg" alt="Dr. Mateen Yousuf" onerror="this.parentElement.innerHTML='👨‍🏫'">
+          </div>
+          <div>
+            <div class="author-name">Dr. Mateen Yousuf</div>
+            <div class="author-title">Teacher — School Education Department<br>Jammu &amp; Kashmir</div>
+          </div>
+        </div>
+
+        <div class="stat-grid" style="margin-top:32px">
+          <div class="stat-card">
+            <span class="stat-num">27</span>
+            <div class="stat-label">Framework Sections</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num">3</span>
+            <div class="stat-label">Source Documents</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num">100%</span>
+            <div class="stat-label">Offline Ready</div>
+          </div>
+        </div>
+
+        <div style="margin-top:32px;text-align:left">
+          <p style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Quick Navigation</p>
+          <div class="toc-grid">
+            <a class="toc-item" href="#part1">
+              <div class="toc-num">SECTION I</div>
+              <div class="toc-name">NEP 2020 Digital Education</div>
+            </a>
+            <a class="toc-item" href="#part2">
+              <div class="toc-num">SECTION II</div>
+              <div class="toc-name">DIKSHA Framework</div>
+            </a>
+            <a class="toc-item" href="#part3">
+              <div class="toc-num">SECTION III</div>
+              <div class="toc-name">ICT &amp; NCERT Initiatives</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-hint">
+        <span>Scroll to begin</span>
+        <span>▼</span>
+      </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- SECTION I -->
+    <!-- ======================================================= -->
+
+    <div class="part-header" id="part1" data-source="nep">
+      <div class="part-number">Section I</div>
+      <div class="part-title">NEP 2020 — Digital Education</div>
+      <div class="part-desc">Official extracts from the National Education Policy 2020, Chapter on Technology in Education</div>
+    </div>
+
+    <!-- S1 -->
+    <div class="section" id="s1" data-source="nep">
+      <div class="section-number">Section 1</div>
+      <span class="source-nep section-source">📘 Source: NEP 2020</span>
+      <div class="section-header">
+        <h2 class="section-title">Technology in Education — Vision</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s1','Technology in Education — Vision')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+
+      <div class="content-block">
+        <p>Technology will be used at all levels in education — from improving classroom processes, to supporting teacher professional development, to enhancing educational planning and management. A National Educational Technology Forum (NETF) will be created to provide a platform for the free exchange of ideas on the use of technology to enhance learning, assessment, planning, administration, and so on, both for school and higher education.</p>
+
+        <div class="callout">
+          "The focus of technology-based interventions will always be on improving learning and shall augment the role of the teacher rather than replace it."
+          <br><br>— NEP 2020, Para 23.1
+        </div>
+
+        <h3>23.1 Vision for Technology Integration</h3>
+        <p>Technology, as it advances, offers enormous opportunities for improving the quality and access of education in India. At the same time, rapid advances in technology also require citizens to have new 'digital literacy' and preparedness in order to take full advantage of and participate meaningfully in the technological revolution that is under way. Continuous review and deployment of the latest technologies to improve all aspects of education will be taken up appropriately, in a manner that helps achieve the national educational goals and targets including those of universal foundational literacy and numeracy, and universal access to quality education.</p>
+
+        <h3>Key Technology Objectives</h3>
+        <ul>
+          <li>Improve classroom processes and engagement through technology</li>
+          <li>Support teacher professional development through digital means</li>
+          <li>Enhance educational planning and management through data systems</li>
+          <li>Provide high-quality e-content in regional languages</li>
+          <li>Develop new assessments through technology-based tools</li>
+          <li>Increase research using technology</li>
+          <li>Support students with disabilities through appropriate technology</li>
+        </ul>
+
+        <h3>Digital Literacy as a Core Competency</h3>
+        <p>With the increasing prevalence of digital systems in everyday life, digital literacy — i.e., the ability to effectively and critically navigate, evaluate, and create information using a range of digital technologies — becomes a critical life skill for all students. Computational thinking and coding will be taught from an early stage, and issues around cybersafety and ethics will be appropriately incorporated into curricula and teaching practices.</p>
+
+        <div class="diagram-wrap">
+          <div class="diagram-title">Digital Education Vision Architecture</div>
+          <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px">
+            <defs>
+              <marker id="arr1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#00c8ff" opacity="0.7"/>
+              </marker>
+            </defs>
+            <!-- center -->
+            <rect x="220" y="100" width="160" height="60" rx="8" fill="rgba(0,200,255,0.1)" stroke="#00c8ff" stroke-width="1.5"/>
+            <text x="300" y="127" text-anchor="middle" fill="#00c8ff" font-size="11" font-family="'Playfair Display',serif" font-weight="bold">Technology</text>
+            <text x="300" y="145" text-anchor="middle" fill="#00c8ff" font-size="11" font-family="'Playfair Display',serif" font-weight="bold">in Education</text>
+            <!-- nodes -->
+            <rect x="20" y="20" width="130" height="44" rx="6" fill="rgba(17,34,64,0.8)" stroke="rgba(0,200,255,0.3)" stroke-width="1"/>
+            <text x="85" y="40" text-anchor="middle" fill="#c8d8f0" font-size="9" font-family="'Source Serif 4',serif">Classroom</text>
+            <text x="85" y="54" text-anchor="middle" fill="#c8d8f0" font-size="9" font-family="'Source Serif 4',serif">Processes</text>
+            <rect x="20" y="90" width="130" height="44" rx="6" fill="rgba(17,34,64,0.8)" stroke="rgba(0,200,255,0.3)" stroke-width="1"/>
+            <text x="85" y="110" text-anchor="middle" fill="#c8d8f0" font-size="9" font-family="'Source Serif 4',serif">Teacher</text>
+            <text x="85" y="124" text-anchor="middle" fill="#c8d8f0" font-size="9" font-family="'Source Serif 4',serif">Development</text>
+            <rect x="20" y="160" width="130" height="44" rx="6" fill="rgba(17,34,64,0.8)" stroke="rgba(0,200,255,0.3)" stroke-width="1"/>
+            <text x="85" y="180" text-anchor="middle" fill="#c8d8f0" font-size="9" font-family="'Source Serif 4',serif">Planning &amp;</text>
+            <text x="85" y="194" text-anchor="middle" fill="#c8d8f0" font-size="9" font-family="'Source Serif 4',serif">Management</text>
+            <rect x="450" y="20" width="130" height="44" rx="6" fill="rgba(17,34,64,0.8)" stroke="rgba(244,166,35,0.3)" stroke-width="1"/>
+            <text x="515" y="40" text-anchor="middle" fill="#ffd580" font-size="9" font-family="'Source Serif 4',serif">Digital</text>
+            <text x="515" y="54" text-anchor="middle" fill="#ffd580" font-size="9" font-family="'Source Serif 4',serif">Content</text>
+            <rect x="450" y="90" width="130" height="44" rx="6" fill="rgba(17,34,64,0.8)" stroke="rgba(244,166,35,0.3)" stroke-width="1"/>
+            <text x="515" y="110" text-anchor="middle" fill="#ffd580" font-size="9" font-family="'Source Serif 4',serif">Assessment</text>
+            <text x="515" y="124" text-anchor="middle" fill="#ffd580" font-size="9" font-family="'Source Serif 4',serif">Systems</text>
+            <rect x="450" y="160" width="130" height="44" rx="6" fill="rgba(17,34,64,0.8)" stroke="rgba(244,166,35,0.3)" stroke-width="1"/>
+            <text x="515" y="180" text-anchor="middle" fill="#ffd580" font-size="9" font-family="'Source Serif 4',serif">Inclusive</text>
+            <text x="515" y="194" text-anchor="middle" fill="#ffd580" font-size="9" font-family="'Source Serif 4',serif">Access</text>
+            <!-- arrows left -->
+            <line x1="150" y1="42" x2="218" y2="115" stroke="#00c8ff" stroke-width="1" opacity="0.5" marker-end="url(#arr1)"/>
+            <line x1="150" y1="112" x2="219" y2="125" stroke="#00c8ff" stroke-width="1" opacity="0.5" marker-end="url(#arr1)"/>
+            <line x1="150" y1="182" x2="218" y2="140" stroke="#00c8ff" stroke-width="1" opacity="0.5" marker-end="url(#arr1)"/>
+            <!-- arrows right -->
+            <line x1="382" y1="115" x2="448" y2="42" stroke="#f4a623" stroke-width="1" opacity="0.5" marker-end="url(#arr1)"/>
+            <line x1="382" y1="125" x2="449" y2="112" stroke="#f4a623" stroke-width="1" opacity="0.5" marker-end="url(#arr1)"/>
+            <line x1="382" y1="140" x2="449" y2="182" stroke="#f4a623" stroke-width="1" opacity="0.5" marker-end="url(#arr1)"/>
+            <!-- bottom label -->
+            <text x="300" y="260" text-anchor="middle" fill="#7a96c4" font-size="8" font-family="'JetBrains Mono',monospace">FIGURE 1 — NEP 2020 Technology Integration Architecture</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- S2 -->
+    <div class="section" id="s2" data-source="nep">
+      <div class="section-number">Section 2</div>
+      <span class="source-nep section-source">📘 Source: NEP 2020</span>
+      <div class="section-header">
+        <h2 class="section-title">Digital Infrastructure</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s2','Digital Infrastructure')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>An excellent digital infrastructure for education will be created by the Government. This will include reliable electricity, and internet connectivity at all schools across India. The goal will be to provide adequate connectivity to all schools by 2025.</p>
+
+        <h3>23.2 Infrastructure Requirements</h3>
+        <p>All schools shall aim to have reliable internet connectivity, with modern computer labs, digital devices (tablets, computers) available to students, and high-quality e-content available in regional and local languages as well as in English. The digital infrastructure will be built step by step, and the existing initiatives — such as the PM eVIDYA programme — will be used to accelerate the provision of digital resources to all learners.</p>
+
+        <ul>
+          <li>Reliable electricity and internet connectivity at all schools</li>
+          <li>Modern computer laboratories with adequate hardware</li>
+          <li>Digital devices — tablets, computers — for all students</li>
+          <li>High-quality e-content in regional and local languages</li>
+          <li>Bandwidth provisioning aligned with student-teacher ratios</li>
+          <li>Smart classroom integration with interactive boards</li>
+          <li>School Management Systems (SMS) for administrative efficiency</li>
+        </ul>
+
+        <div class="callout-cyan">
+          Infrastructure provisioning shall be done in a phased manner, ensuring that schools in the most educationally backward blocks receive priority in the allocation of digital resources.
+        </div>
+
+        <h3>PM eVIDYA and Related Initiatives</h3>
+        <p>PM eVIDYA — a multi-mode access programme to digital/online education — shall be leveraged extensively. It includes DIKSHA (one nation, one digital platform), TV channels (one class, one channel), Extensive use of Radio, Community Radio and CBSE Podcast — Shiksha Vani, and special e-content for differently-abled students.</p>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div class="section" id="s3" data-source="nep">
+      <div class="section-number">Section 3</div>
+      <span class="source-nep section-source">📘 Source: NEP 2020</span>
+      <div class="section-header">
+        <h2 class="section-title">Online &amp; Blended Learning</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s3','Online & Blended Learning')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 5 min</div>
+      <div class="content-block">
+        <p>NEP 2020 envisions a rich ecosystem of online and blended learning, recognising that these approaches can substantially expand access to high quality education. Online and digital education will not be used to replace teachers or face-to-face interaction; instead, they will be used to augment and enrich the educational experience.</p>
+
+        <h3>Blended Learning Framework</h3>
+        <p>The blended model integrates online digital media with traditional classroom methods. Students and teachers interact both online and face-to-face, in a structured manner. NEP 2020 envisions that:</p>
+
+        <ul>
+          <li>At least 25% of learning can be delivered online in secondary school</li>
+          <li>Curriculum planning will include structured online components</li>
+          <li>Assessment rubrics for online learning will be developed</li>
+          <li>Teacher training will include facilitating online learning</li>
+          <li>Regional language content will be prioritised</li>
+        </ul>
+
+        <div class="diagram-wrap">
+          <div class="diagram-title">Blended Learning Model</div>
+          <svg viewBox="0 0 540 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:540px">
+            <!-- Online component -->
+            <rect x="20" y="40" width="150" height="120" rx="8" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="95" y="75" text-anchor="middle" fill="#00c8ff" font-size="10" font-family="'Playfair Display',serif" font-weight="bold">Online</text>
+            <text x="95" y="95" text-anchor="middle" fill="#c8d8f0" font-size="8.5" font-family="'Source Serif 4',serif">• Video Lectures</text>
+            <text x="95" y="112" text-anchor="middle" fill="#c8d8f0" font-size="8.5" font-family="'Source Serif 4',serif">• DIKSHA Modules</text>
+            <text x="95" y="129" text-anchor="middle" fill="#c8d8f0" font-size="8.5" font-family="'Source Serif 4',serif">• Self-paced Study</text>
+            <text x="95" y="146" text-anchor="middle" fill="#c8d8f0" font-size="8.5" font-family="'Source Serif 4',serif">• E-Assessments</text>
+            <!-- Overlap/center -->
+            <ellipse cx="270" cy="100" rx="60" ry="55" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="1"/>
+            <text x="270" y="93" text-anchor="middle" fill="#a78bfa" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Blended</text>
+            <text x="270" y="108" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="'Source Serif 4',serif">Learning</text>
+            <text x="270" y="123" text-anchor="middle" fill="#a78bfa" font-size="7.5" font-family="'Source Serif 4',serif">Integrated</text>
+            <!-- Face to face -->
+            <rect x="370" y="40" width="150" height="120" rx="8" fill="rgba(244,166,35,0.08)" stroke="#f4a623" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="445" y="75" text-anchor="middle" fill="#f4a623" font-size="10" font-family="'Playfair Display',serif" font-weight="bold">Face-to-Face</text>
+            <text x="445" y="95" text-anchor="middle" fill="#c8d8f0" font-size="8.5" font-family="'Source Serif 4',serif">• Classroom Sessions</text>
+            <text x="445" y="112" text-anchor="middle" fill="#c8d8f0" font-size="8.5" font-family="'Source Serif 4',serif">• Lab Activities</text>
+            <text x="445" y="129" text-anchor="middle" fill="#c8d8f0" font-size="8.5" font-family="'Source Serif 4',serif">• Group Projects</text>
+            <text x="445" y="146" text-anchor="middle" fill="#c8d8f0" font-size="8.5" font-family="'Source Serif 4',serif">• Teacher Mentoring</text>
+            <text x="270" y="188" text-anchor="middle" fill="#7a96c4" font-size="7.5" font-family="'JetBrains Mono',monospace">FIGURE 2 — Blended Learning Model (NEP 2020)</text>
+          </svg>
+        </div>
+
+        <h3>23.5 Pilot Studies and Research</h3>
+        <p>Pilot studies for online and blended modes of education will be conducted at all levels of education. These pilots will rigorously track learning outcomes, student engagement, equity of access, and other relevant metrics, in order to gather evidence on the efficacy of online and blended education. NETF will facilitate the review and dissemination of this research.</p>
+      </div>
+    </div>
+
+    <!-- S4 -->
+    <div class="section" id="s4" data-source="nep">
+      <div class="section-number">Section 4</div>
+      <span class="source-nep section-source">📘 Source: NEP 2020</span>
+      <div class="section-header">
+        <h2 class="section-title">Virtual Labs</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s4','Virtual Labs')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>Virtual labs will be set up to enable students in all parts of India — including the most remote regions — to have access to high-quality laboratory facilities and equipment. These virtual labs will be built to allow students to perform experiments, observe phenomena, and develop scientific temperament in an online environment.</p>
+
+        <h3>Components of Virtual Labs</h3>
+        <ul>
+          <li>Simulation-based experiments for science subjects (Physics, Chemistry, Biology)</li>
+          <li>Interactive animations demonstrating complex concepts</li>
+          <li>Step-by-step guided experiment procedures</li>
+          <li>Data recording and analysis tools integrated within the platform</li>
+          <li>Assessment components to test understanding of lab procedures</li>
+          <li>Teacher dashboard for monitoring student lab progress</li>
+          <li>Multilingual interface to support regional language learners</li>
+        </ul>
+
+        <div class="callout">
+          Virtual labs shall be especially beneficial for schools in rural, hilly, and remote areas where physical laboratory infrastructure may be limited or absent, ensuring no student is deprived of quality practical education.
+        </div>
+
+        <h3>Integration with Physical Labs</h3>
+        <p>Virtual labs shall not replace physical laboratories but shall complement them. The virtual lab experience shall help students prepare for actual laboratory sessions by familiarising them with procedures, safety protocols, and expected outcomes before performing physical experiments. This blended approach shall enhance both conceptual understanding and practical skills.</p>
+      </div>
+    </div>
+
+    <!-- S5 -->
+    <div class="section" id="s5" data-source="nep">
+      <div class="section-number">Section 5</div>
+      <span class="source-nep section-source">📘 Source: NEP 2020</span>
+      <div class="section-header">
+        <h2 class="section-title">National Educational Technology Forum (NETF)</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s5','NETF')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>A National Educational Technology Forum (NETF) will be created as an autonomous body to provide a platform for the free exchange of ideas on the use of technology to enhance learning, assessment, planning, and administration — both for school and higher education.</p>
+
+        <h3>23.4 Functions of NETF</h3>
+        <p>NETF will:</p>
+        <ul>
+          <li>Advise education ministries at all levels — Union and State — regarding the deployment of technology to enhance education</li>
+          <li>Build and deploy a digital education infrastructure for the country, working with DIKSHA and PM eVIDYA</li>
+          <li>Identify, pilot, evaluate, and scale up use of technology in education</li>
+          <li>Fund relevant research on technology and education</li>
+          <li>Conduct pilots and longitudinal studies in technology-based learning</li>
+          <li>Evaluate technologies and publish guidelines and standards for adoption</li>
+          <li>Create a National Repository of Open Educational Resources (NROER)</li>
+          <li>Work with technology companies, educational institutions, and government bodies to accelerate EdTech ecosystem development</li>
+        </ul>
+
+        <div class="callout-cyan">
+          NETF shall be an autonomous body with adequate funding, infrastructure, and professional expertise to independently advise on technology decisions affecting the entire national educational ecosystem.
+        </div>
+
+        <h3>Governance Structure</h3>
+        <p>NETF will be governed by a board comprising technology experts, educational practitioners, curriculum specialists, assessment experts, and representatives from the States. It will publish annual reports on the state of technology in Indian education and make specific actionable recommendations to improve technology deployment across the system.</p>
+      </div>
+    </div>
+
+    <!-- S6 -->
+    <div class="section" id="s6" data-source="nep">
+      <div class="section-number">Section 6</div>
+      <span class="source-nep section-source">📘 Source: NEP 2020</span>
+      <div class="section-header">
+        <h2 class="section-title">Digital Content Creation</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s6','Digital Content Creation')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>High-quality e-content shall be created in all regional languages and made available freely on digital platforms such as DIKSHA. Content creation will involve the collaboration of teachers, subject experts, instructional designers, and educational technologists.</p>
+
+        <h3>Standards for Digital Content</h3>
+        <ul>
+          <li>Content shall align strictly with the National Curriculum Framework (NCF)</li>
+          <li>Each unit shall include learning objectives, content body, activities, and assessment</li>
+          <li>Content shall be developed at multiple levels of complexity to accommodate diverse learners</li>
+          <li>Accessibility standards shall be followed — content shall be available for differently-abled learners</li>
+          <li>Metadata standards shall be applied for interoperability with national repositories</li>
+          <li>Copyright and licensing policies shall be clearly stated for all digital content</li>
+        </ul>
+
+        <h3>Content Governance</h3>
+        <p>A robust content governance mechanism shall ensure quality, accuracy, and currency of all digital educational content. Peer review, expert validation, and teacher feedback mechanisms shall be institutionalised as part of the content lifecycle management process.</p>
+
+        <div class="callout">
+          Teachers shall be actively involved in content creation and review. Teacher-created content uploaded on DIKSHA shall be reviewed and, where appropriate, endorsed by the platform — recognising teachers as knowledge producers, not merely consumers of digital content.
+        </div>
+      </div>
+    </div>
+
+    <!-- S7 -->
+    <div class="section" id="s7" data-source="nep">
+      <div class="section-number">Section 7</div>
+      <span class="source-nep section-source">📘 Source: NEP 2020</span>
+      <div class="section-header">
+        <h2 class="section-title">Teacher Digital Training</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s7','Teacher Digital Training')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>Teachers will be empowered with the digital skills and tools required to use technology effectively in their teaching. Teacher training programmes — pre-service and in-service — shall include substantial components on digital competency, EdTech tool usage, online pedagogy, and data-driven teaching.</p>
+
+        <h3>Digital Competency Framework for Teachers</h3>
+        <ul>
+          <li><strong>Level 1 — Digital Foundational:</strong> Basic computer operation, internet usage, email, digital safety</li>
+          <li><strong>Level 2 — Digital Classroom:</strong> Use of DIKSHA, smart boards, educational apps, digital content access</li>
+          <li><strong>Level 3 — Digital Pedagogy:</strong> Designing blended learning, creating e-content, online assessment</li>
+          <li><strong>Level 4 — Digital Leadership:</strong> Mentoring peers, leading digital transformation, research on EdTech</li>
+        </ul>
+
+        <div class="diagram-wrap">
+          <div class="diagram-title">Teacher Digital Training Cycle</div>
+          <svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
+            <defs>
+              <marker id="arr2" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0, 7 2.5, 0 5" fill="#f4a623" opacity="0.8"/>
+              </marker>
+            </defs>
+            <circle cx="240" cy="120" r="50" fill="rgba(17,34,64,0.5)" stroke="rgba(0,200,255,0.2)" stroke-width="1"/>
+            <text x="240" y="115" text-anchor="middle" fill="#c8d8f0" font-size="9" font-family="'Source Serif 4',serif">Continuous</text>
+            <text x="240" y="130" text-anchor="middle" fill="#c8d8f0" font-size="9" font-family="'Source Serif 4',serif">Learning</text>
+            <!-- nodes -->
+            <circle cx="240" cy="30" r="28" fill="rgba(0,200,255,0.12)" stroke="#00c8ff" stroke-width="1.5"/>
+            <text x="240" y="27" text-anchor="middle" fill="#00c8ff" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Assess</text>
+            <text x="240" y="40" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">Needs</text>
+            <circle cx="400" cy="120" r="28" fill="rgba(244,166,35,0.12)" stroke="#f4a623" stroke-width="1.5"/>
+            <text x="400" y="117" text-anchor="middle" fill="#f4a623" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Train</text>
+            <text x="400" y="130" text-anchor="middle" fill="#ffd580" font-size="7.5" font-family="'Source Serif 4',serif">Online/F2F</text>
+            <circle cx="310" cy="205" r="28" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="310" y="202" text-anchor="middle" fill="#a78bfa" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Practice</text>
+            <text x="310" y="215" text-anchor="middle" fill="#c8b4fa" font-size="7.5" font-family="'Source Serif 4',serif">Classroom</text>
+            <circle cx="170" cy="205" r="28" fill="rgba(244,166,35,0.08)" stroke="#f4a623" stroke-width="1" stroke-dasharray="3,3"/>
+            <text x="170" y="202" text-anchor="middle" fill="#ffd580" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Reflect</text>
+            <text x="170" y="215" text-anchor="middle" fill="#ffd580" font-size="7.5" font-family="'Source Serif 4',serif">&amp; Review</text>
+            <circle cx="80" cy="120" r="28" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1" stroke-dasharray="3,3"/>
+            <text x="80" y="117" text-anchor="middle" fill="#7ee8ff" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Certify</text>
+            <text x="80" y="130" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">&amp; Badge</text>
+            <!-- arrows -->
+            <path d="M 262 48 A 100 100 0 0 1 372 100" fill="none" stroke="#f4a623" stroke-width="1" opacity="0.6" marker-end="url(#arr2)"/>
+            <path d="M 380 148 A 100 100 0 0 1 330 180" fill="none" stroke="#f4a623" stroke-width="1" opacity="0.6" marker-end="url(#arr2)"/>
+            <path d="M 282 208 A 100 100 0 0 1 198 208" fill="none" stroke="#f4a623" stroke-width="1" opacity="0.6" marker-end="url(#arr2)"/>
+            <path d="M 142 188 A 100 100 0 0 1 88 148" fill="none" stroke="#f4a623" stroke-width="1" opacity="0.6" marker-end="url(#arr2)"/>
+            <path d="M 102 92 A 100 100 0 0 1 218 32" fill="none" stroke="#f4a623" stroke-width="1" opacity="0.6" marker-end="url(#arr2)"/>
+            <text x="240" y="238" text-anchor="middle" fill="#7a96c4" font-size="7.5" font-family="'JetBrains Mono',monospace">FIGURE 3 — Teacher Digital Training Cycle</text>
+          </svg>
+        </div>
+
+        <h3>DIKSHA as Teacher Training Platform</h3>
+        <p>DIKSHA shall serve as the primary platform for in-service teacher professional development in digital skills. The platform shall host courses, assessment tools, and certification pathways for teachers at all levels. Completion of digital training modules shall be linked to teacher performance appraisal systems.</p>
+      </div>
+    </div>
+
+    <!-- S8 -->
+    <div class="section" id="s8" data-source="nep">
+      <div class="section-number">Section 8</div>
+      <span class="source-nep section-source">📘 Source: NEP 2020</span>
+      <div class="section-header">
+        <h2 class="section-title">Inclusive Digital Access</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s8','Inclusive Digital Access')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>Technology must serve the goal of equity. NEP 2020 recognises that digital divides along lines of geography, gender, and socioeconomic status can exacerbate existing educational inequalities if not proactively addressed.</p>
+
+        <h3>Strategies for Inclusive Digital Access</h3>
+        <ul>
+          <li>Priority provisioning of internet and devices to disadvantaged districts and schools</li>
+          <li>Community ICT centres and digital libraries in rural areas</li>
+          <li>Gender-sensitive design of digital learning platforms</li>
+          <li>Assistive technology for learners with disabilities (screen readers, audio descriptions, sign language)</li>
+          <li>Content in Scheduled Languages and tribal languages</li>
+          <li>Low-bandwidth versions of digital content for areas with poor connectivity</li>
+          <li>Offline content delivery mechanisms — USB, SDcard, local servers</li>
+        </ul>
+
+        <div class="callout">
+          "Special attention shall be given to ensuring that digital education does not bypass disadvantaged groups. Digital equity shall be treated as a policy imperative, not an afterthought."
+          <br><br>— NEP 2020, Digital Education Framework
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- SECTION II -->
+    <!-- ======================================================= -->
+
+    <div class="part-header" id="part2" data-source="diksha">
+      <div class="part-number">Section II</div>
+      <div class="part-title">DIKSHA Framework</div>
+      <div class="part-desc">Digital Infrastructure for Knowledge Sharing — Official Framework Documents</div>
+    </div>
+
+    <!-- S9 -->
+    <div class="section" id="s9" data-source="diksha">
+      <div class="section-number">Section 9</div>
+      <span class="source-diksha section-source">🟡 Source: DIKSHA</span>
+      <div class="section-header">
+        <h2 class="section-title">Overview of DIKSHA</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s9','Overview of DIKSHA')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>DIKSHA — Digital Infrastructure for Knowledge Sharing — is India's national platform for school education. It is built on the Sunbird open-source platform and is maintained by the National Council of Educational Research and Training (NCERT) under the Ministry of Education, Government of India.</p>
+
+        <h3>Core Purpose</h3>
+        <p>DIKSHA serves as a "one nation, one digital platform" for school education. It provides:</p>
+        <ul>
+          <li>A unified digital platform for teachers, students, and parents</li>
+          <li>Access to curriculum-aligned educational content</li>
+          <li>Teacher professional development and training resources</li>
+          <li>QR-code linked digital content for printed textbooks</li>
+          <li>Capacity building and professional learning communities</li>
+          <li>Data and analytics for monitoring learning outcomes</li>
+        </ul>
+
+        <div class="diagram-wrap">
+          <div class="diagram-title">DIKSHA Digital Ecosystem Architecture</div>
+          <svg viewBox="0 0 580 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:580px">
+            <!-- Platform Core -->
+            <rect x="180" y="80" width="220" height="80" rx="10" fill="rgba(244,166,35,0.12)" stroke="#f4a623" stroke-width="2"/>
+            <text x="290" y="112" text-anchor="middle" fill="#f4a623" font-size="12" font-family="'Playfair Display',serif" font-weight="bold">DIKSHA Platform</text>
+            <text x="290" y="132" text-anchor="middle" fill="#ffd580" font-size="9" font-family="'Source Serif 4',serif">Sunbird Open Source · NCERT · MoE</text>
+            <text x="290" y="150" text-anchor="middle" fill="#ffd580" font-size="8.5" font-family="'Source Serif 4',serif">One Nation · One Digital Platform</text>
+            <!-- Stakeholders -->
+            <rect x="20" y="30" width="110" height="45" rx="6" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1"/>
+            <text x="75" y="52" text-anchor="middle" fill="#00c8ff" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">Teachers</text>
+            <text x="75" y="67" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">Professional Dev</text>
+            <rect x="20" y="105" width="110" height="45" rx="6" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1"/>
+            <text x="75" y="127" text-anchor="middle" fill="#00c8ff" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">Students</text>
+            <text x="75" y="142" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">Content Access</text>
+            <rect x="20" y="180" width="110" height="45" rx="6" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1"/>
+            <text x="75" y="202" text-anchor="middle" fill="#00c8ff" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">Parents</text>
+            <text x="75" y="217" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">Progress Tracking</text>
+            <!-- Services -->
+            <rect x="450" y="30" width="110" height="45" rx="6" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="1"/>
+            <text x="505" y="52" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">Content</text>
+            <text x="505" y="67" text-anchor="middle" fill="#c8b4fa" font-size="7.5" font-family="'Source Serif 4',serif">e-Resources</text>
+            <rect x="450" y="105" width="110" height="45" rx="6" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="1"/>
+            <text x="505" y="127" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">Assessment</text>
+            <text x="505" y="142" text-anchor="middle" fill="#c8b4fa" font-size="7.5" font-family="'Source Serif 4',serif">Quizzes &amp; Tests</text>
+            <rect x="450" y="180" width="110" height="45" rx="6" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="1"/>
+            <text x="505" y="202" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">Analytics</text>
+            <text x="505" y="217" text-anchor="middle" fill="#c8b4fa" font-size="7.5" font-family="'Source Serif 4',serif">Learning Data</text>
+            <!-- Lines -->
+            <line x1="130" y1="52" x2="178" y2="105" stroke="#00c8ff" stroke-width="0.8" opacity="0.5"/>
+            <line x1="130" y1="127" x2="179" y2="125" stroke="#00c8ff" stroke-width="0.8" opacity="0.5"/>
+            <line x1="130" y1="200" x2="180" y2="148" stroke="#00c8ff" stroke-width="0.8" opacity="0.5"/>
+            <line x1="400" y1="105" x2="448" y2="52" stroke="#a78bfa" stroke-width="0.8" opacity="0.5"/>
+            <line x1="401" y1="125" x2="449" y2="127" stroke="#a78bfa" stroke-width="0.8" opacity="0.5"/>
+            <line x1="400" y1="148" x2="449" y2="200" stroke="#a78bfa" stroke-width="0.8" opacity="0.5"/>
+            <text x="290" y="250" text-anchor="middle" fill="#7a96c4" font-size="7.5" font-family="'JetBrains Mono',monospace">FIGURE 4 — DIKSHA Digital Ecosystem Architecture</text>
+          </svg>
+        </div>
+
+        <h3>Scale and Reach</h3>
+        <p>DIKSHA has been adopted by all States and Union Territories of India. It provides content in more than 30 languages, serves millions of teachers, and provides access to lakhs of digital resources aligned with State and NCERT curricula. It operates under a federated architecture allowing States to maintain their own content portals within the DIKSHA framework.</p>
+      </div>
+    </div>
+
+    <!-- S10 -->
+    <div class="section" id="s10" data-source="diksha">
+      <div class="section-number">Section 10</div>
+      <span class="source-diksha section-source">🟡 Source: DIKSHA</span>
+      <div class="section-header">
+        <h2 class="section-title">Teacher Resource Platform</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s10','Teacher Resource Platform')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>DIKSHA serves as the primary teacher resource and professional development platform for school teachers across India. The teacher-facing features of DIKSHA are designed to support continuous professional learning, content access, and peer collaboration.</p>
+
+        <h3>Teacher Features on DIKSHA</h3>
+        <ul>
+          <li>Access to curriculum-aligned teaching resources for all grades and subjects</li>
+          <li>Video lessons, lesson plans, and pedagogical guides</li>
+          <li>Online courses for professional development (in-service training)</li>
+          <li>Certificates and digital badges upon course completion</li>
+          <li>QR-code scanning to access linked digital content from textbooks</li>
+          <li>Discussion forums and professional learning communities</li>
+          <li>State-specific content portals within the DIKSHA framework</li>
+          <li>Assessment tools for classroom use</li>
+          <li>Progress tracking for student and course completion</li>
+        </ul>
+
+        <div class="callout-cyan">
+          DIKSHA treats teachers as the central node of the educational ecosystem. All platform features are designed to reduce teacher workload, enhance pedagogical capacity, and create meaningful digital professional learning experiences.
+        </div>
+
+        <h3>Teacher Registration and Profile</h3>
+        <p>Teachers register on DIKSHA using their official credentials. The platform creates a personalised profile that tracks professional development activities, course completions, content consumed, and contributions made. This profile can be shared with educational administrators for appraisal and professional recognition purposes.</p>
+      </div>
+    </div>
+
+    <!-- S11 -->
+    <div class="section" id="s11" data-source="diksha">
+      <div class="section-number">Section 11</div>
+      <span class="source-diksha section-source">🟡 Source: DIKSHA</span>
+      <div class="section-header">
+        <h2 class="section-title">QR Code Textbook Integration</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s11','QR Code Textbook Integration')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>DIKSHA pioneered the Energised Textbook initiative — also known as the QR-coded textbook or ETBM (Energised TextBook Model). Under this initiative, printed textbooks are embedded with QR codes that link to digital content on DIKSHA when scanned using any QR code scanner or the DIKSHA app.</p>
+
+        <h3>What QR Codes Link To</h3>
+        <ul>
+          <li>Explanatory videos and animations for concepts in the chapter</li>
+          <li>Interactive simulations and virtual lab activities</li>
+          <li>Practice questions and formative assessment items</li>
+          <li>Teacher resources and pedagogical notes</li>
+          <li>Additional reading materials and reference resources</li>
+          <li>Multilingual content alternatives</li>
+        </ul>
+
+        <div class="diagram-wrap">
+          <div class="diagram-title">QR Code Textbook Integration Flow</div>
+          <svg viewBox="0 0 520 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px">
+            <defs>
+              <marker id="arr3" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0, 7 2.5, 0 5" fill="#f4a623" opacity="0.9"/>
+              </marker>
+            </defs>
+            <!-- Steps -->
+            <rect x="10" y="30" width="90" height="60" rx="6" fill="rgba(244,166,35,0.1)" stroke="#f4a623" stroke-width="1.5"/>
+            <text x="55" y="57" text-anchor="middle" fill="#f4a623" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">Printed</text>
+            <text x="55" y="70" text-anchor="middle" fill="#ffd580" font-size="8" font-family="'Source Serif 4',serif">Textbook</text>
+            <text x="55" y="83" text-anchor="middle" fill="#ffd580" font-size="8" font-family="'Source Serif 4',serif">+ QR Code</text>
+            <line x1="100" y1="60" x2="120" y2="60" stroke="#f4a623" stroke-width="1.5" marker-end="url(#arr3)"/>
+            <rect x="120" y="30" width="90" height="60" rx="6" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5"/>
+            <text x="165" y="57" text-anchor="middle" fill="#00c8ff" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">Student</text>
+            <text x="165" y="70" text-anchor="middle" fill="#7ee8ff" font-size="8" font-family="'Source Serif 4',serif">Scans QR</text>
+            <text x="165" y="83" text-anchor="middle" fill="#7ee8ff" font-size="8" font-family="'Source Serif 4',serif">via App</text>
+            <line x1="210" y1="60" x2="230" y2="60" stroke="#f4a623" stroke-width="1.5" marker-end="url(#arr3)"/>
+            <rect x="230" y="30" width="90" height="60" rx="6" fill="rgba(244,166,35,0.1)" stroke="#f4a623" stroke-width="1.5"/>
+            <text x="275" y="57" text-anchor="middle" fill="#f4a623" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">DIKSHA</text>
+            <text x="275" y="70" text-anchor="middle" fill="#ffd580" font-size="8" font-family="'Source Serif 4',serif">Platform</text>
+            <text x="275" y="83" text-anchor="middle" fill="#ffd580" font-size="8" font-family="'Source Serif 4',serif">Resolves Link</text>
+            <line x1="320" y1="60" x2="340" y2="60" stroke="#f4a623" stroke-width="1.5" marker-end="url(#arr3)"/>
+            <rect x="340" y="30" width="90" height="60" rx="6" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="385" y="57" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="'Playfair Display',serif" font-weight="bold">Digital</text>
+            <text x="385" y="70" text-anchor="middle" fill="#c8b4fa" font-size="8" font-family="'Source Serif 4',serif">Content</text>
+            <text x="385" y="83" text-anchor="middle" fill="#c8b4fa" font-size="8" font-family="'Source Serif 4',serif">Displayed</text>
+            <line x1="430" y1="60" x2="450" y2="60" stroke="#f4a623" stroke-width="1.5" marker-end="url(#arr3)"/>
+            <rect x="450" y="30" width="60" height="60" rx="6" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5"/>
+            <text x="480" y="57" text-anchor="middle" fill="#00c8ff" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Learn</text>
+            <text x="480" y="72" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">&amp; Engage</text>
+            <text x="260" y="128" text-anchor="middle" fill="#7a96c4" font-size="7.5" font-family="'JetBrains Mono',monospace">FIGURE 5 — QR Code Textbook Integration Flow (DIKSHA)</text>
+          </svg>
+        </div>
+
+        <h3>ETBM Impact and Scale</h3>
+        <p>The Energised Textbook Model has been implemented across multiple States and Union Territories. Crores of textbooks have been linked to DIKSHA content through QR codes. The model has demonstrated significant improvement in student engagement with digital supplementary content, particularly for Science and Mathematics subjects.</p>
+      </div>
+    </div>
+
+    <!-- S12 -->
+    <div class="section" id="s12" data-source="diksha">
+      <div class="section-number">Section 12</div>
+      <span class="source-diksha section-source">🟡 Source: DIKSHA</span>
+      <div class="section-header">
+        <h2 class="section-title">Capacity Building Modules</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s12','Capacity Building Modules')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>DIKSHA hosts a comprehensive suite of capacity building modules for teachers and school leaders. These modules are designed by NCERT, State Councils (SCERT/SIE), and other recognised academic bodies, and are made available on the platform for self-paced learning.</p>
+
+        <h3>Categories of Capacity Building Modules</h3>
+        <ul>
+          <li><strong>Subject-specific pedagogical training</strong> — modules covering content and pedagogical knowledge for each subject and grade level</li>
+          <li><strong>Inclusive education</strong> — training on teaching students with special needs</li>
+          <li><strong>Early childhood education</strong> — ECCE pedagogy and activity-based learning approaches</li>
+          <li><strong>Assessment for learning</strong> — formative assessment strategies and tools</li>
+          <li><strong>Social-emotional learning</strong> — student wellbeing and mental health approaches</li>
+          <li><strong>Digital pedagogy</strong> — using technology effectively in classroom teaching</li>
+          <li><strong>Leadership and management</strong> — school leadership development programmes</li>
+        </ul>
+
+        <div class="callout-cyan">
+          All capacity building modules on DIKSHA are freely accessible, self-paced, and available in multiple regional languages. Completion of modules is tracked and certificates are issued upon successful assessment.
+        </div>
+      </div>
+    </div>
+
+    <!-- S13 -->
+    <div class="section" id="s13" data-source="diksha">
+      <div class="section-number">Section 13</div>
+      <span class="source-diksha section-source">🟡 Source: DIKSHA</span>
+      <div class="section-header">
+        <h2 class="section-title">Learning Management Features</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s13','Learning Management Features')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>DIKSHA provides a comprehensive Learning Management System (LMS) that enables structured course delivery, progress tracking, assessment, and certification.</p>
+
+        <h3>Key LMS Features</h3>
+        <ul>
+          <li>Course creation and content upload tools for content creators</li>
+          <li>Enrolment management — teachers and students can enrol in relevant courses</li>
+          <li>Progress tracking — learner dashboards showing course completion status</li>
+          <li>Automated assessment and result generation</li>
+          <li>Certificate generation upon successful course completion</li>
+          <li>Batch management for cohort-based training programmes</li>
+          <li>Notification systems for course deadlines, new content, and announcements</li>
+          <li>Discussion boards for learner peer interaction</li>
+          <li>Offline content download for access without internet connectivity</li>
+          <li>Analytics dashboard for administrators and programme coordinators</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- S14 -->
+    <div class="section" id="s14" data-source="diksha">
+      <div class="section-number">Section 14</div>
+      <span class="source-diksha section-source">🟡 Source: DIKSHA</span>
+      <div class="section-header">
+        <h2 class="section-title">State Integration Model</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s14','State Integration Model')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>DIKSHA operates on a federated architecture that allows States and Union Territories to maintain their own content portals while being part of the national DIKSHA ecosystem. This ensures that States retain autonomy over State-specific curriculum content while benefiting from the shared national infrastructure.</p>
+
+        <h3>State Integration Components</h3>
+        <ul>
+          <li>State-branded portal within the DIKSHA framework</li>
+          <li>State-specific curriculum content upload and management</li>
+          <li>State SCERT/SIE as content quality custodians for State content</li>
+          <li>State teacher registration and training management</li>
+          <li>State-level analytics and reporting</li>
+          <li>Integration with State Education Management Information Systems (EMIS)</li>
+          <li>Customisation of platform interface in State languages</li>
+        </ul>
+
+        <div class="callout">
+          The federated model of DIKSHA reflects the Constitutional principle of education being a concurrent subject. States have full autonomy over State-specific content while benefiting from the shared national technology infrastructure maintained by NCERT.
+        </div>
+      </div>
+    </div>
+
+    <!-- S15 -->
+    <div class="section" id="s15" data-source="diksha">
+      <div class="section-number">Section 15</div>
+      <span class="source-diksha section-source">🟡 Source: DIKSHA</span>
+      <div class="section-header">
+        <h2 class="section-title">Content Governance</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s15','Content Governance')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>DIKSHA follows a robust content governance framework to ensure that all content available on the platform is accurate, curriculum-aligned, age-appropriate, and of high quality.</p>
+
+        <h3>Content Lifecycle Management</h3>
+        <ul>
+          <li><strong>Creation:</strong> Content created by approved creators (teachers, subject experts, organisations)</li>
+          <li><strong>Review:</strong> Multi-stage review by subject experts and pedagogical reviewers</li>
+          <li><strong>Publication:</strong> Published on DIKSHA upon successful review</li>
+          <li><strong>Discovery:</strong> Searchable and filterable by grade, subject, topic, medium, and board</li>
+          <li><strong>Usage Tracking:</strong> Analytics on views, downloads, and ratings</li>
+          <li><strong>Updation:</strong> Periodic review and update to ensure currency</li>
+          <li><strong>Archival:</strong> Outdated content archived and replaced with updated versions</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- S16 -->
+    <div class="section" id="s16" data-source="diksha">
+      <div class="section-number">Section 16</div>
+      <span class="source-diksha section-source">🟡 Source: DIKSHA</span>
+      <div class="section-header">
+        <h2 class="section-title">Digital Certification</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s16','Digital Certification')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>DIKSHA provides digital certificates to teachers and learners who successfully complete courses and training programmes on the platform. These certificates are verifiable, shareable, and stored in the learner's profile.</p>
+
+        <h3>Certificate Features</h3>
+        <ul>
+          <li>Digitally signed certificates from NCERT, SCERT, or relevant issuing organisation</li>
+          <li>QR-code linked certificate verification</li>
+          <li>Downloadable in PDF format</li>
+          <li>Shareable on professional networks</li>
+          <li>Stored permanently in the learner's DIKSHA profile</li>
+          <li>Linked to specific course completion and assessment scores</li>
+        </ul>
+
+        <div class="callout-cyan">
+          Digital certificates from DIKSHA serve as recognised credentials for teacher professional development activities and can be used for career progression, performance appraisal, and professional portfolio documentation.
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- SECTION III -->
+    <!-- ======================================================= -->
+
+    <div class="part-header" id="part3" data-source="ict">
+      <div class="part-number">Section III</div>
+      <div class="part-title">ICT &amp; NCERT Initiatives</div>
+      <div class="part-desc">National ICT Policy in School Education and NCERT Digital Initiatives</div>
+    </div>
+
+    <!-- S17 -->
+    <div class="section" id="s17" data-source="ict">
+      <div class="section-number">Section 17</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">ICT in Schools</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s17','ICT in Schools')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>The National Policy on ICT in School Education provides a comprehensive framework for the integration of Information and Communication Technology across all levels of school education in India. ICT in education is understood not merely as a tool for content delivery but as a transformative force for improving pedagogical quality, administrative efficiency, and equity of access.</p>
+
+        <h3>ICT Integration Objectives</h3>
+        <ul>
+          <li>Provide ICT skills to all students as a core 21st-century competency</li>
+          <li>Use ICT as a pedagogical tool to enhance learning outcomes across subjects</li>
+          <li>Use ICT for educational administration and management at school, district, and state levels</li>
+          <li>Develop high-quality digital content in all Indian languages</li>
+          <li>Build teacher capacity in ICT use</li>
+          <li>Ensure equitable access to ICT for students in rural, hilly, and tribal areas</li>
+        </ul>
+
+        <h3>ICT@School Scheme</h3>
+        <p>The ICT@School scheme provides financial support to States for establishment of ICT infrastructure in secondary and higher secondary schools. Under the scheme, schools receive computer labs with adequate hardware, software, networking, and internet connectivity. Teachers are trained in ICT integration, and digital content is made available through DIKSHA and other platforms.</p>
+
+        <div class="callout">
+          ICT shall be treated as a cross-curricular competency rather than a standalone subject. The goal is to embed digital skills across all subject areas, ensuring that students develop technology proficiency in authentic learning contexts.
+        </div>
+      </div>
+    </div>
+
+    <!-- S18 -->
+    <div class="section" id="s18" data-source="ict">
+      <div class="section-number">Section 18</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">e-Content Development</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s18','e-Content Development')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>NCERT has developed a comprehensive e-content development framework that guides the creation of high-quality digital educational resources aligned with the national curriculum. e-Content development is a collaborative process involving subject experts, instructional designers, media specialists, and teachers.</p>
+
+        <h3>Types of e-Content</h3>
+        <ul>
+          <li><strong>e-Books:</strong> Interactive digital versions of NCERT textbooks with embedded multimedia</li>
+          <li><strong>Video Lessons:</strong> Recorded instructional videos by subject experts</li>
+          <li><strong>Animations:</strong> 2D and 3D animations explaining complex concepts</li>
+          <li><strong>Simulations:</strong> Interactive simulations for Science and Mathematics</li>
+          <li><strong>Audio Content:</strong> Podcasts, audio books, and narrated presentations</li>
+          <li><strong>Assessment Items:</strong> Question banks, practice tests, and formative assessment tools</li>
+          <li><strong>Lesson Plans:</strong> Structured teaching guides aligned with curriculum</li>
+        </ul>
+
+        <h3>Development Standards</h3>
+        <p>All NCERT e-content follows the Sharable Content Object Reference Model (SCORM) and IMS standards to ensure interoperability across digital platforms. Content is tagged with comprehensive metadata — grade, subject, topic, learning outcome, difficulty level, and language — to enable effective discoverability and recommendation.</p>
+      </div>
+    </div>
+
+    <!-- S19 -->
+    <div class="section" id="s19" data-source="ict">
+      <div class="section-number">Section 19</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">Digital Repository</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s19','Digital Repository')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>The National Repository of Open Educational Resources (NROER) is India's national digital repository of open educational resources for school education. It is maintained by NCERT and provides free access to thousands of digital learning resources for teachers and students.</p>
+
+        <h3>NROER Features</h3>
+        <ul>
+          <li>Over 14,000 digital resources available freely</li>
+          <li>Content in multiple languages — Hindi, English, and regional languages</li>
+          <li>Resources across all grades (I to XII) and subjects</li>
+          <li>All resources are licensed under Creative Commons — freely shareable and usable</li>
+          <li>Search and filter by grade, subject, topic, medium, resource type, and language</li>
+          <li>Downloadable for offline access</li>
+          <li>Integration with DIKSHA for access through the national platform</li>
+        </ul>
+
+        <div class="callout-cyan">
+          Open licensing of educational resources on NROER ensures that teachers and students can legally use, modify, and share content. This promotes a culture of open knowledge sharing in education.
+        </div>
+      </div>
+    </div>
+
+    <!-- S20 -->
+    <div class="section" id="s20" data-source="ict">
+      <div class="section-number">Section 20</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">Online Assessment Systems</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s20','Online Assessment Systems')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>Online and technology-enabled assessment systems are a critical component of the national educational technology framework. These systems support both formative assessment (assessment for learning) and summative assessment (assessment of learning) across all levels of school education.</p>
+
+        <h3>Components of Online Assessment</h3>
+        <ul>
+          <li>Question banks aligned with national and State curriculum</li>
+          <li>Adaptive testing that adjusts difficulty based on learner performance</li>
+          <li>Multiple question formats: MCQ, fill-in-the-blank, drag-and-drop, short answer</li>
+          <li>Automated scoring for objective question types</li>
+          <li>Rubric-based assessment tools for subjective responses</li>
+          <li>Real-time feedback mechanisms for learners</li>
+          <li>Analytics dashboard for teachers to monitor student performance patterns</li>
+        </ul>
+
+        <div class="diagram-wrap">
+          <div class="diagram-title">Online Assessment Workflow</div>
+          <svg viewBox="0 0 520 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px">
+            <defs>
+              <marker id="arr4" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                <polygon points="0 0, 7 2.5, 0 5" fill="#a78bfa" opacity="0.9"/>
+              </marker>
+            </defs>
+            <rect x="10" y="35" width="80" height="50" rx="6" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="50" y="58" text-anchor="middle" fill="#a78bfa" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Design</text>
+            <text x="50" y="72" text-anchor="middle" fill="#c8b4fa" font-size="7.5" font-family="'Source Serif 4',serif">Questions</text>
+            <line x1="90" y1="60" x2="108" y2="60" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arr4)"/>
+            <rect x="108" y="35" width="80" height="50" rx="6" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5"/>
+            <text x="148" y="58" text-anchor="middle" fill="#00c8ff" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Assign</text>
+            <text x="148" y="72" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">to Students</text>
+            <line x1="188" y1="60" x2="206" y2="60" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arr4)"/>
+            <rect x="206" y="35" width="80" height="50" rx="6" fill="rgba(244,166,35,0.1)" stroke="#f4a623" stroke-width="1.5"/>
+            <text x="246" y="58" text-anchor="middle" fill="#f4a623" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Attempt</text>
+            <text x="246" y="72" text-anchor="middle" fill="#ffd580" font-size="7.5" font-family="'Source Serif 4',serif">Online</text>
+            <line x1="286" y1="60" x2="304" y2="60" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arr4)"/>
+            <rect x="304" y="35" width="80" height="50" rx="6" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="344" y="58" text-anchor="middle" fill="#a78bfa" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Auto</text>
+            <text x="344" y="72" text-anchor="middle" fill="#c8b4fa" font-size="7.5" font-family="'Source Serif 4',serif">Grade</text>
+            <line x1="384" y1="60" x2="402" y2="60" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arr4)"/>
+            <rect x="402" y="35" width="105" height="50" rx="6" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5"/>
+            <text x="454" y="55" text-anchor="middle" fill="#00c8ff" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Analytics</text>
+            <text x="454" y="68" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">&amp; Feedback</text>
+            <text x="454" y="81" text-anchor="middle" fill="#7ee8ff" font-size="7" font-family="'Source Serif 4',serif">to Teacher</text>
+            <text x="260" y="138" text-anchor="middle" fill="#7a96c4" font-size="7.5" font-family="'JetBrains Mono',monospace">FIGURE 6 — Online Assessment Workflow (NCERT Framework)</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- S21 -->
+    <div class="section" id="s21" data-source="ict">
+      <div class="section-number">Section 21</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">Educational Broadcasting</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s21','Educational Broadcasting')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>Educational broadcasting through television and radio remains an important medium for reaching students in areas with limited internet connectivity. India has a rich tradition of educational broadcasting through Doordarshan and All India Radio, and this is being revitalised under the digital education framework.</p>
+
+        <h3>PM eVIDYA Broadcasting</h3>
+        <ul>
+          <li><strong>One Class One Channel:</strong> Dedicated Doordarshan channels for each grade (I to XII)</li>
+          <li><strong>Swayam Prabha:</strong> 32 DTH channels for curriculum-based content</li>
+          <li><strong>CBSE Podcast — Shiksha Vani:</strong> Educational podcasts for students and teachers</li>
+          <li><strong>Community Radio:</strong> Leveraging community radio stations for local language content</li>
+          <li><strong>Interactive Radio Instruction (IRI):</strong> Radio-based programmes with interactive elements</li>
+        </ul>
+
+        <div class="callout-cyan">
+          Educational broadcasting serves as a critical bridge for students in remote, hilly, and tribal areas where digital devices and internet connectivity may be unavailable, ensuring continuity of learning through accessible media.
+        </div>
+      </div>
+    </div>
+
+    <!-- S22 -->
+    <div class="section" id="s22" data-source="ict">
+      <div class="section-number">Section 22</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">Open Educational Resources</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s22','Open Educational Resources')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>Open Educational Resources (OER) are teaching, learning, and research materials that are freely available for anyone to use, repurpose, and redistribute under open licenses. India's national education framework strongly promotes the creation, adoption, and adaptation of OER as a strategy for democratising access to quality education.</p>
+
+        <h3>OER Policy Framework</h3>
+        <ul>
+          <li>All publicly funded educational content shall be made available as OER</li>
+          <li>Creative Commons licensing shall be applied to all NCERT and DIKSHA content</li>
+          <li>States are encouraged to adopt OER licensing for State-produced content</li>
+          <li>NROER shall serve as the national OER repository for school education</li>
+          <li>Teacher-created content endorsed on DIKSHA shall be released as OER</li>
+          <li>International OER resources shall be adapted to Indian curriculum contexts</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- S23 -->
+    <div class="section" id="s23" data-source="ict">
+      <div class="section-number">Section 23</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">Digital Pedagogy</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s23','Digital Pedagogy')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 4 min</div>
+      <div class="content-block">
+        <p>Digital pedagogy refers to the practice of teaching and learning that is mediated by digital technologies. It is distinct from mere digitisation of content — it involves a fundamental rethinking of how teachers design learning experiences, how students engage with knowledge, and how assessment is conducted in digitally-mediated environments.</p>
+
+        <h3>Principles of Digital Pedagogy</h3>
+        <ul>
+          <li><strong>Learner-centredness:</strong> Digital tools facilitate personalised, self-paced learning</li>
+          <li><strong>Active engagement:</strong> Technology enables simulations, collaborative projects, and inquiry-based learning</li>
+          <li><strong>Multimodality:</strong> Content presented through multiple modes — text, video, audio, interactive — supports diverse learners</li>
+          <li><strong>Formative feedback:</strong> Digital platforms enable continuous, real-time feedback on student progress</li>
+          <li><strong>Collaboration:</strong> Digital tools facilitate peer collaboration across geographies</li>
+          <li><strong>Reflective practice:</strong> Digital portfolios and learning journals support metacognitive development</li>
+        </ul>
+
+        <h3>TPACK Framework</h3>
+        <p>Teachers are expected to develop Technological Pedagogical Content Knowledge (TPACK) — an integrated understanding of how technology, pedagogy, and subject content knowledge interact in effective digital teaching. Pre-service teacher education and in-service training programmes shall incorporate the TPACK framework explicitly.</p>
+
+        <div class="callout">
+          Digital pedagogy is not about replacing effective teaching with technology — it is about amplifying the impact of excellent teaching through the strategic and purposeful use of digital tools and platforms.
+        </div>
+      </div>
+    </div>
+
+    <!-- S24 -->
+    <div class="section" id="s24" data-source="ict">
+      <div class="section-number">Section 24</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">Digital Equity &amp; Inclusion</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s24','Digital Equity & Inclusion')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>Digital equity in education means ensuring that all students — regardless of their geographic location, socioeconomic status, gender, or disability — have fair and meaningful access to the digital tools, resources, and connectivity needed to fully participate in digitally-mediated learning.</p>
+
+        <h3>Equity Dimensions</h3>
+        <ul>
+          <li><strong>Access equity:</strong> Physical access to devices and connectivity</li>
+          <li><strong>Skills equity:</strong> Digital literacy skills to use technology effectively</li>
+          <li><strong>Content equity:</strong> Availability of culturally and linguistically relevant content</li>
+          <li><strong>Participation equity:</strong> Meaningful engagement with digital learning, not passive consumption</li>
+          <li><strong>Gender equity:</strong> Ensuring girls have equal access to and participation in digital learning</li>
+          <li><strong>Disability inclusion:</strong> Assistive technology and accessible content for all learners</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- S25 -->
+    <div class="section" id="s25" data-source="ict">
+      <div class="section-number">Section 25</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">Cybersecurity in Education</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s25','Cybersecurity in Education')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>As schools and education systems increasingly move online, ensuring cybersecurity and protecting student data privacy become critical responsibilities. The national education framework recognises cybersecurity literacy as a core competency for students and mandates data protection standards for educational technology platforms.</p>
+
+        <h3>Cybersecurity Education Components</h3>
+        <ul>
+          <li>Digital citizenship and responsible online behaviour</li>
+          <li>Understanding cyberthreats — phishing, malware, social engineering</li>
+          <li>Password management and account security</li>
+          <li>Privacy settings and data management on platforms</li>
+          <li>Safe and ethical use of social media</li>
+          <li>Reporting mechanisms for cyberbullying and online harassment</li>
+          <li>Intellectual property rights and fair use in the digital domain</li>
+        </ul>
+
+        <div class="callout-cyan">
+          Digital citizenship education shall be integrated into the school curriculum from the foundational stage, ensuring that students develop ethical, responsible, and safe online behaviour as a core life skill.
+        </div>
+      </div>
+    </div>
+
+    <!-- S26 -->
+    <div class="section" id="s26" data-source="ict">
+      <div class="section-number">Section 26</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">Data-Driven School Management</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s26','Data-Driven School Management')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 3 min</div>
+      <div class="content-block">
+        <p>The integration of ICT in educational administration enables data-driven decision-making at the school, district, and state levels. Management Information Systems (MIS) collect, process, and present data on enrolment, attendance, learning outcomes, teacher performance, and resource utilisation.</p>
+
+        <h3>UDISE+ — Unified District Information System for Education Plus</h3>
+        <p>UDISE+ is the national school information system covering over 1.5 million schools across India. It captures comprehensive data on:</p>
+        <ul>
+          <li>Student enrolment by grade, gender, social category, and disability status</li>
+          <li>Teacher qualification, training, and deployment data</li>
+          <li>School infrastructure — buildings, classrooms, toilets, drinking water, ICT</li>
+          <li>Learning outcome data linked to assessment results</li>
+          <li>Financial data on school grants and expenditure</li>
+        </ul>
+
+        <p>Data from UDISE+ informs policy decisions, resource allocation, and educational planning at all levels of government.</p>
+      </div>
+    </div>
+
+    <!-- S27 -->
+    <div class="section" id="s27" data-source="ict">
+      <div class="section-number">Section 27</div>
+      <span class="source-ict section-source">🟣 Source: NCERT/ICT</span>
+      <div class="section-header">
+        <h2 class="section-title">EdTech Ecosystem Framework</h2>
+        <button class="bk-btn" onclick="toggleBookmark('s27','EdTech Ecosystem Framework')">🔖 Bookmark</button>
+      </div>
+      <div class="section-divider"></div>
+      <div class="reading-time">📖 Est. reading time: 5 min</div>
+      <div class="content-block">
+        <p>India's EdTech ecosystem has grown significantly in recent years, driven by national policy initiatives, digital infrastructure investments, and a vibrant private sector. The national framework envisions a collaborative EdTech ecosystem in which government, academia, civil society, and industry work together to leverage technology for educational transformation.</p>
+
+        <h3>Ecosystem Components</h3>
+        <ul>
+          <li><strong>Government Platforms:</strong> DIKSHA, NROER, PM eVIDYA, SWAYAM, ePathshala</li>
+          <li><strong>Academic Institutions:</strong> IITs, NCERT, SCERTs — for content, research, and innovation</li>
+          <li><strong>EdTech Industry:</strong> Private sector platforms providing supplementary learning resources</li>
+          <li><strong>Startups and Innovators:</strong> Emerging solutions in AI-based learning, vernacular content, and accessibility</li>
+          <li><strong>Civil Society:</strong> NGOs and foundations working on digital equity and inclusion</li>
+          <li><strong>International Partners:</strong> Collaborations for technology transfer and global best practices</li>
+        </ul>
+
+        <div class="diagram-wrap">
+          <div class="diagram-title">EdTech Ecosystem Architecture</div>
+          <svg viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px">
+            <!-- Center -->
+            <ellipse cx="280" cy="140" rx="80" ry="55" fill="rgba(0,200,255,0.1)" stroke="#00c8ff" stroke-width="2"/>
+            <text x="280" y="133" text-anchor="middle" fill="#00c8ff" font-size="10" font-family="'Playfair Display',serif" font-weight="bold">National</text>
+            <text x="280" y="148" text-anchor="middle" fill="#00c8ff" font-size="10" font-family="'Playfair Display',serif" font-weight="bold">EdTech</text>
+            <text x="280" y="163" text-anchor="middle" fill="#7ee8ff" font-size="8.5" font-family="'Source Serif 4',serif">Ecosystem</text>
+            <!-- Nodes -->
+            <rect x="10" y="10" width="120" height="45" rx="6" fill="rgba(244,166,35,0.1)" stroke="#f4a623" stroke-width="1"/>
+            <text x="70" y="30" text-anchor="middle" fill="#f4a623" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Government</text>
+            <text x="70" y="45" text-anchor="middle" fill="#ffd580" font-size="7.5" font-family="'Source Serif 4',serif">DIKSHA · NROER · eVIDYA</text>
+            <rect x="430" y="10" width="120" height="45" rx="6" fill="rgba(244,166,35,0.1)" stroke="#f4a623" stroke-width="1"/>
+            <text x="490" y="30" text-anchor="middle" fill="#f4a623" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Academia</text>
+            <text x="490" y="45" text-anchor="middle" fill="#ffd580" font-size="7.5" font-family="'Source Serif 4',serif">NCERT · IITs · SCERTs</text>
+            <rect x="10" y="225" width="120" height="45" rx="6" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="1"/>
+            <text x="70" y="245" text-anchor="middle" fill="#a78bfa" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Civil Society</text>
+            <text x="70" y="260" text-anchor="middle" fill="#c8b4fa" font-size="7.5" font-family="'Source Serif 4',serif">NGOs · Foundations</text>
+            <rect x="430" y="225" width="120" height="45" rx="6" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="1"/>
+            <text x="490" y="245" text-anchor="middle" fill="#a78bfa" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Industry</text>
+            <text x="490" y="260" text-anchor="middle" fill="#c8b4fa" font-size="7.5" font-family="'Source Serif 4',serif">EdTech Startups</text>
+            <rect x="10" y="118" width="120" height="45" rx="6" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1" stroke-dasharray="3,3"/>
+            <text x="70" y="138" text-anchor="middle" fill="#7ee8ff" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">Students</text>
+            <text x="70" y="153" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">&amp; Teachers</text>
+            <rect x="430" y="118" width="120" height="45" rx="6" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1" stroke-dasharray="3,3"/>
+            <text x="490" y="138" text-anchor="middle" fill="#7ee8ff" font-size="8.5" font-family="'Playfair Display',serif" font-weight="bold">International</text>
+            <text x="490" y="153" text-anchor="middle" fill="#7ee8ff" font-size="7.5" font-family="'Source Serif 4',serif">Partners</text>
+            <!-- Lines -->
+            <line x1="130" y1="32" x2="205" y2="105" stroke="#f4a623" stroke-width="0.8" opacity="0.5"/>
+            <line x1="130" y1="140" x2="200" y2="140" stroke="#00c8ff" stroke-width="0.8" opacity="0.5"/>
+            <line x1="130" y1="248" x2="205" y2="180" stroke="#a78bfa" stroke-width="0.8" opacity="0.5"/>
+            <line x1="430" y1="32" x2="355" y2="105" stroke="#f4a623" stroke-width="0.8" opacity="0.5"/>
+            <line x1="430" y1="140" x2="360" y2="140" stroke="#00c8ff" stroke-width="0.8" opacity="0.5"/>
+            <line x1="430" y1="248" x2="357" y2="178" stroke="#a78bfa" stroke-width="0.8" opacity="0.5"/>
+            <text x="280" y="272" text-anchor="middle" fill="#7a96c4" font-size="7.5" font-family="'JetBrains Mono',monospace">FIGURE 7 — National EdTech Ecosystem Architecture</text>
+          </svg>
+        </div>
+
+        <h3>NETF as Ecosystem Coordinator</h3>
+        <p>The National Educational Technology Forum (NETF) shall serve as the apex coordination body for the national EdTech ecosystem. It shall establish standards, evaluate technologies, fund research, and facilitate collaboration across all ecosystem stakeholders to ensure that the ecosystem serves the national educational goals of equity, access, and quality.</p>
+
+        <div class="callout">
+          India's EdTech ecosystem, when aligned with national educational goals and driven by evidence-based policy, has the potential to transform learning outcomes for the 250 million children enrolled in India's school system — making it one of the most significant digital transformation initiatives in the world.
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="padding:50px;background:var(--navy-light);border-top:1px solid var(--panel-border);text-align:center">
+      <div style="font-family:var(--serif);font-size:1rem;color:var(--white);margin-bottom:8px">Digital Education &amp; EdTech Transformation Framework Reader</div>
+      <div style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);margin-bottom:20px">NEP 2020 · DIKSHA · ICT Initiatives · NCERT</div>
+      <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:4px">Created by <strong style="color:var(--white)">Dr. Mateen Yousuf</strong></div>
+      <div style="font-size:0.75rem;color:var(--text-dim)">Teacher — School Education Department, Jammu &amp; Kashmir</div>
+      <div style="margin-top:24px;font-family:var(--mono);font-size:0.6rem;color:var(--text-dim);letter-spacing:2px">OFFLINE · OPEN ACCESS · INSTITUTIONAL USE</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ============================================================
+// PROGRESS BAR
+// ============================================================
+function updateProgress() {
+  const el = document.getElementById('main-content');
+  const scrollTop = window.scrollY;
+  const docHeight = document.body.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+window.addEventListener('scroll', updateProgress, {passive: true});
+
+// ============================================================
+// SCROLL SPY
+// ============================================================
+const sections = document.querySelectorAll('.section[id]');
+const navLinks = document.querySelectorAll('.nav-item');
+
+function scrollSpy() {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', scrollSpy, {passive: true});
+
+// ============================================================
+// DARK / LIGHT TOGGLE
+// ============================================================
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
+}
+
+// ============================================================
+// SIDEBAR TOGGLE
+// ============================================================
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+function closeSidebarMobile() {
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+
+// ============================================================
+// NAV COLLAPSE
+// ============================================================
+function toggleNav(el) {
+  const toggle = el.querySelector('.nav-toggle');
+  const items = el.nextElementSibling;
+  const isOpen = toggle.classList.contains('open');
+  toggle.classList.toggle('open', !isOpen);
+  if (isOpen) {
+    items.style.maxHeight = '0';
+    items.classList.add('collapsed');
+  } else {
+    items.style.maxHeight = '600px';
+    items.classList.remove('collapsed');
+  }
+}
+
+// ============================================================
+// SOURCE FILTER
+// ============================================================
+function filterSource(source, btn) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.section, .part-header').forEach(el => {
+    const src = el.getAttribute('data-source');
+    el.style.display = (source === 'all' || src === source) ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-section').forEach(el => {
+    const src = el.getAttribute('data-source');
+    el.style.display = (source === 'all' || src === source) ? '' : 'none';
+  });
+}
+
+// ============================================================
+// BOOKMARKS
+// ============================================================
+function getBookmarks() {
+  try {
+    return JSON.parse(localStorage.getItem('edu_bk') || '[]');
+  } catch { return []; }
+}
+function saveBookmarks(bks) {
+  try { localStorage.setItem('edu_bk', JSON.stringify(bks)); } catch {}
+}
+
+function toggleBookmark(id, title) {
+  let bks = getBookmarks();
+  const idx = bks.findIndex(b => b.id === id);
+  const btn = document.querySelector(`#${id} .bk-btn`);
+  if (idx >= 0) {
+    bks.splice(idx, 1);
+    if (btn) btn.classList.remove('bookmarked');
+  } else {
+    bks.push({id, title});
+    if (btn) btn.classList.add('bookmarked');
+  }
+  saveBookmarks(bks);
+  renderBookmarks();
+}
+
+function renderBookmarks() {
+  const bks = getBookmarks();
+  const list = document.getElementById('bookmarks-list');
+  if (!list) return;
+  if (bks.length === 0) {
+    list.innerHTML = '<p style="font-size:0.78rem;color:var(--text-dim)">No bookmarks yet. Click 🔖 on any section.</p>';
+    return;
+  }
+  list.innerHTML = bks.map(b => `
+    <div class="bk-item" onclick="navigateTo('${b.id}')">
+      <div class="bk-item-title">${b.title}</div>
+      <div>Section #${b.id.replace('s','')}</div>
+    </div>
+  `).join('');
+  // mark buttons
+  document.querySelectorAll('.bk-btn').forEach(btn => {
+    const sectionId = btn.closest('.section')?.id;
+    if (sectionId && bks.find(b => b.id === sectionId)) {
+      btn.classList.add('bookmarked');
+    } else {
+      btn.classList.remove('bookmarked');
+    }
+  });
+}
+
+function navigateTo(id) {
+  const el = document.getElementById(id);
+  if (el) { el.scrollIntoView({behavior:'smooth'}); toggleBookmarksPanel(); }
+}
+
+function toggleBookmarksPanel() {
+  const p = document.getElementById('bookmarks-panel');
+  const showing = p.style.display === 'block';
+  p.style.display = showing ? 'none' : 'block';
+  if (!showing) renderBookmarks();
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+const searchIndex = [];
+document.querySelectorAll('.section').forEach(s => {
+  searchIndex.push({
+    id: s.id,
+    title: s.querySelector('.section-title')?.textContent || '',
+    text: s.textContent,
+    source: s.getAttribute('data-source')
+  });
+});
+
+function doSearch(q) {
+  const resultsEl = document.getElementById('search-results');
+  if (!q || q.length < 2) { resultsEl.style.display = 'none'; return; }
+  const lq = q.toLowerCase();
+  const hits = searchIndex.filter(s => s.text.toLowerCase().includes(lq)).slice(0, 8);
+  if (hits.length === 0) {
+    resultsEl.style.display = 'block';
+    resultsEl.innerHTML = '<div style="padding:12px;font-size:0.8rem;color:var(--text-dim)">No results found.</div>';
+    return;
+  }
+  resultsEl.style.display = 'block';
+  resultsEl.innerHTML = hits.map(h => {
+    const snippet = h.text.substring(h.text.toLowerCase().indexOf(lq) - 40, h.text.toLowerCase().indexOf(lq) + 80).replace(/\s+/g,' ');
+    const highlighted = snippet.replace(new RegExp(q, 'gi'), m => `<mark>${m}</mark>`);
+    return `<div class="search-result-item" onclick="goToSection('${h.id}')">
+      <div class="search-result-title">${h.title}</div>
+      <div class="search-result-snippet">…${highlighted}…</div>
+    </div>`;
+  }).join('');
+}
+
+function goToSection(id) {
+  document.getElementById('search-results').style.display = 'none';
+  document.getElementById('search-input').value = '';
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:'smooth'});
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#search-bar-container')) {
+    document.getElementById('search-results').style.display = 'none';
+  }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+renderBookmarks();
+
+// Register service worker for offline PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>

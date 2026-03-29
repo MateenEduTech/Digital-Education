@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a1628">
+<meta name="description" content="Digital Literacy, Safe Technology & AI-Ready Learning Architecture Studio">
+<link rel="manifest" href="manifest.json">
+<title>Digital Literacy & AI-Ready Studio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --navy: #0a1628;
+    --navy2: #0f2044;
+    --blue: #1a3a6b;
+    --cyan: #00d4ff;
+    --cyan2: #00a8cc;
+    --gold: #f0c040;
+    --white: #f0f4ff;
+    --gray: #8899bb;
+    --success: #00e676;
+    --warning: #ffab40;
+    --danger: #ff5252;
+    --card: rgba(15,32,68,0.85);
+    --border: rgba(0,212,255,0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* STARFIELD BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(26,58,107,0.3) 0%, transparent 50%),
+      linear-gradient(135deg, #0a1628 0%, #0d1e3d 50%, #0a1628 100%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,22,40,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    letter-spacing: 1px;
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-menu::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--gray);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    color: var(--cyan);
+    background: rgba(0,212,255,0.08);
+  }
+
+  /* SCREENS */
+  .screen { display: none; padding-top: 56px; min-height: 100vh; }
+  .screen.active { display: block; }
+
+  /* ===== TITLE SCREEN ===== */
+  #screen-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 80px 20px 40px;
+    text-align: center;
+  }
+  #screen-home.active { display: flex; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeDown 0.8s ease;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 56px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    animation: fadeDown 0.9s ease;
+  }
+  .hero-title span { color: var(--cyan); }
+
+  .hero-subtitle {
+    font-size: 14px;
+    color: var(--gray);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    animation: fadeDown 1s ease;
+  }
+
+  .author-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 24px;
+    margin-bottom: 48px;
+    animation: fadeUp 1.1s ease;
+  }
+
+  .author-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--cyan);
+  }
+
+  .author-photo-placeholder {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan2));
+    border: 2px solid var(--cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .author-info { text-align: left; }
+  .author-name { font-weight: 600; font-size: 16px; color: var(--white); }
+  .author-role { font-size: 12px; color: var(--cyan); }
+  .author-dept { font-size: 11px; color: var(--gray); }
+
+  .hero-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    max-width: 640px;
+    width: 100%;
+    animation: fadeUp 1.2s ease;
+  }
+
+  @media (max-width: 480px) {
+    .hero-buttons { grid-template-columns: 1fr; }
+  }
+
+  .hero-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .hero-btn:hover {
+    border-color: var(--cyan);
+    background: rgba(0,212,255,0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,212,255,0.15);
+  }
+  .hero-btn .btn-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+  .hero-btn .btn-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .hero-btn .btn-desc { font-size: 11px; color: var(--gray); line-height: 1.4; }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header {
+    background: linear-gradient(135deg, var(--navy2), var(--blue));
+    border-bottom: 1px solid var(--border);
+    padding: 40px 24px 32px;
+    text-align: center;
+  }
+  .section-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 4vw, 36px);
+    margin-bottom: 8px;
+  }
+  .section-header p { font-size: 13px; color: var(--gray); }
+
+  /* ===== CONTENT AREA ===== */
+  .content-area { padding: 24px; max-width: 900px; margin: 0 auto; }
+
+  /* ===== FOUNDATIONS ===== */
+  .foundations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .foundation-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .foundation-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,212,255,0.1);
+  }
+  .fc-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--cyan); margin-bottom: 8px; }
+  .fc-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .fc-preview { font-size: 12px; color: var(--gray); line-height: 1.5; }
+
+  .page-reader {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .page-reader.visible { display: block; }
+  .page-reader h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 8px; color: var(--cyan); }
+  .page-reader .page-meta { font-size: 11px; color: var(--gray); margin-bottom: 24px; font-family: 'JetBrains Mono', monospace; }
+  .page-reader p { font-size: 14px; line-height: 1.9; color: #c8d8f0; margin-bottom: 16px; }
+  .page-reader h3 { font-size: 16px; font-weight: 600; margin: 24px 0 10px; color: var(--white); }
+  .page-reader ul { padding-left: 20px; margin-bottom: 16px; }
+  .page-reader li { font-size: 13px; color: #c8d8f0; line-height: 1.8; margin-bottom: 4px; }
+
+  .reflection-box {
+    background: rgba(0,212,255,0.05);
+    border-left: 3px solid var(--cyan);
+    border-radius: 0 8px 8px 0;
+    padding: 16px;
+    margin-top: 24px;
+  }
+  .reflection-box h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--cyan); margin-bottom: 10px; }
+  .reflection-box p { font-size: 13px; color: var(--gray); font-style: italic; }
+
+  .checklist-box {
+    background: rgba(0,230,118,0.05);
+    border: 1px solid rgba(0,230,118,0.2);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 20px;
+  }
+  .checklist-box h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--success); margin-bottom: 12px; }
+  .checklist-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #c8d8f0; margin-bottom: 8px; cursor: pointer; }
+  .checklist-item input[type=checkbox] { accent-color: var(--success); width: 15px; height: 15px; }
+
+  .back-btn {
+    background: rgba(0,212,255,0.1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--cyan);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { background: rgba(0,212,255,0.2); }
+
+  /* ===== SELF-CHECK ===== */
+  .quiz-container { max-width: 700px; margin: 0 auto; }
+
+  .quiz-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .quiz-item label { font-size: 14px; font-weight: 500; display: block; margin-bottom: 12px; }
+  .rating-scale { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rating-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: none;
+    color: var(--gray);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .rating-btn.selected, .rating-btn:hover {
+    border-color: var(--cyan);
+    background: rgba(0,212,255,0.15);
+    color: var(--cyan);
+  }
+  .rating-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--gray); margin-top: 6px; }
+
+  .calculate-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--cyan2), var(--cyan));
+    border: none;
+    border-radius: 12px;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 8px;
+  }
+  .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,255,0.3); }
+
+  .results-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-top: 24px;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .results-panel.visible { display: block; }
+
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .score-card {
+    background: rgba(0,212,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .score-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .score-value { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; color: var(--cyan); }
+  .score-unit { font-size: 12px; color: var(--gray); }
+  .score-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .score-fill { height: 100%; background: linear-gradient(90deg, var(--cyan2), var(--cyan)); border-radius: 2px; transition: width 1s ease; }
+
+  /* ===== SAFE TECH LAB ===== */
+  .scenario-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    display: none;
+  }
+  .scenario-card.active { display: block; animation: fadeIn 0.4s ease; }
+  .scenario-type { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; padding: 4px 12px; border-radius: 20px; display: inline-block; }
+  .type-phishing { background: rgba(255,82,82,0.15); color: var(--danger); border: 1px solid rgba(255,82,82,0.3); }
+  .type-fakenews { background: rgba(255,171,64,0.15); color: var(--warning); border: 1px solid rgba(255,171,64,0.3); }
+  .type-cyberbullying { background: rgba(0,212,255,0.15); color: var(--cyan); border: 1px solid var(--border); }
+  .type-privacy { background: rgba(0,230,118,0.15); color: var(--success); border: 1px solid rgba(0,230,118,0.3); }
+
+  .scenario-message {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    border-left: 3px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .scenario-options { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .option-btn {
+    background: rgba(15,32,68,0.5);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .option-btn:hover { border-color: var(--cyan); background: rgba(0,212,255,0.05); }
+  .option-btn.correct { border-color: var(--success); background: rgba(0,230,118,0.1); color: var(--success); }
+  .option-btn.wrong { border-color: var(--danger); background: rgba(255,82,82,0.1); color: var(--danger); }
+
+  .feedback-box {
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback-box.correct { background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.3); color: var(--success); }
+  .feedback-box.wrong { background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.3); color: #ff8a80; }
+
+  .next-scenario-btn {
+    margin-top: 16px;
+    padding: 10px 24px;
+    background: var(--cyan);
+    border: none;
+    border-radius: 8px;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    display: none;
+    transition: all 0.2s;
+  }
+  .next-scenario-btn:hover { background: var(--cyan2); }
+
+  /* ===== SCREEN BALANCE ===== */
+  .input-group {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .input-group label { font-size: 13px; color: var(--gray); display: block; margin-bottom: 10px; }
+  .input-group input[type=range] {
+    width: 100%;
+    accent-color: var(--cyan);
+    margin-bottom: 8px;
+  }
+  .range-display { font-family: 'JetBrains Mono', monospace; font-size: 22px; color: var(--cyan); text-align: center; }
+  .range-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--gray); }
+
+  /* ===== DASHBOARD ===== */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .dash-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .dash-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--cyan2), var(--cyan));
+  }
+  .dash-icon { font-size: 28px; margin-bottom: 10px; }
+  .dash-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); margin-bottom: 6px; }
+  .dash-value { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 600; }
+  .dash-status { font-size: 11px; margin-top: 6px; padding: 2px 8px; border-radius: 10px; display: inline-block; }
+  .status-safe { background: rgba(0,230,118,0.15); color: var(--success); }
+  .status-warn { background: rgba(255,171,64,0.15); color: var(--warning); }
+  .status-risk { background: rgba(255,82,82,0.15); color: var(--danger); }
+
+  /* SVG RADAR */
+  .radar-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .radar-container h3 { font-size: 14px; color: var(--gray); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* BAR CHART */
+  .bar-chart { margin: 16px 0; }
+  .bar-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .bar-label { font-size: 12px; color: var(--gray); width: 140px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--cyan2), var(--cyan)); transition: width 1.2s ease; }
+  .bar-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); width: 36px; text-align: right; }
+
+  /* WARNING */
+  .warning-panel {
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .warning-safe { background: rgba(0,230,118,0.08); border: 2px solid rgba(0,230,118,0.3); }
+  .warning-moderate { background: rgba(255,171,64,0.08); border: 2px solid rgba(255,171,64,0.3); }
+  .warning-high { background: rgba(255,82,82,0.08); border: 2px solid rgba(255,82,82,0.3); }
+  .warning-icon { font-size: 48px; margin-bottom: 12px; }
+  .warning-title { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 8px; }
+  .warning-desc { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+  /* REPORT */
+  .report-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .report-section h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--cyan); margin-bottom: 14px; }
+  .report-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+  .report-item:last-child { border-bottom: none; }
+  .report-item .ri-label { color: var(--gray); }
+  .report-item .ri-value { font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+  .print-btn {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan2));
+    border: none;
+    border-radius: 10px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-right: 12px;
+  }
+  .print-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,255,0.2); }
+
+  /* FRAMEWORK */
+  .framework-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .ftab {
+    padding: 8px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--gray);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ftab.active, .ftab:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.08); }
+
+  .framework-content {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .framework-content.active { display: block; }
+  .framework-content h3 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 16px; color: var(--cyan); }
+  .framework-content p { font-size: 13px; color: #c8d8f0; line-height: 1.8; margin-bottom: 14px; }
+  .framework-content ul { padding-left: 20px; }
+  .framework-content li { font-size: 13px; color: #c8d8f0; line-height: 1.9; }
+
+  /* AI MODULE */
+  .ai-quiz { max-width: 700px; margin: 0 auto; }
+  .ai-question {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .ai-question.active { display: block; animation: fadeIn 0.3s ease; }
+  .ai-question h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .ai-question .q-num { font-size: 11px; color: var(--cyan); font-family: 'JetBrains Mono', monospace; margin-bottom: 12px; }
+  .ai-question p { font-size: 13px; color: var(--gray); margin-bottom: 16px; line-height: 1.6; }
+
+  .ai-options { display: flex; flex-direction: column; gap: 8px; }
+  .ai-opt {
+    background: rgba(15,32,68,0.5);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .ai-opt:hover { border-color: var(--cyan); background: rgba(0,212,255,0.05); }
+  .ai-opt.correct { border-color: var(--success); background: rgba(0,230,118,0.1); color: var(--success); }
+  .ai-opt.wrong { border-color: var(--danger); background: rgba(255,82,82,0.1); }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* PROGRESS BAR */
+  .progress-bar { height: 3px; background: var(--border); border-radius: 2px; margin: 16px 0; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--cyan); border-radius: 2px; transition: width 0.3s ease; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy); }
+  ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
+
+  /* PRINT */
+  @media print {
+    .nav, .hero-buttons, .calculate-btn, .print-btn, .back-btn { display: none !important; }
+    body { background: white; color: black; }
+    .screen { display: block !important; }
+  }
+
+  /* STEP INDICATOR */
+  .step-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s;
+  }
+  .step-dot.done { background: var(--cyan); }
+  .step-dot.current { background: var(--cyan); width: 24px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">⬡ DL·STUDIO</div>
+  <div class="nav-menu">
+    <button class="nav-btn active" onclick="showScreen('home')">Home</button>
+    <button class="nav-btn" onclick="showScreen('foundations')">Foundations</button>
+    <button class="nav-btn" onclick="showScreen('selfcheck')">Self-Check</button>
+    <button class="nav-btn" onclick="showScreen('safetech')">Safe Tech Lab</button>
+    <button class="nav-btn" onclick="showScreen('aimodule')">AI Module</button>
+    <button class="nav-btn" onclick="showScreen('screenbalance')">Screen Balance</button>
+    <button class="nav-btn" onclick="showScreen('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showScreen('warning')">Warning System</button>
+    <button class="nav-btn" onclick="showScreen('report')">Report</button>
+    <button class="nav-btn" onclick="showScreen('framework')">Framework</button>
+  </div>
+</nav>
+
+<!-- ===== HOME SCREEN ===== -->
+<div id="screen-home" class="screen active">
+  <div class="hero-badge">✦ Aligned with NEP 2020 | Digital Literacy | Safe Technology | AI Awareness ✦</div>
+  
+  <h1 class="hero-title">Digital Literacy,<br><span>Safe Technology</span> &<br>AI-Ready Learning Studio</h1>
+  
+  <p class="hero-subtitle">A comprehensive offline platform for building digital competency, cyber safety awareness, and AI readiness — aligned with India's National Education Policy 2020.</p>
+
+  <div class="author-card">
+    <img src="author.jpg" alt="Mateen Yousuf" class="author-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="author-photo-placeholder" style="display:none">👨‍🏫</div>
+    <div class="author-info">
+      <div class="author-name">Mateen Yousuf</div>
+      <div class="author-role">Teacher & Digital Education Researcher</div>
+      <div class="author-dept">School Education Department, Kashmir</div>
+    </div>
+  </div>
+
+  <div class="hero-buttons">
+    <button class="hero-btn" onclick="showScreen('selfcheck')">
+      <span class="btn-icon">🔍</span>
+      <div class="btn-title">Digital Literacy Self-Check</div>
+      <div class="btn-desc">Assess your digital skills and get your literacy index score</div>
+    </button>
+    <button class="hero-btn" onclick="showScreen('safetech')">
+      <span class="btn-icon">🛡️</span>
+      <div class="btn-title">Safe Technology Lab</div>
+      <div class="btn-desc">Practice real cyber scenarios and test your safety decisions</div>
+    </button>
+    <button class="hero-btn" onclick="showScreen('dashboard')">
+      <span class="btn-icon">📊</span>
+      <div class="btn-title">AI-Readiness Dashboard</div>
+      <div class="btn-desc">View your complete digital profile and progress analytics</div>
+    </button>
+    <button class="hero-btn" onclick="showScreen('framework')">
+      <span class="btn-icon">📚</span>
+      <div class="btn-title">Framework & Principles</div>
+      <div class="btn-desc">NEP 2020 digital education framework and guiding principles</div>
+    </button>
+  </div>
+</div>
+
+<!-- ===== FOUNDATIONS SCREEN ===== -->
+<div id="screen-foundations" class="screen">
+  <div class="section-header">
+    <h1>📖 Foundations of Digital & AI Education</h1>
+    <p>20 comprehensive pages covering digital literacy, safety, and AI awareness</p>
+  </div>
+  <div class="content-area">
+    <div id="foundations-list">
+      <div class="foundations-grid" id="foundations-grid"></div>
+    </div>
+    <div id="page-reader-container">
+      <button class="back-btn" onclick="closePage()">← Back to Topics</button>
+      <div class="page-reader" id="page-reader"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SELF-CHECK SCREEN ===== -->
+<div id="screen-selfcheck" class="screen">
+  <div class="section-header">
+    <h1>🔍 Digital Literacy Self-Check</h1>
+    <p>Rate your digital skills on a scale of 1–5 to get your personalized literacy index</p>
+  </div>
+  <div class="content-area">
+    <div class="quiz-container" id="selfcheck-form"></div>
+  </div>
+</div>
+
+<!-- ===== SAFE TECH LAB ===== -->
+<div id="screen-safetech" class="screen">
+  <div class="section-header">
+    <h1>🛡️ Safe Technology Lab</h1>
+    <p>Navigate real-world cyber scenarios and build your digital decision-making skills</p>
+  </div>
+  <div class="content-area">
+    <div class="step-indicator" id="scenario-steps"></div>
+    <div id="scenarios-container"></div>
+    <div id="safetech-results" class="results-panel"></div>
+  </div>
+</div>
+
+<!-- ===== AI MODULE ===== -->
+<div id="screen-aimodule" class="screen">
+  <div class="section-header">
+    <h1>🤖 AI Awareness Module</h1>
+    <p>Explore the world of Artificial Intelligence and assess your AI understanding</p>
+  </div>
+  <div class="content-area">
+    <div class="ai-quiz" id="ai-quiz-container"></div>
+    <div id="ai-results" class="results-panel"></div>
+  </div>
+</div>
+
+<!-- ===== SCREEN BALANCE ===== -->
+<div id="screen-screenbalance" class="screen">
+  <div class="section-header">
+    <h1>⏱️ Screen Time & Balance Analyzer</h1>
+    <p>Analyze your daily screen habits and get personalized balance recommendations</p>
+  </div>
+  <div class="content-area">
+    <div style="max-width:600px;margin:0 auto">
+      <div class="input-group">
+        <label>📱 Daily total screen time (hours)</label>
+        <input type="range" id="sb-total" min="1" max="16" value="6" oninput="updateRange('sb-total','sb-total-val')">
+        <div class="range-display" id="sb-total-val">6 hrs</div>
+        <div class="range-labels"><span>1 hr</span><span>8 hrs</span><span>16 hrs</span></div>
+      </div>
+      <div class="input-group">
+        <label>📚 Study/productive screen time (hours)</label>
+        <input type="range" id="sb-study" min="0" max="12" value="2" oninput="updateRange('sb-study','sb-study-val')">
+        <div class="range-display" id="sb-study-val">2 hrs</div>
+        <div class="range-labels"><span>0 hrs</span><span>6 hrs</span><span>12 hrs</span></div>
+      </div>
+      <div class="input-group">
+        <label>🎮 Entertainment screen time (hours)</label>
+        <input type="range" id="sb-entertain" min="0" max="12" value="4" oninput="updateRange('sb-entertain','sb-entertain-val')">
+        <div class="range-display" id="sb-entertain-val">4 hrs</div>
+        <div class="range-labels"><span>0 hrs</span><span>6 hrs</span><span>12 hrs</span></div>
+      </div>
+      <div class="input-group">
+        <label>🏃 Daily physical activity (hours)</label>
+        <input type="range" id="sb-physical" min="0" max="4" step="0.5" value="1" oninput="updateRange('sb-physical','sb-physical-val')">
+        <div class="range-display" id="sb-physical-val">1 hr</div>
+        <div class="range-labels"><span>0</span><span>2 hrs</span><span>4 hrs</span></div>
+      </div>
+      <div class="input-group">
+        <label>😴 Sleep hours per night</label>
+        <input type="range" id="sb-sleep" min="4" max="10" value="7" oninput="updateRange('sb-sleep','sb-sleep-val')">
+        <div class="range-display" id="sb-sleep-val">7 hrs</div>
+        <div class="range-labels"><span>4 hrs</span><span>7 hrs</span><span>10 hrs</span></div>
+      </div>
+      <button class="calculate-btn" onclick="calculateScreenBalance()">⚡ Analyze My Screen Balance</button>
+      <div id="sb-results" class="results-panel"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="screen-dashboard" class="screen">
+  <div class="section-header">
+    <h1>📊 Digital & AI Readiness Dashboard</h1>
+    <p>Your complete digital competency profile and growth analytics</p>
+  </div>
+  <div class="content-area" id="dashboard-content"></div>
+</div>
+
+<!-- ===== WARNING SYSTEM ===== -->
+<div id="screen-warning" class="screen">
+  <div class="section-header">
+    <h1>⚠️ Digital Early Warning System</h1>
+    <p>Real-time risk assessment based on your digital behavior patterns</p>
+  </div>
+  <div class="content-area" id="warning-content"></div>
+</div>
+
+<!-- ===== REPORT ===== -->
+<div id="screen-report" class="screen">
+  <div class="section-header">
+    <h1>📋 Digital Readiness Report</h1>
+    <p>Comprehensive profile of your digital competency and growth roadmap</p>
+  </div>
+  <div class="content-area" id="report-content"></div>
+</div>
+
+<!-- ===== FRAMEWORK ===== -->
+<div id="screen-framework" class="screen">
+  <div class="section-header">
+    <h1>🏛️ Framework & Digital Education Principles</h1>
+    <p>NEP 2020 aligned digital literacy frameworks and educational principles</p>
+  </div>
+  <div class="content-area">
+    <div class="framework-tabs" id="framework-tabs"></div>
+    <div id="framework-panels"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const FOUNDATIONS_DATA = [
+  { title: "What is Digital Literacy?", icon: "💡", preview: "Understanding the core skills needed to navigate the digital world effectively and responsibly.", content: `
+<h3>Defining Digital Literacy in the 21st Century</h3>
+<p>Digital literacy is the ability to find, evaluate, create, and communicate information using digital technologies. It goes far beyond simply knowing how to use a smartphone or computer. A digitally literate person understands how digital systems work, can critically evaluate information found online, creates content responsibly, and understands the social and ethical implications of technology use.</p>
+<p>Think of a student named Arjun who wants to write a project on climate change. A digitally literate Arjun knows how to search for credible sources, verify whether websites are trustworthy, cite digital information correctly, and avoid spreading misinformation. He understands that not everything on the internet is true, and he has the tools to tell fact from fiction.</p>
+<h3>The Five Pillars of Digital Literacy</h3>
+<ul>
+<li><strong>Access:</strong> Knowing how to find and use digital tools and information effectively</li>
+<li><strong>Evaluate:</strong> Critically assessing the quality, accuracy, and relevance of digital content</li>
+<li><strong>Create:</strong> Producing meaningful digital content for specific purposes and audiences</li>
+<li><strong>Communicate:</strong> Sharing information safely and responsibly across digital platforms</li>
+<li><strong>Protect:</strong> Keeping personal information secure and respecting the privacy of others</li>
+</ul>
+<h3>Why Digital Literacy Matters for Students Today</h3>
+<p>In India alone, over 800 million people now use the internet. By the time today's students enter the workforce, virtually every profession will require digital competence. Whether you aspire to be a doctor, engineer, artist, or entrepreneur, digital skills will be essential. The World Economic Forum estimates that 65% of children entering primary school today will eventually work in completely new job types that don't yet exist.</p>
+<p>Digital literacy is not just about technology — it's about becoming an informed, responsible citizen in a connected world. It helps you protect yourself from online scams, make healthier technology choices, contribute meaningfully to society, and build a positive digital identity.</p>
+<h3>Digital Literacy vs. Digital Skills</h3>
+<p>Many people confuse digital literacy with digital skills. Skills are specific technical abilities — like knowing how to create a spreadsheet or edit a video. Literacy is broader: it's the understanding, judgment, and critical thinking that allows you to apply those skills wisely. A person can be very skilled at using social media but digitally illiterate if they cannot recognize propaganda, manage their privacy settings, or understand how algorithms shape what they see.</p>`,
+    reflection: "Think about one time you needed to find information online. How did you decide whether to trust the source? What would you do differently now?",
+    checklist: ["I can identify whether a website is reliable", "I know how to search effectively using keywords", "I understand what personal data is and why it matters", "I can evaluate images and videos for authenticity", "I know the difference between free and paid digital tools"]
+  },
+  { title: "NEP 2020 & Digital Transformation", icon: "🏛️", preview: "How India's National Education Policy 2020 is reshaping learning through technology integration.", content: `
+<h3>A Historic Policy Shift</h3>
+<p>India's National Education Policy 2020 represents the most comprehensive reform of the country's education system since 1986. At its heart is a vision for transforming India into a "vibrant knowledge society and global knowledge superpower." Digital technology is central to achieving this vision.</p>
+<p>NEP 2020 recognizes that the COVID-19 pandemic dramatically accelerated the need for robust digital education infrastructure. When schools closed, millions of students were left behind because they lacked digital access, devices, or skills. NEP 2020 directly addresses this gap by mandating digital literacy as a foundational competency from early school years.</p>
+<h3>Key Digital Provisions of NEP 2020</h3>
+<ul>
+<li><strong>DIKSHA Platform:</strong> National Digital Infrastructure for Knowledge Sharing — a one-stop digital platform for teachers and students</li>
+<li><strong>PM eVIDYA:</strong> A multi-mode access program combining DTH channels, radio, online portals, and podcasts</li>
+<li><strong>Coding in Schools:</strong> Introduction of computational thinking and coding from Class 6 onwards</li>
+<li><strong>Virtual Labs:</strong> Development of virtual laboratories for STEM subjects to bridge urban-rural gaps</li>
+<li><strong>Digital Literacy Programs:</strong> Mandatory digital literacy for all students by middle school</li>
+</ul>
+<h3>The Digital Inclusion Challenge</h3>
+<p>Despite the ambitious goals, NEP 2020 acknowledges India's massive digital divide. Rural areas, economically disadvantaged communities, and girls in many regions still face significant barriers to technology access. The policy calls for a special effort to ensure digital inclusion — meaning every student, regardless of geography or economic background, must have access to quality digital education.</p>
+<p>Consider Priya, a student in a village in Jammu & Kashmir. NEP 2020 envisions that she should have access to the same quality of educational content as a student in Delhi — through offline learning tools, community device centers, and teacher training programs that bring digital literacy to her doorstep.</p>
+<h3>What This Means for You</h3>
+<p>As a student learning under NEP 2020, you are part of a transformative generation. The policy asks you to be not just a consumer of technology but a creator and critical thinker. You are expected to develop computational thinking, explore AI concepts, understand data and its implications, and use technology to solve real problems in your community. This platform you are using right now embodies those NEP 2020 ideals — offline-first, locally relevant, and designed to build genuine competency.</p>`,
+    reflection: "How has technology changed your own learning experience? What digital tool has been most useful in your studies, and what made it effective?",
+    checklist: ["I understand what NEP 2020 is and its goals", "I know about the DIKSHA and PM eVIDYA platforms", "I recognize the importance of digital inclusion", "I understand coding will be part of curriculum from Class 6", "I know how digital literacy connects to my future career"]
+  },
+  { title: "Safe Technology Practices", icon: "🛡️", preview: "Essential habits and behaviors to stay protected while using technology in everyday life.", content: `
+<h3>Building Your Digital Safety Habits</h3>
+<p>Safe technology use doesn't happen by accident — it requires conscious habits, just like brushing your teeth or wearing a seatbelt. Every time you go online, you make dozens of small decisions that either protect or expose you. Building good habits early creates a strong foundation for a lifetime of safe digital citizenship.</p>
+<p>Imagine Rahul, a 14-year-old who receives a message saying he has won a prize and needs to click a link to claim it. Without safety habits, Rahul might excitedly click and unknowingly give away his family's banking information. With proper digital safety education, Rahul immediately recognizes the red flags: unexpected prizes, urgency, suspicious links — and he deletes the message.</p>
+<h3>The Core Safety Practices</h3>
+<ul>
+<li><strong>Strong Passwords:</strong> Use at least 12 characters combining letters, numbers, and symbols. Never use your name, birthday, or "password123"</li>
+<li><strong>Two-Factor Authentication (2FA):</strong> Add an extra verification step whenever available — even if someone steals your password, they can't get in</li>
+<li><strong>Regular Updates:</strong> Keep your device's operating system and apps updated — updates often contain critical security patches</li>
+<li><strong>Trusted Sources Only:</strong> Download apps only from official stores (Google Play, App Store) and visit websites that use HTTPS</li>
+<li><strong>Public Wi-Fi Caution:</strong> Avoid accessing banking or sensitive accounts on public Wi-Fi networks</li>
+<li><strong>Think Before You Click:</strong> Every link, download, and attachment is a potential risk — pause and verify before acting</li>
+</ul>
+<h3>Device Security Basics</h3>
+<p>Your device is like your home — you should lock it when you leave. Enable screen locks on all your devices using strong PINs, fingerprints, or face recognition. If you lose your device, remote wipe features can erase your data before someone unauthorized can access it. Back up important data regularly to avoid losing it permanently.</p>
+<h3>Safe Browsing Habits</h3>
+<p>Look for the padlock icon and "HTTPS" in your browser's address bar before entering any personal information. Be cautious about what websites you visit — some contain malware that can infect your device just by loading the page. Use an ad blocker to reduce exposure to malicious advertisements. Clear your browsing history and cookies periodically, especially on shared devices.</p>
+<h3>Sharing Safely</h3>
+<p>The golden rule of safe sharing: once something is online, you cannot fully control it. Before posting anything — a photo, opinion, location, or personal detail — ask yourself: "Would I be comfortable if my teacher, parent, or future employer saw this?" If the answer is no, don't post it.</p>`,
+    reflection: "Look at your current passwords. Are they strong enough? List 3 steps you will take this week to improve your device security.",
+    checklist: ["My device has a strong screen lock", "I use different passwords for important accounts", "I check for HTTPS before entering personal information", "I only download apps from official stores", "I think before clicking on links in messages or emails"]
+  },
+  { title: "Cyber Hygiene Basics", icon: "🧹", preview: "Regular digital maintenance practices to keep your devices, accounts, and data clean and secure.", content: `
+<h3>What is Cyber Hygiene?</h3>
+<p>Just as personal hygiene involves regular habits to maintain physical health, cyber hygiene involves routine practices to maintain the health of your digital life. Good cyber hygiene prevents infections (viruses, malware), keeps your data safe, and ensures your devices run smoothly. Neglecting it is like never washing your hands — you might be fine for a while, but eventually something bad happens.</p>
+<p>A student named Zara noticed her phone was running very slowly and heating up constantly. She hadn't updated her apps in months, had downloaded several apps from unofficial sources, and clicked on many pop-up ads. Her phone had been infected with adware. A few hours of proper cyber hygiene — removing suspicious apps, running an antivirus scan, updating her system — resolved the problem. Regular hygiene would have prevented it entirely.</p>
+<h3>Weekly Cyber Hygiene Checklist</h3>
+<ul>
+<li>Check for and install pending system and app updates</li>
+<li>Review and delete apps you no longer use</li>
+<li>Clear cached data and temporary files</li>
+<li>Back up important photos and files to cloud or external storage</li>
+<li>Review your privacy settings on social media platforms</li>
+<li>Check which apps have access to your camera, microphone, and location</li>
+</ul>
+<h3>Monthly Cyber Hygiene Tasks</h3>
+<ul>
+<li>Change passwords for critical accounts (bank, email, school portal)</li>
+<li>Review connected apps on your Google/social media accounts and remove unused ones</li>
+<li>Check for data breaches using services like Have I Been Pwned</li>
+<li>Review and update recovery phone numbers and email addresses</li>
+<li>Audit your browser extensions — remove anything you don't recognize</li>
+</ul>
+<h3>Managing Email Safely</h3>
+<p>Your email inbox is often the primary entry point for cyber threats. Regularly unsubscribe from promotional emails to reduce clutter and risk. Never open attachments from unknown senders. Be particularly cautious of emails claiming to be from banks, government agencies, or popular services — verify by contacting them directly through official channels, never through links in the email.</p>
+<h3>Recognizing Warning Signs</h3>
+<p>If your device is suddenly slow, showing unexpected ads, making unusual battery drain, or apps are crashing frequently, these could be signs of malware. Act immediately: disconnect from the internet, run an antivirus scan, and if necessary, perform a factory reset. Early action prevents greater data loss.</p>`,
+    reflection: "When did you last update your device? Check right now and install any pending updates. How does regular maintenance parallel taking care of your physical health?",
+    checklist: ["I update my apps and OS regularly", "I back up my data at least monthly", "I review app permissions on my device", "I can recognize signs of malware infection", "I never open attachments from unknown senders"]
+  },
+  { title: "Digital Footprint Awareness", icon: "👣", preview: "Understanding the permanent trail of data you leave behind in every online interaction.", content: `
+<h3>You Are Leaving Footprints Everywhere</h3>
+<p>Every time you go online, you leave a trail of data behind — your digital footprint. This includes websites you visit, searches you make, things you post, apps you use, and even where your device was located. Unlike footprints in sand, digital footprints don't wash away. They can persist for years, decades, or even permanently, affecting your future opportunities and reputation.</p>
+<p>Consider Aryan, who posted angry comments about his school on social media at age 15. Years later, when applying for a competitive college program, the admissions committee found those posts during a routine search. Even though Aryan had matured significantly, the footprint remained. This is why managing your digital footprint is a critical life skill.</p>
+<h3>Active vs. Passive Footprints</h3>
+<p>Your <strong>active footprint</strong> includes things you deliberately share: posts, photos, comments, profiles, and reviews. You have direct control over these. Your <strong>passive footprint</strong> includes data collected without your direct action: your browsing history, location data, purchasing behavior, and the metadata attached to photos you take (which can include GPS coordinates, date, time, and device information).</p>
+<h3>Who Sees Your Footprint?</h3>
+<ul>
+<li><strong>Advertisers:</strong> Use your browsing and purchase history to show targeted ads</li>
+<li><strong>Employers:</strong> Routinely search candidates' names before hiring — 70% of employers report finding content that influenced their decision</li>
+<li><strong>Colleges & Universities:</strong> Increasingly checking applicants' social media profiles</li>
+<li><strong>Cybercriminals:</strong> Using publicly available information for phishing, identity theft, and targeted scams</li>
+<li><strong>Governments:</strong> In some contexts, monitoring online activity for security purposes</li>
+</ul>
+<h3>Building a Positive Digital Footprint</h3>
+<p>Your digital footprint can also be an asset. A student who regularly posts thoughtful commentary on academic topics, participates in online learning communities, creates educational content, or contributes to open-source projects builds a positive footprint that showcases their intelligence and character. Think of your digital footprint as your digital reputation — actively curate it to reflect who you truly are and aspire to be.</p>
+<h3>Steps to Manage Your Footprint</h3>
+<p>Google yourself regularly to see what others can find. Request removal of inaccurate or harmful content from websites. Adjust privacy settings on all social platforms to control who sees your content. Think before every post: "Could this haunt me in 10 years?" And remember — deleting a post doesn't erase it if someone has already saved or screenshotted it.</p>`,
+    reflection: "Search your own name online right now. What do you find? Does your digital footprint accurately represent who you are? What would you change?",
+    checklist: ["I have Googled myself to check my digital footprint", "My social media privacy settings are reviewed", "I think before posting anything online", "I understand metadata in photos reveals location", "I know how to request content removal from Google"]
+  },
+  { title: "Data Privacy & Security", icon: "🔐", preview: "Your personal data is valuable — learn how to protect it and understand your digital rights.", content: `
+<h3>Why Your Data is Valuable</h3>
+<p>In the digital economy, personal data is often described as "the new oil." Technology companies, advertisers, and even criminals recognize that your personal information — your habits, preferences, location, relationships, and behaviors — is enormously valuable. Understanding what data is collected about you, by whom, and how to protect it is one of the most important skills of the digital age.</p>
+<p>When Meera downloaded a free flashcard app for studying, she didn't read the permissions. The app accessed her contacts, microphone, and location. While the app itself was harmless, the company was selling aggregated data profiles to advertisers. Meera had unknowingly agreed to this in the terms and conditions — a 45-page document written in legal language that few people read.</p>
+<h3>Types of Personal Data</h3>
+<ul>
+<li><strong>Identity Data:</strong> Name, age, gender, address, phone number, email</li>
+<li><strong>Behavioral Data:</strong> Browsing history, app usage patterns, purchase history</li>
+<li><strong>Location Data:</strong> GPS history, IP address, places visited</li>
+<li><strong>Communication Data:</strong> Texts, emails, chat logs, calls</li>
+<li><strong>Biometric Data:</strong> Fingerprints, face scan, voice recognition</li>
+<li><strong>Financial Data:</strong> Bank accounts, credit card details, transaction history</li>
+</ul>
+<h3>The IT Act and Your Rights</h3>
+<p>India's Information Technology Act and the emerging Personal Data Protection framework give you certain rights over your data. You have the right to know what data is collected about you, the right to correct inaccurate data, and in many cases, the right to request deletion. Understanding these rights empowers you to take action when your privacy is violated.</p>
+<h3>Practical Data Protection Steps</h3>
+<p>Read app permissions before installing — if a calculator app wants access to your contacts, that's a red flag. Use a password manager to generate and store unique strong passwords. Enable two-factor authentication. Use encrypted messaging apps for sensitive conversations. Regularly review which services have access to your accounts. Minimize the personal information you share on free platforms — if you're not paying for the product, you are often the product.</p>`,
+    reflection: "Check your phone's app permissions right now. Are there apps that have more access than they need? What will you do about it?",
+    checklist: ["I read app permissions before installing", "I use unique passwords for different accounts", "I understand what data apps collect about me", "I know my rights under India's IT Act", "I use encrypted apps for sensitive communication"]
+  },
+  { title: "Responsible Social Media Use", icon: "📱", preview: "Harnessing social media's power while protecting your wellbeing, reputation, and relationships.", content: `
+<h3>Social Media: Tool or Trap?</h3>
+<p>Social media platforms are among the most powerful tools ever created for human connection, learning, and expression. They have enabled movements for social justice, helped students access learning opportunities, connected communities across geographic boundaries, and given a voice to people who were previously unheard. But they are also designed, deliberately, to be as engaging as possible — sometimes at the cost of your time, mental health, and judgment.</p>
+<p>Kavya spends 4 hours daily on social media, often feeling anxious after scrolling. She notices she compares herself to carefully curated photos of others and often feels inadequate. The platform's algorithm keeps showing her content that triggers emotional reactions, keeping her engaged. Understanding how these systems work helps Kavya make more intentional choices about her usage.</p>
+<h3>How Algorithms Work</h3>
+<p>Social media algorithms are designed to maximize your time on the platform. They learn what content makes you react emotionally — outrage, jealousy, excitement, fear — and show you more of it. This creates filter bubbles where you mainly see views that match your existing beliefs, reinforces negative emotions, and can distort your perception of reality. Understanding this helps you consume social media more consciously.</p>
+<h3>Guidelines for Responsible Use</h3>
+<ul>
+<li>Set daily time limits and stick to them — most smartphones have built-in tools for this</li>
+<li>Curate your feed intentionally: follow accounts that educate, inspire, and positively challenge you</li>
+<li>Never post in anger — write what you want to say, wait 24 hours, then decide if you really want to post it</li>
+<li>Distinguish between your online persona and your real identity — maintain authenticity</li>
+<li>Protect others: never post photos of friends or family without their permission</li>
+<li>Engage constructively: add value to conversations rather than simply criticizing or mocking</li>
+</ul>
+<h3>The Impact on Mental Health</h3>
+<p>Research consistently shows that excessive passive social media consumption — scrolling without engaging — correlates with increased anxiety, depression, and loneliness, particularly among adolescents. Active engagement — creating content, having real conversations, using platforms for learning and social good — tends to have more positive effects. The difference between using social media as a tool versus being used by it comes down to intentionality and self-awareness.</p>`,
+    reflection: "Track your social media use for one week. Note how you feel before and after sessions. What patterns do you notice? What changes would improve your wellbeing?",
+    checklist: ["I have set daily time limits for social media", "I think before I post anything", "I ask permission before posting photos of others", "I understand how recommendation algorithms work", "I have curated my feed to be positive and educational"]
+  },
+  { title: "Misinformation & Media Literacy", icon: "📰", preview: "Developing the critical thinking skills to identify fake news, propaganda, and digital manipulation.", content: `
+<h3>The Misinformation Crisis</h3>
+<p>We live in an era of information overload. Every day, more information is created than existed in the entire world just decades ago. But quantity doesn't mean quality. Alongside genuine knowledge and journalism exists a massive ecosystem of misinformation — false information shared without intent to deceive — and disinformation — false information deliberately spread to mislead. The consequences are real: misinformation has driven health crises, incited violence, influenced elections, and damaged reputations.</p>
+<p>During a health emergency, a WhatsApp message circulated claiming that drinking hot water with lemon could cure the illness. Millions shared it, including educated adults. No evidence supported it, but the message had official-sounding language and was shared by trusted contacts. This shows how even well-meaning people can spread dangerous misinformation.</p>
+<h3>Types of False Information</h3>
+<ul>
+<li><strong>Satire/Parody:</strong> No intent to harm but can be mistaken for real news</li>
+<li><strong>Misleading Content:</strong> Facts used out of context to frame issues deceptively</li>
+<li><strong>Fabricated Content:</strong> Completely false information designed to deceive</li>
+<li><strong>Manipulated Content:</strong> Real images or videos altered to change meaning</li>
+<li><strong>Deepfakes:</strong> AI-generated videos of people saying or doing things they never did</li>
+</ul>
+<h3>The SIFT Method for Verification</h3>
+<p><strong>Stop</strong> — before sharing, pause and engage your critical thinking. <strong>Investigate the source</strong> — who created this content and why? What is their track record? <strong>Find better coverage</strong> — can you find the same story reported by multiple reliable sources? <strong>Trace claims back to their origin</strong> — go upstream to find the original context. This four-step method works for any type of content — text, images, videos, or statistics.</p>
+<h3>Fact-Checking Resources</h3>
+<p>India has several credible fact-checking organizations including Boom Live, Alt News, and AFP Fact Check. Internationally, Snopes, PolitiFact, and FactCheck.org are reliable. For images, Google Reverse Image Search can quickly reveal whether a photo is being used out of context. For videos, InVID/WeVerify browser extensions help analyze video authenticity. Bookmark these resources and use them habitually.</p>`,
+    reflection: "Find a piece of news or information you recently shared. Apply the SIFT method to verify it. Was the information accurate? What did you learn from this exercise?",
+    checklist: ["I verify news before sharing it", "I know at least 2 Indian fact-checking websites", "I understand what deepfakes are", "I can reverse image search to verify photos", "I understand how emotional manipulation spreads misinformation"]
+  },
+  { title: "Ethical Technology Use", icon: "⚖️", preview: "Understanding your moral responsibilities as a digital citizen in an interconnected world.", content: `
+<h3>Technology and Ethics</h3>
+<p>Ethics is about distinguishing right from wrong and making choices that reflect your values and respect the wellbeing of others. In the digital world, ethical questions are constantly arising: Is it right to share someone's private photo? Should you use AI to write your homework? Is it acceptable to pirate software? Can you post anonymously without accountability? These questions don't always have simple answers, but thinking through them carefully shapes what kind of digital citizen you become.</p>
+<p>Ishaan discovers that a classmate has been pirating expensive textbooks and sharing them in a group. On one hand, the textbooks are unaffordable for many students. On the other hand, authors and publishers deserve compensation for their work. This ethical tension — between access to education and intellectual property rights — is genuinely complex and reflects real debates happening at policy levels worldwide.</p>
+<h3>Core Principles of Digital Ethics</h3>
+<ul>
+<li><strong>Respect for Privacy:</strong> Everyone has a right to control their personal information and digital space</li>
+<li><strong>Intellectual Honesty:</strong> Give credit for others' ideas, code, images, and creative work</li>
+<li><strong>Fairness:</strong> Use technology in ways that don't disadvantage or harm others</li>
+<li><strong>Accountability:</strong> Take responsibility for your online actions, even anonymous ones</li>
+<li><strong>Non-Maleficence:</strong> Do not use technology to harm, harass, or deceive others</li>
+<li><strong>Inclusivity:</strong> Consider how your digital actions affect people with less access or power</li>
+</ul>
+<h3>The Ethics of AI Use</h3>
+<p>As AI tools become more accessible, students face new ethical questions. Using AI to brainstorm is generally acceptable; using AI to submit work as entirely your own is academic dishonesty. The distinction lies in transparency and learning. If AI does your homework for you without your engagement, you deprive yourself of the learning that school is designed to provide. Ethical AI use enhances your thinking rather than replacing it.</p>
+<h3>Building an Ethical Digital Culture</h3>
+<p>Individual ethics are important, but they're not enough. We need to build communities and institutions that establish norms for responsible technology use. In your school, you can advocate for clear digital ethics policies, support peers who are cyberbullied, call out misinformation in group chats, and lead by example in responsible digital behavior. Change starts with one person deciding that how they use technology matters.</p>`,
+    reflection: "Describe a digital ethical dilemma you have faced or witnessed. How was it resolved? Looking back, what was the right thing to do, and why?",
+    checklist: ["I credit sources when I use others' work", "I understand academic integrity in the context of AI", "I advocate for friends who are treated unfairly online", "I take responsibility for my online actions", "I consider the impact of my posts on others"]
+  },
+  { title: "AI Explained Simply", icon: "🤖", preview: "Demystifying Artificial Intelligence — what it is, how it works, and why it matters for everyone.", content: `
+<h3>What is Artificial Intelligence?</h3>
+<p>Artificial Intelligence (AI) is the science of making computers perform tasks that typically require human intelligence — things like recognizing speech, understanding language, identifying images, making decisions, and learning from experience. Rather than following rigid pre-programmed rules, modern AI systems learn from data: they analyze millions of examples to find patterns and use those patterns to make predictions or decisions.</p>
+<p>When you ask a voice assistant to play your favorite song, the AI listens to your voice, converts speech to text, understands the meaning of your request, and finds the right song — all in less than a second. This involves multiple AI systems working together: speech recognition, natural language understanding, and recommendation algorithms.</p>
+<h3>Types of AI</h3>
+<ul>
+<li><strong>Narrow AI (Weak AI):</strong> Designed for specific tasks — facial recognition, spam filtering, chess playing. This is all AI that exists today.</li>
+<li><strong>General AI (Strong AI):</strong> Hypothetical AI that can do anything a human can do — this does not yet exist.</li>
+<li><strong>Machine Learning:</strong> A subset of AI where systems learn from data without explicit programming</li>
+<li><strong>Deep Learning:</strong> A powerful form of machine learning using neural networks inspired by the human brain</li>
+<li><strong>Generative AI:</strong> AI that creates new content — text, images, music, code — like ChatGPT or DALL-E</li>
+</ul>
+<h3>How Does AI Learn?</h3>
+<p>Imagine teaching a child to recognize dogs. You show them hundreds of photos labeled "dog" and "not dog." Eventually they learn the features that distinguish dogs. AI works similarly — a system called a neural network is shown millions of labeled examples. Mathematical algorithms adjust the system's internal parameters until it can reliably make correct predictions on new, unseen examples. This process is called training.</p>
+<h3>AI is Not Magic</h3>
+<p>One of the most important things to understand about AI is that it is not intelligent in the way humans are. It doesn't understand, it doesn't have feelings, it doesn't have common sense, and it doesn't know what it doesn't know. It is a very sophisticated pattern-matching system. This means AI can be confident while being completely wrong — a phenomenon called "hallucination" in language models. Critical evaluation of AI outputs is always necessary.</p>`,
+    reflection: "List 5 AI systems you interact with daily without realizing it. How does knowing they are AI systems change how you think about them?",
+    checklist: ["I can define AI in my own words", "I understand the difference between narrow and general AI", "I know what machine learning means", "I understand that AI can make mistakes", "I can identify AI systems in my daily life"]
+  },
+  { title: "AI in Everyday Life", icon: "🌐", preview: "Exploring the AI systems already embedded in your daily life — from recommendations to healthcare.", content: `
+<h3>AI is Already Everywhere</h3>
+<p>Most people think of AI as something futuristic — robots and science fiction. But AI is already woven into virtually every aspect of daily life, quietly shaping your experiences in ways you may not have noticed. Understanding where AI operates helps you use technology more consciously and prepares you for a world where human-AI collaboration is the norm.</p>
+<h3>AI in Your Daily Digital Life</h3>
+<ul>
+<li><strong>Recommendations:</strong> YouTube, Netflix, and Spotify use AI to suggest content based on your history — trying to keep you engaged as long as possible</li>
+<li><strong>Search Engines:</strong> Google's AI ranks billions of web pages to find the most relevant results for your specific query</li>
+<li><strong>Social Media Feeds:</strong> Algorithms decide what posts you see — and in what order — based on predicted engagement</li>
+<li><strong>Autocomplete & Spellcheck:</strong> Your keyboard learns your typing patterns to predict your next words</li>
+<li><strong>Spam Filtering:</strong> Email AI identifies and blocks millions of spam and phishing messages daily</li>
+<li><strong>Voice Assistants:</strong> Alexa, Siri, and Google Assistant use AI for speech recognition and natural language understanding</li>
+</ul>
+<h3>AI in Healthcare</h3>
+<p>AI is revolutionizing medicine. AI systems can analyze medical images — X-rays, MRIs, retinal scans — with accuracy matching or exceeding human specialists. AI models can predict disease risk, identify drug interactions, and assist in surgical procedures. In India, AI is being used to screen for diabetic retinopathy in rural areas where ophthalmologists are scarce, potentially saving the eyesight of thousands.</p>
+<h3>AI in Education</h3>
+<p>Adaptive learning platforms use AI to identify where each student struggles and adjust the content accordingly. AI tutors can answer questions at any time of day. Automated grading systems can provide instant feedback on writing. These tools don't replace teachers — they augment teaching by handling routine tasks and providing personalized support, freeing teachers to focus on higher-order learning and human connection.</p>
+<h3>AI and the Future of Work</h3>
+<p>Research suggests AI will automate around 15% of current job tasks, primarily routine and repetitive work. This doesn't mean mass unemployment — historically, automation has created more jobs than it eliminated while transforming the nature of work. The skills that will remain valuable are those AI cannot easily replicate: creativity, empathy, critical thinking, complex communication, and ethical judgment. These are exactly the skills that digital literacy education helps develop.</p>`,
+    reflection: "For one day, write down every AI system you encounter. What patterns do you notice? Which uses of AI seem beneficial? Which seem concerning?",
+    checklist: ["I can identify AI in at least 5 apps I use daily", "I understand how recommendation algorithms work", "I know one use of AI in healthcare", "I understand what jobs AI might automate", "I can explain how AI helps and challenges society"]
+  },
+  { title: "Human vs Machine Intelligence", icon: "🧠", preview: "Understanding the profound differences between human cognition and artificial intelligence.", content: `
+<h3>What Makes Human Intelligence Unique?</h3>
+<p>Human intelligence is one of the most remarkable phenomena in the known universe. It combines logical reasoning, emotional understanding, creativity, embodied experience, social intelligence, and moral judgment in ways that remain deeply mysterious and that no AI system has replicated. Understanding what makes human intelligence distinctive — and where AI diverges from it — is essential for thinking clearly about technology's role in our lives and future.</p>
+<h3>Key Differences</h3>
+<ul>
+<li><strong>Understanding vs. Pattern-Matching:</strong> Humans understand meaning. AI matches patterns statistically. An AI can translate languages without understanding a single word; a child learning a language builds genuine conceptual understanding.</li>
+<li><strong>Common Sense:</strong> Humans have embodied common sense developed through living in the world. AI lacks this and can make absurd errors that no human would make.</li>
+<li><strong>Emotion and Motivation:</strong> Human intelligence is inseparable from emotion, values, and motivation. AI has no genuine emotions, desires, or goals of its own.</li>
+<li><strong>Creativity and Originality:</strong> Human creativity involves breaking out of existing patterns in genuinely novel ways. AI generates outputs that statistically resemble its training data — impressive but fundamentally different from human creative leaps.</li>
+<li><strong>Learning Efficiency:</strong> A child can learn to recognize a dog from a handful of examples. AI typically requires millions. Humans are far more data-efficient learners.</li>
+</ul>
+<h3>Where AI Surpasses Humans</h3>
+<p>In specific domains, AI dramatically outperforms humans: processing speed, memory capacity, consistency, pattern recognition in large datasets, 24/7 availability without fatigue, and simultaneous processing of multiple inputs. A medical AI can analyze 10,000 scans in the time it takes a radiologist to review one. These capabilities make AI an extraordinarily powerful tool when applied appropriately.</p>
+<h3>Collaboration, Not Competition</h3>
+<p>The most productive framing is not "humans vs. AI" but "humans with AI." The future belongs to people who can effectively collaborate with AI systems — understanding their strengths and limitations, knowing when to trust AI outputs and when to question them, and maintaining human judgment on questions that require values, ethics, and genuine understanding. Your goal is not to compete with AI but to become the kind of thinker that AI cannot replace.</p>`,
+    reflection: "Describe a task you do that you believe AI cannot do as well as a human. Why is human judgment, creativity, or empathy essential in this task?",
+    checklist: ["I can explain 3 key differences between human and AI intelligence", "I understand what AI hallucination means", "I know where AI outperforms humans", "I can explain why collaboration with AI is important", "I understand why emotional intelligence remains valuable in an AI age"]
+  },
+  { title: "Bias in AI Systems", icon: "⚖️", preview: "Understanding how AI systems can reflect and amplify human biases, and what we can do about it.", content: `
+<h3>AI is Not Neutral</h3>
+<p>One of the most dangerous misconceptions about AI is that it is objective or neutral because it is mathematical. In reality, AI systems can encode and amplify human biases in ways that are more powerful and harder to detect than human discrimination. Understanding bias in AI is critical for digital citizenship in an age where AI increasingly makes consequential decisions about people's lives.</p>
+<p>In 2018, Amazon scrapped an AI hiring tool after discovering it systematically discriminated against women. The system was trained on resumes submitted over 10 years, mostly from men — reflecting historical gender imbalances in tech. The AI learned to penalize resumes that included the word "women's" (as in "women's chess club") and downgraded graduates of all-women's colleges. The bias in the training data became bias in the system.</p>
+<h3>Sources of AI Bias</h3>
+<ul>
+<li><strong>Training Data Bias:</strong> If historical data reflects discrimination, the AI learns to perpetuate it</li>
+<li><strong>Selection Bias:</strong> If training data doesn't represent all groups equally, the AI performs worse for underrepresented groups</li>
+<li><strong>Label Bias:</strong> Human labelers' own biases can be encoded into the training labels AI learns from</li>
+<li><strong>Feedback Loops:</strong> When AI systems make biased decisions that create new biased data, reinforcing the original bias</li>
+</ul>
+<h3>Real-World Consequences of AI Bias</h3>
+<p>AI bias has been documented in facial recognition (higher error rates for darker-skinned faces), predictive policing (targeting communities already over-policed), healthcare (undertreating pain in certain demographic groups), and credit scoring (penalizing people in certain zip codes regardless of individual creditworthiness). These are not theoretical concerns — they affect real people's freedom, health, and economic opportunities.</p>
+<h3>What You Can Do</h3>
+<p>As a user of AI systems, you can question AI recommendations, especially on high-stakes decisions. As a future developer or policy maker, you can advocate for diverse teams building AI systems, representative training data, transparency in AI decision-making, and regular auditing for bias. Diverse perspectives in AI development are not just ethically important — they produce better systems.</p>`,
+    reflection: "Can you think of an AI system that might give different results for different groups of people? Why might this happen, and what would you do to fix it?",
+    checklist: ["I understand that AI can have biases", "I know what training data bias means", "I can give a real example of AI bias", "I understand why diverse AI teams matter", "I know what questions to ask about AI fairness"]
+  },
+  { title: "Critical Thinking in Digital Age", icon: "🔎", preview: "Developing the analytical mindset needed to navigate information overload and digital manipulation.", content: `
+<h3>The Most Important Digital Skill</h3>
+<p>In a world of information overload, sophisticated deepfakes, persuasive algorithms, and constant content bombardment, critical thinking has become the most fundamental digital skill. Critical thinking is not about being negative or cynical — it's about evaluating evidence carefully, questioning assumptions, recognizing logical fallacies, and making well-reasoned judgments rather than reactive ones.</p>
+<h3>The Critical Thinking Framework</h3>
+<ul>
+<li><strong>Identify the Claim:</strong> What exactly is being asserted? Be precise — vague claims are hard to evaluate.</li>
+<li><strong>Examine the Evidence:</strong> What evidence supports the claim? Is it reliable, relevant, and sufficient?</li>
+<li><strong>Consider the Source:</strong> Who is making the claim, and why? Do they have expertise, potential bias, or conflicts of interest?</li>
+<li><strong>Look for Alternative Explanations:</strong> What other explanations could account for the evidence?</li>
+<li><strong>Evaluate the Reasoning:</strong> Does the argument follow logically? Are there fallacies or gaps?</li>
+<li><strong>Seek Corroboration:</strong> Do independent, reliable sources confirm the claim?</li>
+</ul>
+<h3>Common Logical Fallacies Online</h3>
+<p><strong>Ad Hominem:</strong> Attacking the person making an argument rather than the argument itself. <strong>Appeal to Authority:</strong> Assuming something is true because an authority figure said so (without independent evidence). <strong>False Dichotomy:</strong> Presenting only two options when more exist. <strong>Correlation vs. Causation:</strong> Assuming that because two things happen together, one caused the other. <strong>Bandwagon Fallacy:</strong> Assuming something is true because many people believe it. Recognizing these fallacies in online discourse helps you think more clearly and resist manipulation.</p>
+<h3>Cultivating Intellectual Humility</h3>
+<p>Critical thinking requires intellectual humility — the recognition that you might be wrong, that your perspective is limited, and that changing your mind in response to evidence is a strength, not a weakness. In polarized online environments, admitting uncertainty or updating your views can feel socially costly. But it is precisely this willingness to revise beliefs that distinguishes genuine thinkers from those who merely seek confirmation of existing beliefs.</p>`,
+    reflection: "Find a claim being debated on social media. Apply the critical thinking framework to evaluate it. What did you discover? Was your initial reaction accurate?",
+    checklist: ["I can identify the difference between evidence and opinion", "I know at least 3 common logical fallacies", "I check multiple sources before accepting a claim", "I am willing to change my mind when evidence demands it", "I recognize emotional manipulation in online content"]
+  },
+  { title: "Balanced Screen Time", icon: "⏰", preview: "Building healthy technology habits that support your wellbeing, focus, and offline relationships.", content: `
+<h3>The Screen Time Challenge</h3>
+<p>The average Indian teenager now spends more than 7 hours per day in front of screens — not counting school-related use. While screens connect us, entertain us, and educate us, excessive or unbalanced screen time carries real risks: disrupted sleep, reduced physical activity, weakened face-to-face social skills, attention difficulties, and in some cases, problematic use patterns that resemble addiction.</p>
+<p>Technology companies have invested billions of dollars and employed the world's most talented psychologists to make their products as engaging as possible. Variable rewards (not knowing what you'll see when you scroll), social validation through likes, and infinite scrolling are deliberate design choices. Understanding these mechanisms helps you use technology intentionally rather than reactively.</p>
+<h3>The 20-20-20 Rule</h3>
+<p>For eye health during prolonged screen use: every 20 minutes, look at something 20 feet away for 20 seconds. This simple practice significantly reduces digital eye strain. Blink consciously — people blink 60% less frequently when using screens, leading to dry eye.</p>
+<h3>Building a Screen Balance Framework</h3>
+<ul>
+<li><strong>Purpose-Driven Use:</strong> Before opening an app, ask "why am I doing this?" If you can't answer clearly, reconsider.</li>
+<li><strong>Tech-Free Zones:</strong> Keep bedrooms and mealtimes device-free to protect sleep and real relationships</li>
+<li><strong>Scheduled Disconnection:</strong> Plan regular digital-free periods — walks, exercise, hobbies, face-to-face conversations</li>
+<li><strong>Night Mode:</strong> Enable blue light filtering after sunset — blue light disrupts melatonin production and sleep quality</li>
+<li><strong>Notification Minimization:</strong> Turn off all non-essential notifications to protect deep focus</li>
+</ul>
+<h3>Quality vs. Quantity</h3>
+<p>Not all screen time is equal. One hour of coding, learning a language, or video-calling a grandparent is fundamentally different from one hour of passive social media scrolling. The goal is not to minimize all screen time but to maximize meaningful, purposeful, creative use while reducing passive consumption. Track your screen time for one week and categorize it: creative, educational, social, passive consumption. The results may surprise you.</p>`,
+    reflection: "Track your screen time for three days using your phone's built-in tools. What percentage is educational versus entertainment? What one change would most improve your balance?",
+    checklist: ["I use screen time tracking tools on my device", "I have tech-free zones at home (bedroom, meals)", "I practice the 20-20-20 rule for eye health", "I turn off most notifications to protect focus", "I have scheduled regular offline activities"]
+  },
+  { title: "Blended Learning Models", icon: "🎓", preview: "How combining digital and traditional learning creates more effective and inclusive education.", content: `
+<h3>What is Blended Learning?</h3>
+<p>Blended learning combines traditional face-to-face classroom instruction with digital and online learning activities in a deliberate, structured way. Rather than simply "adding technology" to teaching, effective blended learning redesigns the learning experience to leverage the unique strengths of both human teachers and digital tools, creating something more powerful than either alone.</p>
+<h3>Models of Blended Learning</h3>
+<ul>
+<li><strong>Rotation Model:</strong> Students rotate between different learning stations, one of which is online. While some students work independently on digital tasks, the teacher works intensively with small groups.</li>
+<li><strong>Flipped Classroom:</strong> Students learn foundational content at home through videos or digital resources, and class time is used for discussion, problem-solving, and application — the "homework" and "classwork" are flipped.</li>
+<li><strong>Flex Model:</strong> Digital instruction is the backbone, with teachers available for support on demand. Particularly useful for students who need to learn at their own pace.</li>
+<li><strong>Enriched Virtual:</strong> Primary instruction is face-to-face, supplemented by rich online resources that extend and deepen learning.</li>
+</ul>
+<h3>Benefits for Students</h3>
+<p>Blended learning can accommodate different learning paces — faster learners can advance while slower learners get additional support. It makes learning accessible outside school hours and in areas with teacher shortages. It develops self-directed learning skills that are essential for lifelong learning. And it provides teachers with data about each student's learning patterns, enabling more targeted instruction.</p>
+<h3>Challenges and Solutions</h3>
+<p>Effective blended learning requires reliable device access, internet connectivity, and teacher training — all of which are challenges in many Indian schools. Offline-first tools, downloaded content, and community technology access points are part of the solution. NEP 2020's investment in digital infrastructure is gradually addressing these barriers, but students and teachers must also develop the digital literacy skills to use blended approaches effectively.</p>`,
+    reflection: "Design your ideal blended learning day. How much time would you spend in class, online learning, collaborative projects, and independent study? What would you learn?",
+    checklist: ["I understand what blended learning means", "I know the difference between flipped classroom and rotation model", "I have used at least one digital learning platform for self-study", "I can manage my own pace in online learning environments", "I know how to access educational content offline"]
+  },
+  { title: "Digital Inclusion & Equity", icon: "🌍", preview: "Understanding the digital divide and why equitable technology access is a matter of social justice.", content: `
+<h3>The Digital Divide is a Justice Issue</h3>
+<p>Access to digital technology is no longer a luxury — it is increasingly a prerequisite for quality education, economic opportunity, civic participation, and access to essential services. When significant portions of the population lack this access, it creates and deepens social inequalities. The digital divide is not just about who has a smartphone — it encompasses access to quality devices, reliable internet, digital literacy skills, and content in local languages.</p>
+<p>In India, as of 2024, there remain over 700 million people without consistent internet access. Rural-urban gaps persist, as do gaps between genders, economic classes, and linguistic communities. A student in an urban private school may have a personal laptop, high-speed internet, and digitally skilled teachers, while a student in a rural government school shares one device between many students, has intermittent connectivity, and has teachers with limited digital training. Both students are competing in the same future job market.</p>
+<h3>Dimensions of Digital Inclusion</h3>
+<ul>
+<li><strong>Physical Access:</strong> Having a device and connectivity</li>
+<li><strong>Affordability:</strong> Being able to pay for devices and data</li>
+<li><strong>Skills:</strong> Having the knowledge to use technology effectively</li>
+<li><strong>Content:</strong> Having relevant content available in your language</li>
+<li><strong>Safety:</strong> Being able to use technology without harassment or exploitation</li>
+</ul>
+<h3>What Students Can Do</h3>
+<p>Digital inclusion begins with awareness. If you have reliable access to technology, recognize that as a privilege and use it responsibly and meaningfully. Support peers who lack access. Advocate for technology sharing programs in your community. Create content in regional languages. And build skills that allow you to create technology solutions for the specific challenges of your community — because the best solutions for Indian villages will be built by people who understand Indian villages.</p>`,
+    reflection: "What barriers to digital access exist in your community? What is one concrete action you could take to help bridge the digital divide for someone around you?",
+    checklist: ["I understand what the digital divide means", "I know the dimensions of digital inclusion beyond device access", "I use my digital access responsibly and gratefully", "I support peers who need help with technology", "I can explain why digital inclusion is a justice issue"]
+  },
+  { title: "Preparing for AI Careers", icon: "🚀", preview: "Exploring the emerging careers in AI and technology, and how to prepare for an AI-powered workforce.", content: `
+<h3>The AI Economy is Already Here</h3>
+<p>The global AI market is projected to reach $1.8 trillion by 2030, growing at over 37% annually. This represents one of the largest economic transformations in human history, creating entirely new categories of jobs while transforming existing ones. Students in school today will spend the majority of their careers in an AI-integrated economy. The question is not whether AI will affect your career, but how you will position yourself to thrive within it.</p>
+<h3>Emerging AI Career Categories</h3>
+<ul>
+<li><strong>AI/ML Engineers:</strong> Build and train AI models — requires programming (Python), mathematics (statistics, linear algebra), and machine learning frameworks</li>
+<li><strong>AI Ethics Specialists:</strong> Ensure AI systems are fair, transparent, and beneficial — combines technical knowledge with social science and philosophy</li>
+<li><strong>Data Scientists:</strong> Extract insights from large datasets — requires statistics, programming, domain knowledge, and communication skills</li>
+<li><strong>AI Product Managers:</strong> Guide the development of AI-powered products — requires understanding of AI capabilities, user needs, and business strategy</li>
+<li><strong>AI Trainers and Annotators:</strong> Label data and provide feedback to improve AI systems — an accessible entry point into the AI industry</li>
+<li><strong>Prompt Engineers:</strong> Optimize instructions for generative AI systems — a newer role requiring creativity and analytical thinking</li>
+</ul>
+<h3>Foundation Skills for Any AI Career</h3>
+<p>Regardless of specific role, several foundation skills prepare you for an AI career: mathematical reasoning and statistics, programming fundamentals (Python is most relevant), data literacy, critical thinking and problem-solving, and effective communication. You don't need to master all of these immediately — but beginning to build them now creates significant advantages.</p>
+<h3>The Human Skills That AI Cannot Replace</h3>
+<p>The most durable career preparation is developing skills AI genuinely cannot replicate: deep domain expertise, creative problem-framing, ethical judgment, cross-cultural communication, leadership, and the ability to ask the right questions. These "human" skills combined with AI literacy create a uniquely powerful professional profile for the coming decades.</p>`,
+    reflection: "Research one specific AI career that interests you. What skills does it require? What courses or activities could you begin now to start building toward it?",
+    checklist: ["I know at least 4 types of AI careers", "I understand what data science means", "I have started learning programming basics", "I know the difference between replaceable and irreplaceable human skills", "I have a rough plan for developing AI-relevant skills"]
+  },
+  { title: "Technology & Mental Health", icon: "🧘", preview: "Understanding the complex relationship between technology use and psychological wellbeing.", content: `
+<h3>Technology and the Mind</h3>
+<p>The relationship between technology and mental health is complex and nuanced — neither the technophile's utopia ("technology solves everything") nor the technophobe's nightmare ("technology is destroying us"). Research paints a more subtle picture: it's not technology itself but how, when, why, and how much we use it that determines its impact on mental health.</p>
+<p>Research by psychologist Jean Twenge found that adolescents who spend more than 5 hours daily on smartphones are 66% more likely to have at least one risk factor for suicide. But the same research showed that moderate use (1-2 hours) showed no negative mental health effects and was sometimes associated with benefits. The dose, context, and type of use all matter enormously.</p>
+<h3>Warning Signs of Problematic Technology Use</h3>
+<ul>
+<li>Feeling anxious or irritable when unable to access your phone</li>
+<li>Checking devices compulsively, even in the middle of other activities</li>
+<li>Losing track of time online regularly</li>
+<li>Neglecting offline relationships, hobbies, or responsibilities for digital activities</li>
+<li>Continuing to use technology despite knowing it's causing harm</li>
+<li>Feeling worse about yourself after using social media</li>
+</ul>
+<h3>Building a Healthy Digital Relationship</h3>
+<p>Approach your relationship with technology like any important relationship: with intention, boundaries, and regular reflection. Practice digital mindfulness — being present and aware of how you feel during and after technology use. Create rituals around disconnection: morning time without phones, meals with family, wind-down routines that don't involve screens. Invest seriously in offline activities — sports, arts, nature, face-to-face connection — that nourish the parts of yourself that screens cannot.</p>
+<h3>If You Are Struggling</h3>
+<p>If you notice signs that technology is significantly affecting your mental health, wellbeing, or relationships, speak to a trusted teacher, counselor, or family member. There is no shame in recognizing that you need support in managing technology in a world specifically designed to maximize your engagement. Many schools and organizations offer digital wellness programs. The iCall helpline and Vandrevala Foundation helpline provide free mental health support in India.</p>`,
+    reflection: "Rate your current relationship with technology on a scale of 1-10. What does a healthy relationship with technology look and feel like for you specifically? What would you need to change?",
+    checklist: ["I can recognize warning signs of problematic technology use in myself", "I have offline activities that truly nourish me", "I practice some form of regular digital disconnection", "I know where to seek help if technology affects my mental health", "I approach technology use with intention, not just habit"]
+  },
+  { title: "Responsible Digital Culture in Schools", icon: "🏫", preview: "Building school communities where technology serves learning, wellbeing, and ethical development.", content: `
+<h3>Schools as Digital Culture Laboratories</h3>
+<p>Schools are uniquely powerful environments for shaping digital culture. The norms, policies, and practices established in schools don't just affect what happens within school walls — they shape the values and habits students carry into their homes, communities, and eventual workplaces. Schools that take digital citizenship seriously create ripple effects that extend far beyond their student body.</p>
+<h3>Elements of a Responsible School Digital Culture</h3>
+<ul>
+<li><strong>Clear, Fair Policies:</strong> Technology policies co-created with students that explain the "why" behind rules, not just the "what"</li>
+<li><strong>Digital Literacy Integration:</strong> Critical thinking about technology woven into every subject, not siloed in one class</li>
+<li><strong>Teacher Modeling:</strong> Educators who visibly practice responsible digital citizenship and transparently discuss their own learning</li>
+<li><strong>Student Leadership:</strong> Digital citizenship ambassadors who peer-educate and help establish norms</li>
+<li><strong>Anti-Cyberbullying Systems:</strong> Clear reporting mechanisms, swift response protocols, and restorative rather than purely punitive approaches</li>
+<li><strong>Privacy Protection:</strong> Clear policies about what student data is collected, stored, and shared — and with whom</li>
+</ul>
+<h3>From Rules to Values</h3>
+<p>The most effective school digital culture is not built on rules but on values. When students genuinely understand why digital ethics matter — how their actions affect real people, how their data shapes their futures, how their critical thinking protects communities — they develop internal motivation to act responsibly, rather than just complying when adults are watching. Education that builds values is far more powerful and lasting than education that simply enforces compliance.</p>
+<h3>Parents and Community as Partners</h3>
+<p>Schools cannot transform digital culture alone. Parent education — helping families understand their children's digital lives and providing guidance for home conversations — is essential. Community partnerships with libraries, NGOs, and technology companies can extend resources and expertise. And student voices must be centered: young people are the experts on their own digital experiences and must be genuine partners in creating solutions, not just recipients of adult-designed programs.</p>`,
+    reflection: "If you could change one thing about your school's digital culture, what would it be? How would you propose this change and build support for it among students, teachers, and parents?",
+    checklist: ["I understand what a positive school digital culture looks like", "I know how to report cyberbullying at my school", "I model responsible digital behavior for peers", "I engage my parents in conversations about digital safety", "I see myself as a digital citizenship leader in my community"]
+  }
+];
+
+const SCENARIOS_DATA = [
+  {
+    type: "Phishing Attack",
+    typeClass: "type-phishing",
+    icon: "🎣",
+    message: `FROM: support@sbi-secure-verify.com\nSUBJECT: URGENT: Your SBI account has been suspended\n\nDear Valued Customer,\n\nYour account has been temporarily suspended due to suspicious activity. You must verify your account within 24 hours or it will be permanently deleted.\n\nClick here to verify: http://sbi-secure-verify.com/verify\n\nEnter your account number, password and OTP to restore access.\n\n— SBI Security Team`,
+    question: "What should you do?",
+    options: [
+      { text: "Click the link immediately — your account might be suspended!", correct: false },
+      { text: "Reply to the email asking for more information", correct: false },
+      { text: "Do not click. Call SBI's official number (1800-11-2211) directly to verify any account issues.", correct: true },
+      { text: "Forward the email to your friends to warn them", correct: false }
+    ],
+    correctIndex: 2,
+    feedback: {
+      correct: "✅ Excellent! This is a classic phishing email. Red flags: generic greeting, urgency/threat, unofficial domain (sbi-secure-verify.com is NOT sbi.co.in), asking for OTP over email. Real banks NEVER ask for passwords or OTPs via email. Always go directly to official websites or call official numbers.",
+      wrong: "❌ This is a phishing email designed to steal your banking credentials. Real banks never ask for passwords, PINs, or OTPs via email. The domain 'sbi-secure-verify.com' is not SBI's official domain. Always verify directly with the organization through official channels."
+    }
+  },
+  {
+    type: "Fake News",
+    typeClass: "type-fakenews",
+    icon: "📰",
+    message: `[WhatsApp Forward - Received from Uncle]\n\n⚠️ BREAKING: Scientists CONFIRM that eating ice cream causes COVID variant! Ministry of Health orders immediate ban on all cold foods.\n\n🔴 SHARE WITH EVERYONE BEFORE IT'S TOO LATE 🔴\n\nSource: healthnewsindia-today.blogspot.com\n\n[Already shared by 50,000 people]`,
+    question: "What is the correct action?",
+    options: [
+      { text: "Share immediately — 50,000 people can't be wrong!", correct: false },
+      { text: "Stop eating ice cream just to be safe", correct: false },
+      { text: "Verify using official health ministry websites and fact-checking sites before sharing or changing behavior", correct: true },
+      { text: "Share only with family, not publicly", correct: false }
+    ],
+    correctIndex: 2,
+    feedback: {
+      correct: "✅ Perfect response! Multiple red flags: ALL CAPS alarmism, 'share before it's too late' urgency, unofficial blog source, implausible scientific claim, emotional framing. Always verify with mohfw.gov.in, WHO, or fact-checkers like Alt News or Boom before sharing health information.",
+      wrong: "❌ This message has multiple misinformation warning signs: an unofficial blog source, extreme urgency language, implausible scientific claims, and emotional manipulation ('SHARE BEFORE IT'S TOO LATE'). High share counts don't make something true. Always fact-check health information with official sources."
+    }
+  },
+  {
+    type: "Cyberbullying",
+    typeClass: "type-cyberbullying",
+    icon: "💬",
+    message: `Instagram DM from @unknown_user_xx:\n\n"Hey, everyone in school is talking about you lol. We made a group called 'Most Embarrassing Moments' and added your awkward photos from last year's event. 200 people joined already. You're famous now 😂😂 \n\nYou should just delete your Instagram if you can't handle it. You don't belong here anyway."\n\n[3 more messages from this account]`,
+    question: "What is the best course of action?",
+    options: [
+      { text: "Reply angrily to defend yourself", correct: false },
+      { text: "Delete your Instagram account as suggested", correct: false },
+      { text: "Ignore it — they'll get bored eventually", correct: false },
+      { text: "Block the user, save screenshots as evidence, report to Instagram, and tell a trusted adult", correct: true }
+    ],
+    correctIndex: 3,
+    feedback: {
+      correct: "✅ Absolutely the right approach! The steps: Block (stops direct contact), Document (screenshots are evidence), Report to the platform (Instagram can remove the group and account), Tell a trusted adult (teacher, parent, school counselor). You are not at fault. Cyberbullying is a form of harassment — it can be addressed through school policies and in serious cases, legal channels.",
+      wrong: "❌ Responding angrily escalates the situation, deleting your account lets the bully win, and ignoring persistent harassment rarely makes it stop. The correct approach is: Block the user, save evidence (screenshots), report to the platform, and inform a trusted adult. You deserve support, and bullies must face consequences."
+    }
+  },
+  {
+    type: "Data Privacy",
+    typeClass: "type-privacy",
+    icon: "🔐",
+    message: `New app installation screen:\n\n📱 FunQuiz - Personality Test App\n"Discover your personality type!"\n\n⚙️ This app requires the following permissions:\n✓ Access to all your contacts\n✓ Read your SMS messages  \n✓ Access your precise location (always on)\n✓ Access your camera and microphone\n✓ Read your call logs\n✓ Access your files and storage\n\n[ALLOW ALL]  [DENY ALL]`,
+    question: "What should you do?",
+    options: [
+      { text: "Allow all — it's just a fun quiz app, nothing to hide!", correct: false },
+      { text: "Deny all, delete the app — a quiz needs none of these permissions", correct: true },
+      { text: "Allow only camera and location permissions", correct: false },
+      { text: "Allow all but delete the app afterward", correct: false }
+    ],
+    correctIndex: 1,
+    feedback: {
+      correct: "✅ Excellent judgment! A personality quiz has absolutely no legitimate reason to access your contacts, SMS, call logs, or always-on location. These excessive permissions are a major red flag indicating the app is likely data harvesting — collecting your data (and your contacts' data) to sell or exploit. Delete it and never install apps that demand more permissions than their stated function requires.",
+      wrong: "❌ A fun quiz app has NO legitimate reason to access contacts, SMS, call logs, and always-on location. These are data harvesting permissions. The app is likely collecting your private data and your contacts' data to sell to data brokers or use for targeted scams. Always question: why does this app need this permission? If you can't explain it, deny it."
+    }
+  }
+];
+
+const AI_QUESTIONS = [
+  {
+    num: "Q.01",
+    title: "Understanding AI",
+    desc: "Consider this scenario: You type a question into an AI chatbot and it gives you a very confident, detailed answer. What is the most important thing to remember?",
+    options: [
+      { text: "AI is connected to the internet so all its answers are from current, verified sources", correct: false },
+      { text: "AI answers are always more reliable than human answers because AI is objective", correct: false },
+      { text: "AI can generate confident-sounding answers that are factually wrong — always verify important information", correct: true },
+      { text: "AI understands questions the same way humans do, just faster", correct: false }
+    ],
+    correctIndex: 2
+  },
+  {
+    num: "Q.02",
+    title: "AI in Daily Life",
+    desc: "Which of the following is NOT an example of AI being used in a typical student's daily life?",
+    options: [
+      { text: "YouTube recommending videos based on your watch history", correct: false },
+      { text: "Your phone's autocomplete suggesting words as you type", correct: false },
+      { text: "A calculator computing 245 × 67", correct: true },
+      { text: "Google Lens identifying a plant from a photo", correct: false }
+    ],
+    correctIndex: 2
+  },
+  {
+    num: "Q.03",
+    title: "AI Risks and Ethics",
+    desc: "An AI system trained to predict which students need extra help was found to flag students from low-income neighborhoods at much higher rates. What is the most likely explanation?",
+    options: [
+      { text: "Students from low-income areas are naturally less capable", correct: false },
+      { text: "The AI is accurately identifying the students who need help", correct: false },
+      { text: "The training data reflected historical inequalities, causing the AI to inherit that bias", correct: true },
+      { text: "The AI randomly selected which students to flag", correct: false }
+    ],
+    correctIndex: 2
+  },
+  {
+    num: "Q.04",
+    title: "AI and Learning",
+    desc: "A student uses AI to write their entire history essay without reading anything or thinking about the topic. What is the main problem with this approach?",
+    options: [
+      { text: "The essay might not be long enough", correct: false },
+      { text: "The student misses the learning process and may develop dishonest academic habits", correct: true },
+      { text: "AI essays always get lower grades", correct: false },
+      { text: "The AI might write in the wrong format", correct: false }
+    ],
+    correctIndex: 1
+  },
+  {
+    num: "Q.05",
+    title: "AI and Human Difference",
+    desc: "Which of the following tasks is currently MOST difficult for AI to do as well as a human?",
+    options: [
+      { text: "Playing chess at grandmaster level", correct: false },
+      { text: "Recognizing images from millions of categories", correct: false },
+      { text: "Translating text between 100 languages", correct: false },
+      { text: "Understanding the emotional context of a friend's problem and responding with genuine empathy", correct: true }
+    ],
+    correctIndex: 3
+  }
+];
+
+const FRAMEWORKS = [
+  {
+    title: "NEP 2020 Digital Vision",
+    content: `<h3>NEP 2020: A Digital Education Revolution</h3>
+    <p>India's National Education Policy 2020 articulates a bold vision for technology's role in education: not merely as a tool for delivering content, but as a means of transforming the quality, reach, and equity of learning across the nation's extraordinary diversity.</p>
+    <p>The policy recognizes that technology can help address India's most persistent educational challenges: teacher shortages, geographic disparities, language diversity, and the gap between the education system's outputs and the economy's needs.</p>
+    <h3>Key NEP 2020 Digital Commitments</h3>
+    <ul>
+    <li>Establish a National Educational Technology Forum (NETF) to guide technology integration</li>
+    <li>Create a comprehensive digital education repository on the DIKSHA platform</li>
+    <li>Develop AI-powered tools for adaptive and personalized learning</li>
+    <li>Train all teachers in effective technology integration by 2030</li>
+    <li>Achieve universal digital literacy at the foundational level across India</li>
+    <li>Promote open-source, Indian-language digital resources</li>
+    </ul>
+    <p>NEP 2020 emphasizes that technology is a means to educational ends, not an end in itself. The goal is always deeper learning, broader access, and more empowered students and teachers — technology serves these human goals.</p>`
+  },
+  {
+    title: "Digital Competency Framework",
+    content: `<h3>India's Digital Competency Framework for Students</h3>
+    <p>A digital competency framework defines what students should know and be able to do with digital technology at different stages of their education. Aligned with both NEP 2020 and global frameworks like UNESCO's DigComp, India's emerging framework identifies five core competency areas.</p>
+    <h3>The Five Competency Areas</h3>
+    <ul>
+    <li><strong>Information Literacy:</strong> Finding, evaluating, and effectively using digital information</li>
+    <li><strong>Communication & Collaboration:</strong> Interacting, sharing, and collaborating through digital tools</li>
+    <li><strong>Digital Content Creation:</strong> Creating and transforming digital content responsibly and creatively</li>
+    <li><strong>Safety & Wellbeing:</strong> Protecting devices, data, privacy, health, and digital wellbeing</li>
+    <li><strong>Problem Solving:</strong> Using digital tools to identify and solve problems; understanding how digital systems work</li>
+    </ul>
+    <p>Students progress through four proficiency levels: Foundation (basic awareness), Intermediate (guided application), Advanced (independent use), and Expert (innovation and leadership). This framework guides the self-assessment tools in this platform.</p>`
+  },
+  {
+    title: "Cyber Safety Standards",
+    content: `<h3>National Cyber Safety Standards for Students</h3>
+    <p>Based on guidelines from CERT-In (India's Computer Emergency Response Team), the Ministry of Education, and international best practices, these standards define minimum cyber safety competencies for all students.</p>
+    <h3>Core Standards</h3>
+    <ul>
+    <li><strong>Authentication Security:</strong> Use of strong, unique passwords and multi-factor authentication for all important accounts</li>
+    <li><strong>Threat Recognition:</strong> Ability to identify phishing, social engineering, and malware threats in common contexts</li>
+    <li><strong>Privacy Management:</strong> Understanding and actively managing personal data sharing and platform permissions</li>
+    <li><strong>Incident Response:</strong> Knowing what to do when encountering cyber threats, bullying, or privacy violations</li>
+    <li><strong>Legal Awareness:</strong> Basic understanding of cyber laws and digital rights under India's IT Act</li>
+    </ul>
+    <p>These standards are not aspirational ideals — they are minimum competencies for safe participation in digital society. Schools are increasingly responsible for ensuring all students meet these standards before secondary school completion.</p>`
+  },
+  {
+    title: "AI Ethics Principles",
+    content: `<h3>Guiding Principles for Ethical AI Use in Education</h3>
+    <p>As AI tools become more prevalent in educational settings, clear ethical principles help students, teachers, and institutions navigate complex decisions about when and how to use AI appropriately.</p>
+    <h3>Core AI Ethics Principles</h3>
+    <ul>
+    <li><strong>Transparency:</strong> AI systems used in education should be transparent about what they do, what data they use, and how decisions are made</li>
+    <li><strong>Fairness:</strong> AI should not discriminate or create unequal outcomes based on demographic characteristics</li>
+    <li><strong>Privacy:</strong> Student data used in AI systems must be protected with the highest standards, especially for minors</li>
+    <li><strong>Human Oversight:</strong> Critical educational decisions (assessment, placement, support) must have meaningful human review, not be delegated entirely to AI</li>
+    <li><strong>Beneficence:</strong> AI in education should demonstrably benefit learning outcomes, not just efficiency metrics</li>
+    <li><strong>Academic Integrity:</strong> Clear norms distinguishing appropriate AI assistance from academic dishonesty, developed collaboratively with students</li>
+    </ul>
+    <p>These principles are intended to guide both how students use AI tools in their own learning and how they evaluate AI systems they encounter in educational and social contexts.</p>`
+  },
+  {
+    title: "Digital Wellbeing Charter",
+    content: `<h3>Student Digital Wellbeing Charter</h3>
+    <p>A digital wellbeing charter articulates the rights and responsibilities of students in digital environments, and the commitments schools make to protect and promote student wellbeing in the context of technology use.</p>
+    <h3>Student Rights</h3>
+    <ul>
+    <li>The right to privacy and control over personal data</li>
+    <li>The right to learn in a digital environment free from harassment and bullying</li>
+    <li>The right to access digital tools and education regardless of economic circumstances</li>
+    <li>The right to be informed about how technology affects their development and wellbeing</li>
+    <li>The right to meaningful technology-free time during the school day</li>
+    </ul>
+    <h3>Student Responsibilities</h3>
+    <ul>
+    <li>Respect others' privacy and dignity in all digital interactions</li>
+    <li>Use technology for learning and constructive purposes during school time</li>
+    <li>Report harmful content or cyberbullying when witnessed</li>
+    <li>Maintain academic integrity and cite digital sources appropriately</li>
+    <li>Actively manage personal screen time and digital health</li>
+    </ul>`
+  }
+];
+
+// ============================================================
+// APP STATE
+// ============================================================
+let appState = JSON.parse(localStorage.getItem('dlStudioState') || '{}');
+
+function saveState() {
+  localStorage.setItem('dlStudioState', JSON.stringify(appState));
+}
+
+function getScore(key, def=0) {
+  return appState[key] || def;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  btns.forEach(b => {
+    if(b.getAttribute('onclick').includes(`'${id}'`)) b.classList.add('active');
+  });
+  window.scrollTo(0,0);
+  
+  // Initialize on first visit
+  if(id === 'foundations' && !document.getElementById('foundations-grid').children.length) initFoundations();
+  if(id === 'selfcheck' && !document.getElementById('selfcheck-form').children.length) initSelfCheck();
+  if(id === 'safetech' && !document.getElementById('scenarios-container').children.length) initSafeTech();
+  if(id === 'aimodule' && !document.getElementById('ai-quiz-container').children.length) initAIModule();
+  if(id === 'dashboard') renderDashboard();
+  if(id === 'warning') renderWarning();
+  if(id === 'report') renderReport();
+  if(id === 'framework' && !document.getElementById('framework-tabs').children.length) initFramework();
+}
+
+// ============================================================
+// FOUNDATIONS
+// ============================================================
+function initFoundations() {
+  const grid = document.getElementById('foundations-grid');
+  FOUNDATIONS_DATA.forEach((page, i) => {
+    const card = document.createElement('div');
+    card.className = 'foundation-card';
+    card.innerHTML = `
+      <div class="fc-number">PAGE ${String(i+1).padStart(2,'0')} / 20</div>
+      <div style="font-size:28px;margin-bottom:8px">${page.icon}</div>
+      <div class="fc-title">${page.title}</div>
+      <div class="fc-preview">${page.preview}</div>
+    `;
+    card.onclick = () => openPage(i);
+    grid.appendChild(card);
+  });
+}
+
+function openPage(index) {
+  const page = FOUNDATIONS_DATA[index];
+  document.getElementById('foundations-list').style.display = 'none';
+  const container = document.getElementById('page-reader-container');
+  const reader = document.getElementById('page-reader');
+  
+  let checklistHTML = '';
+  if(page.checklist) {
+    checklistHTML = `<div class="checklist-box"><h4>✅ Safety & Knowledge Checklist</h4>` +
+      page.checklist.map((item,i) => `<label class="checklist-item"><input type="checkbox" id="chk-${index}-${i}"> ${item}</label>`).join('') +
+      `</div>`;
+  }
+  
+  reader.innerHTML = `
+    <div class="page-meta">📖 Page ${index+1} of 20 • ${page.icon} ${page.title}</div>
+    <h2>${page.title}</h2>
+    ${page.content}
+    ${page.reflection ? `<div class="reflection-box"><h4>💭 Reflection Prompt</h4><p>${page.reflection}</p></div>` : ''}
+    ${checklistHTML}
+    <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+      ${index > 0 ? `<button class="back-btn" onclick="openPage(${index-1})">← Previous</button>` : ''}
+      ${index < FOUNDATIONS_DATA.length-1 ? `<button class="calculate-btn" style="max-width:200px;margin:0" onclick="openPage(${index+1})">Next Page →</button>` : ''}
+    </div>
+  `;
+  reader.classList.add('visible');
+  container.style.display = 'block';
+}
+
+function closePage() {
+  document.getElementById('foundations-list').style.display = 'block';
+  document.getElementById('page-reader-container').style.display = 'none';
+  document.getElementById('page-reader').classList.remove('visible');
+}
+
+// ============================================================
+// SELF-CHECK
+// ============================================================
+const SELF_CHECK_QUESTIONS = [
+  { q: "Online Safety Awareness", desc: "How well do you recognize phishing, scams, and unsafe websites?" },
+  { q: "Password Hygiene", desc: "How strong and unique are your passwords? Do you use 2FA?" },
+  { q: "Information Verification", desc: "How often do you verify information before sharing or believing it?" },
+  { q: "Screen Time Balance", desc: "How well do you manage and balance your daily screen time?" },
+  { q: "Productive Technology Use", desc: "How effectively do you use technology for learning and creating?" },
+  { q: "Digital Communication Etiquette", desc: "How respectful and considerate are you in online communications?" }
+];
+
+let selfCheckScores = {};
+
+function initSelfCheck() {
+  const form = document.getElementById('selfcheck-form');
+  
+  SELF_CHECK_QUESTIONS.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-item';
+    div.innerHTML = `
+      <label>${i+1}. ${item.q}<br><span style="font-size:12px;color:var(--gray);font-weight:400">${item.desc}</span></label>
+      <div class="rating-scale">
+        ${[1,2,3,4,5].map(n => `<button class="rating-btn" data-q="${i}" data-v="${n}" onclick="selectRating(${i},${n})">${n}</button>`).join('')}
+      </div>
+      <div class="rating-labels"><span>Not at all</span><span>Expert level</span></div>
+    `;
+    form.appendChild(div);
+  });
+  
+  const btn = document.createElement('button');
+  btn.className = 'calculate-btn';
+  btn.textContent = '⚡ Calculate My Digital Literacy Index';
+  btn.onclick = calculateSelfCheck;
+  form.appendChild(btn);
+  
+  const results = document.createElement('div');
+  results.id = 'sc-results';
+  results.className = 'results-panel';
+  form.appendChild(results);
+}
+
+function selectRating(q, v) {
+  selfCheckScores[q] = v;
+  document.querySelectorAll(`[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+  document.querySelector(`[data-q="${q}"][data-v="${v}"]`).classList.add('selected');
+}
+
+function calculateSelfCheck() {
+  const vals = Object.values(selfCheckScores);
+  if(vals.length < SELF_CHECK_QUESTIONS.length) {
+    alert('Please rate all 6 categories before calculating.'); return;
+  }
+  
+  const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
+  const DLI = Math.round((avg / 5) * 100);
+  const CSS_ = Math.round(((selfCheckScores[0] || 1) + (selfCheckScores[1] || 1)) / 2 / 5 * 100);
+  const DRR = Math.round(((selfCheckScores[4] || 1) + (selfCheckScores[5] || 1)) / 2 / 5 * 100);
+  
+  appState.DLI = DLI;
+  appState.CSS = CSS_;
+  appState.DRR = DRR;
+  appState.selfCheckScores = {...selfCheckScores};
+  saveState();
+  
+  const level = DLI >= 80 ? '🏆 Digital Champion' : DLI >= 60 ? '⭐ Digital Competent' : DLI >= 40 ? '📈 Digital Learner' : '🌱 Digital Beginner';
+  const color = DLI >= 80 ? 'var(--success)' : DLI >= 60 ? 'var(--cyan)' : DLI >= 40 ? 'var(--warning)' : 'var(--danger)';
+  
+  const results = document.getElementById('sc-results');
+  results.innerHTML = `
+    <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:16px">Your Digital Literacy Profile</h3>
+    <div style="text-align:center;padding:16px;margin-bottom:20px">
+      <div style="font-size:48px">${DLI >= 80 ? '🏆' : DLI >= 60 ? '⭐' : DLI >= 40 ? '📈' : '🌱'}</div>
+      <div style="font-size:22px;font-weight:700;color:${color};margin-top:8px">${level}</div>
+    </div>
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="score-label">Digital Literacy Index</div>
+        <div class="score-value" style="color:${color}">${DLI}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${DLI}%;background:${color}"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Cyber Safety Score</div>
+        <div class="score-value">${CSS_}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${CSS_}%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Digital Responsibility</div>
+        <div class="score-value">${DRR}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${DRR}%"></div></div>
+      </div>
+    </div>
+    <div class="bar-chart">
+      ${SELF_CHECK_QUESTIONS.map((item, i) => `
+        <div class="bar-item">
+          <div class="bar-label">${item.q}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(selfCheckScores[i]||0)*20}%"></div></div>
+          <div class="bar-val">${selfCheckScores[i]||0}/5</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="reflection-box">
+      <h4>💡 Your Next Steps</h4>
+      <p>${DLI < 40 ? 'Start with the Foundations section — read Pages 1-5 to build your digital literacy foundation. Focus especially on Safe Technology Practices.' : DLI < 60 ? 'Good start! Focus on your lowest-scoring areas. Visit the Safe Technology Lab to practice real-world scenarios.' : DLI < 80 ? 'Strong performance! Explore the AI Awareness Module and work on AI readiness skills for the future.' : 'Outstanding! Consider mentoring peers in digital literacy. Explore AI careers and advanced digital skills.'}</p>
+    </div>
+  `;
+  results.classList.add('visible');
+  results.scrollIntoView({behavior:'smooth'});
+}
+
+// ============================================================
+// SAFE TECH LAB
+// ============================================================
+let currentScenario = 0;
+let scenarioScores = [];
+
+function initSafeTech() {
+  const container = document.getElementById('scenarios-container');
+  const steps = document.getElementById('scenario-steps');
+  
+  SCENARIOS_DATA.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot' + (i===0?' current':'');
+    dot.id = `step-${i}`;
+    steps.appendChild(dot);
+    
+    const card = document.createElement('div');
+    card.className = 'scenario-card' + (i===0?' active':'');
+    card.id = `scenario-${i}`;
+    card.innerHTML = `
+      <span class="scenario-type ${s.typeClass}">${s.icon} ${s.type}</span>
+      <h3 style="font-size:18px;margin:12px 0 4px;font-family:'Playfair Display',serif">Scenario ${i+1} of ${SCENARIOS_DATA.length}</h3>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:4px">${s.question}</p>
+      <div class="scenario-message">${s.message}</div>
+      <p style="font-size:13px;font-weight:600;margin:16px 0 8px">⚡ ${s.question}</p>
+      <div class="scenario-options">
+        ${s.options.map((opt, j) => `<button class="option-btn" id="opt-${i}-${j}" onclick="selectOption(${i},${j},${opt.correct})">${String.fromCharCode(65+j)}. ${opt.text}</button>`).join('')}
+      </div>
+      <div class="feedback-box" id="feedback-${i}"></div>
+      <button class="next-scenario-btn" id="next-${i}" onclick="${i < SCENARIOS_DATA.length-1 ? `nextScenario(${i+1})` : 'showSafeTechResults()'}">${i < SCENARIOS_DATA.length-1 ? 'Next Scenario →' : '📊 View Results'}</button>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function selectOption(scenarioIdx, optIdx, isCorrect) {
+  // Disable all buttons for this scenario
+  SCENARIOS_DATA[scenarioIdx].options.forEach((_, j) => {
+    const btn = document.getElementById(`opt-${scenarioIdx}-${j}`);
+    btn.disabled = true;
+    if(j === SCENARIOS_DATA[scenarioIdx].correctIndex) {
+      btn.classList.add('correct');
+    } else if(j === optIdx && !isCorrect) {
+      btn.classList.add('wrong');
+    }
+  });
+  
+  scenarioScores[scenarioIdx] = isCorrect ? 1 : 0;
+  
+  const feedback = document.getElementById(`feedback-${scenarioIdx}`);
+  feedback.textContent = isCorrect ? SCENARIOS_DATA[scenarioIdx].feedback.correct : SCENARIOS_DATA[scenarioIdx].feedback.wrong;
+  feedback.className = 'feedback-box ' + (isCorrect ? 'correct' : 'wrong');
+  feedback.style.display = 'block';
+  
+  document.getElementById(`next-${scenarioIdx}`).style.display = 'inline-block';
+}
+
+function nextScenario(idx) {
+  document.querySelector('.scenario-card.active').classList.remove('active');
+  document.getElementById(`scenario-${idx}`).classList.add('active');
+  
+  document.querySelectorAll('.step-dot').forEach((d,i) => {
+    d.className = 'step-dot' + (i < idx ? ' done' : i === idx ? ' current' : '');
+  });
+  
+  currentScenario = idx;
+  document.getElementById(`scenario-${idx}`).scrollIntoView({behavior:'smooth'});
+}
+
+function showSafeTechResults() {
+  document.querySelector('.scenario-card.active').classList.remove('active');
+  const correct = scenarioScores.filter(s=>s===1).length;
+  const total = SCENARIOS_DATA.length;
+  const CDQS = Math.round(correct/total*100);
+  const RAI = Math.round((CDQS * 0.7 + (selfCheckScores[0]||3)*20*0.3));
+  
+  appState.CDQS = CDQS;
+  appState.RAI = RAI;
+  saveState();
+  
+  const results = document.getElementById('safetech-results');
+  results.innerHTML = `
+    <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:20px">🛡️ Cyber Safety Lab Results</h3>
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="score-label">Scenarios Passed</div>
+        <div class="score-value" style="color:${CDQS>=75?'var(--success)':CDQS>=50?'var(--warning)':'var(--danger)'}">${correct}/${total}</div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Cyber Decision Quality</div>
+        <div class="score-value">${CDQS}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${CDQS}%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Risk Awareness Index</div>
+        <div class="score-value">${RAI}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${RAI}%"></div></div>
+      </div>
+    </div>
+    ${scenarioScores.map((s,i) => `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--border)">
+        <span style="font-size:20px">${s?'✅':'❌'}</span>
+        <span style="font-size:13px">${SCENARIOS_DATA[i].type}</span>
+        <span style="font-size:11px;color:var(--gray);margin-left:auto">${s?'Correct':'Review needed'}</span>
+      </div>
+    `).join('')}
+    <div class="reflection-box" style="margin-top:16px">
+      <h4>📚 Recommendation</h4>
+      <p>${CDQS >= 75 ? 'Excellent cyber safety awareness! You successfully identified threats in most scenarios. Continue practicing vigilance and share your knowledge with peers.' : CDQS >= 50 ? 'Good progress, but there is room for improvement. Review the scenarios you missed and read Foundation Pages 3-4 on Safe Technology and Cyber Hygiene.' : 'Several scenarios need review. Please study Foundation Pages 3-8 carefully and retake the lab. Cyber safety skills take practice — keep going!'}</p>
+    </div>
+    <button class="calculate-btn" style="margin-top:16px" onclick="resetSafeTech()">🔄 Retake Lab</button>
+  `;
+  results.classList.add('visible');
+  results.scrollIntoView({behavior:'smooth'});
+}
+
+function resetSafeTech() {
+  currentScenario = 0;
+  scenarioScores = [];
+  document.querySelectorAll('.scenario-card').forEach((c,i) => {
+    c.classList.toggle('active', i===0);
+  });
+  document.querySelectorAll('.step-dot').forEach((d,i) => {
+    d.className = 'step-dot' + (i===0?' current':'');
+  });
+  document.getElementById('safetech-results').classList.remove('visible');
+  // Re-enable buttons
+  SCENARIOS_DATA.forEach((s,i) => {
+    s.options.forEach((_,j) => {
+      const btn = document.getElementById(`opt-${i}-${j}`);
+      btn.disabled = false;
+      btn.className = 'option-btn';
+    });
+    document.getElementById(`feedback-${i}`).style.display='none';
+    document.getElementById(`next-${i}`).style.display='none';
+  });
+}
+
+// ============================================================
+// AI MODULE
+// ============================================================
+let aiScores = {};
+let currentAIQ = 0;
+
+function initAIModule() {
+  const container = document.getElementById('ai-quiz-container');
+  
+  AI_QUESTIONS.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'ai-question' + (i===0?' active':'');
+    div.id = `aiq-${i}`;
+    div.innerHTML = `
+      <div class="q-num">${q.num} / ${AI_QUESTIONS.length} Questions</div>
+      <h3>${q.title}</h3>
+      <p>${q.desc}</p>
+      <div class="ai-options">
+        ${q.options.map((opt,j) => `<button class="ai-opt" id="aiopt-${i}-${j}" onclick="selectAI(${i},${j},${opt.correct})">${String.fromCharCode(65+j)}. ${opt.text}</button>`).join('')}
+      </div>
+      <div class="feedback-box" id="aifb-${i}"></div>
+      <button class="next-scenario-btn" id="ainext-${i}" style="display:none" onclick="${i < AI_QUESTIONS.length-1 ? `nextAIQ(${i+1})` : 'showAIResults()'}">${i < AI_QUESTIONS.length-1 ? 'Next Question →' : '📊 See My AI Score'}</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function selectAI(qi, optIdx, isCorrect) {
+  AI_QUESTIONS[qi].options.forEach((_,j) => {
+    const btn = document.getElementById(`aiopt-${qi}-${j}`);
+    btn.disabled = true;
+    if(j === AI_QUESTIONS[qi].correctIndex) btn.classList.add('correct');
+    else if(j === optIdx && !isCorrect) btn.classList.add('wrong');
+  });
+  
+  aiScores[qi] = isCorrect ? 1 : 0;
+  
+  const fb = document.getElementById(`aifb-${qi}`);
+  fb.textContent = isCorrect ? '✅ Correct! Well done.' : `❌ The correct answer was: ${AI_QUESTIONS[qi].options[AI_QUESTIONS[qi].correctIndex].text}`;
+  fb.className = 'feedback-box ' + (isCorrect ? 'correct' : 'wrong');
+  fb.style.display = 'block';
+  document.getElementById(`ainext-${qi}`).style.display = 'inline-block';
+}
+
+function nextAIQ(idx) {
+  document.querySelector('.ai-question.active').classList.remove('active');
+  document.getElementById(`aiq-${idx}`).classList.add('active');
+}
+
+function showAIResults() {
+  document.querySelector('.ai-question.active').classList.remove('active');
+  const correct = Object.values(aiScores).filter(s=>s===1).length;
+  const AICS = Math.round(correct/AI_QUESTIONS.length*100);
+  const AAI = Math.round(AICS * 0.8 + 20);
+  
+  appState.AICS = AICS;
+  appState.AAI = AAI;
+  saveState();
+  
+  const results = document.getElementById('ai-results');
+  results.innerHTML = `
+    <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:20px">🤖 AI Awareness Results</h3>
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="score-label">AI Conceptual Understanding</div>
+        <div class="score-value" style="color:${AICS>=80?'var(--success)':AICS>=60?'var(--cyan)':'var(--warning)'}">${AICS}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${AICS}%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">AI Awareness Index</div>
+        <div class="score-value">${AAI}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${AAI}%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Questions Correct</div>
+        <div class="score-value">${correct}</div>
+        <div class="score-unit">/ ${AI_QUESTIONS.length}</div>
+      </div>
+    </div>
+    <div class="reflection-box" style="margin-top:16px">
+      <h4>🚀 AI Learning Path</h4>
+      <p>${AICS >= 80 ? 'Excellent AI awareness! You understand core concepts well. Explore Foundation Pages 10-14 for deeper AI knowledge, and consider researching AI career paths.' : AICS >= 60 ? 'Good foundation! Study Foundation Pages 10-13 on AI Explained Simply, AI in Everyday Life, and Bias in AI Systems to strengthen your understanding.' : 'Keep learning! Start with Foundation Page 10 (AI Explained Simply) and Page 11 (AI in Everyday Life) to build your conceptual foundation.'}</p>
+    </div>
+  `;
+  results.classList.add('visible');
+  results.scrollIntoView({behavior:'smooth'});
+}
+
+// ============================================================
+// SCREEN BALANCE
+// ============================================================
+function updateRange(inputId, displayId) {
+  const val = document.getElementById(inputId).value;
+  document.getElementById(displayId).textContent = val + ' hr' + (val==1?'':'s');
+}
+
+function calculateScreenBalance() {
+  const total = parseFloat(document.getElementById('sb-total').value);
+  const study = parseFloat(document.getElementById('sb-study').value);
+  const entertain = parseFloat(document.getElementById('sb-entertain').value);
+  const physical = parseFloat(document.getElementById('sb-physical').value);
+  const sleep = parseFloat(document.getElementById('sb-sleep').value);
+  
+  // Formulas
+  const studyRatio = study / Math.max(total, 1);
+  const SBS = Math.round(Math.min(100, (studyRatio * 50) + (Math.min(physical,2)/2)*30 + (Math.min(sleep,8)/8)*20));
+  const DFR = Math.round(Math.min(100, (Math.max(0,total-6)/10)*60 + (Math.max(0,6-sleep)/6)*40));
+  const HUI = Math.round((SBS * 0.6 + (100-DFR) * 0.4));
+  
+  appState.SBS = SBS;
+  appState.DFR = DFR;
+  appState.HUI = HUI;
+  saveState();
+  
+  const riskLevel = DFR > 70 ? 'high' : DFR > 40 ? 'moderate' : 'low';
+  const riskColor = DFR > 70 ? 'var(--danger)' : DFR > 40 ? 'var(--warning)' : 'var(--success)';
+  
+  const results = document.getElementById('sb-results');
+  results.innerHTML = `
+    <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:20px">⏱️ Screen Balance Analysis</h3>
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="score-label">Screen Balance Score</div>
+        <div class="score-value">${SBS}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${SBS}%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Digital Fatigue Risk</div>
+        <div class="score-value" style="color:${riskColor}">${DFR}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${DFR}%;background:${riskColor}"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Healthy Use Index</div>
+        <div class="score-value">${HUI}</div>
+        <div class="score-unit">/ 100</div>
+        <div class="score-bar"><div class="score-fill" style="width:${HUI}%"></div></div>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:16px">
+      <h4 style="font-size:13px;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">📊 Your Breakdown</h4>
+      <div class="bar-item"><div class="bar-label">Total Screen Time</div><div class="bar-track"><div class="bar-fill" style="width:${Math.min(total/16*100,100)}%;background:${total>8?'var(--danger)':'var(--cyan)'}"></div></div><div class="bar-val">${total}h</div></div>
+      <div class="bar-item"><div class="bar-label">Study Usage</div><div class="bar-track"><div class="bar-fill" style="width:${studyRatio*100}%"></div></div><div class="bar-val">${Math.round(studyRatio*100)}%</div></div>
+      <div class="bar-item"><div class="bar-label">Physical Activity</div><div class="bar-track"><div class="bar-fill" style="width:${physical/4*100}%;background:${physical>=1?'var(--success)':'var(--warning)'}"></div></div><div class="bar-val">${physical}h</div></div>
+      <div class="bar-item"><div class="bar-label">Sleep Quality</div><div class="bar-track"><div class="bar-fill" style="width:${sleep/10*100}%;background:${sleep>=7?'var(--success)':'var(--danger)'}"></div></div><div class="bar-val">${sleep}h</div></div>
+    </div>
+    <div class="reflection-box" style="margin-top:16px">
+      <h4>💡 Recommendations</h4>
+      <p>${total > 8 ? '⚠️ Your total screen time is high. Try reducing by 1-2 hours daily, especially entertainment. ' : ''}${sleep < 7 ? '⚠️ You need more sleep! Aim for 8-9 hours. Screens before bed disrupt sleep quality. ' : ''}${physical < 1 ? '⚠️ Increase physical activity to at least 1 hour daily — it directly improves focus and wellbeing. ' : ''}${studyRatio < 0.3 ? '📚 Shift more of your screen time toward productive use — study, create, and learn. ' : ''}${HUI >= 70 ? '✅ Good overall balance! Keep maintaining your healthy digital habits.' : ''}</p>
+    </div>
+  `;
+  results.classList.add('visible');
+  results.scrollIntoView({behavior:'smooth'});
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const DLI = appState.DLI || 0;
+  const CSS_ = appState.CSS || 0;
+  const AAI = appState.AAI || 0;
+  const SBS = appState.SBS || 0;
+  const HUI = appState.HUI || 0;
+  const CDQS = appState.CDQS || 0;
+  const overall = Math.round((DLI + CSS_ + AAI + SBS) / 4);
+  
+  const content = document.getElementById('dashboard-content');
+  content.innerHTML = `
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <div class="dash-icon">📚</div>
+        <div class="dash-label">Digital Literacy Index</div>
+        <div class="dash-value" style="color:${DLI>=70?'var(--success)':DLI>=40?'var(--warning)':'var(--danger)'}">${DLI || '--'}</div>
+        <div class="dash-status ${DLI>=70?'status-safe':DLI>=40?'status-warn':'status-risk'}">${DLI>=70?'Strong':DLI>=40?'Developing':DLI>0?'Needs Work':'Not assessed'}</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon">🛡️</div>
+        <div class="dash-label">Cyber Safety Score</div>
+        <div class="dash-value" style="color:${CSS_>=70?'var(--success)':CSS_>=40?'var(--warning)':'var(--danger)'}">${CSS_ || '--'}</div>
+        <div class="dash-status ${CSS_>=70?'status-safe':CSS_>=40?'status-warn':'status-risk'}">${CSS_>=70?'Protected':CSS_>=40?'Moderate':CSS_>0?'At Risk':'Not assessed'}</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon">🤖</div>
+        <div class="dash-label">AI Awareness Index</div>
+        <div class="dash-value" style="color:${AAI>=70?'var(--success)':AAI>=40?'var(--warning)':'var(--danger)'}">${AAI || '--'}</div>
+        <div class="dash-status ${AAI>=70?'status-safe':AAI>=40?'status-warn':'status-risk'}">${AAI>=70?'AI Ready':AAI>=40?'Learning':AAI>0?'Beginner':'Not assessed'}</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon">⏱️</div>
+        <div class="dash-label">Screen Balance Score</div>
+        <div class="dash-value" style="color:${SBS>=70?'var(--success)':SBS>=40?'var(--warning)':'var(--danger)'}">${SBS || '--'}</div>
+        <div class="dash-status ${SBS>=70?'status-safe':SBS>=40?'status-warn':'status-risk'}">${SBS>=70?'Balanced':SBS>=40?'Imbalanced':SBS>0?'Unbalanced':'Not assessed'}</div>
+      </div>
+    </div>
+    
+    ${overall > 0 ? `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;text-align:center">
+      <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:16px">Overall Digital Readiness</h3>
+      <div style="font-family:'Playfair Display',serif;font-size:64px;font-weight:900;color:${overall>=70?'var(--success)':overall>=50?'var(--cyan)':'var(--warning)'}">
+        ${overall}
+      </div>
+      <div style="font-size:14px;color:var(--gray);margin-top:4px">/ 100 composite score</div>
+      <div style="font-size:16px;font-weight:600;margin-top:12px">${overall>=70?'🏆 Digital Champion':overall>=50?'⭐ Digital Competent':'📈 Digital Learner'}</div>
+    </div>
+    ` : ''}
+    
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px">
+      <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:16px">📊 Competency Profile</h3>
+      ${renderRadarSVG(DLI, CSS_, AAI, SBS, HUI, CDQS)}
+    </div>
+    
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px">
+      <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:16px">📈 Module Completion</h3>
+      <div class="bar-chart">
+        <div class="bar-item"><div class="bar-label">Digital Literacy Self-Check</div><div class="bar-track"><div class="bar-fill" style="width:${appState.DLI?100:0}%"></div></div><div class="bar-val">${appState.DLI?'✅':'⭕'}</div></div>
+        <div class="bar-item"><div class="bar-label">Safe Technology Lab</div><div class="bar-track"><div class="bar-fill" style="width:${appState.CDQS!==undefined?100:0}%"></div></div><div class="bar-val">${appState.CDQS!==undefined?'✅':'⭕'}</div></div>
+        <div class="bar-item"><div class="bar-label">AI Awareness Module</div><div class="bar-track"><div class="bar-fill" style="width:${appState.AICS!==undefined?100:0}%"></div></div><div class="bar-val">${appState.AICS!==undefined?'✅':'⭕'}</div></div>
+        <div class="bar-item"><div class="bar-label">Screen Balance Analysis</div><div class="bar-track"><div class="bar-fill" style="width:${appState.SBS?100:0}%"></div></div><div class="bar-val">${appState.SBS?'✅':'⭕'}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRadarSVG(dli, css, aai, sbs, hui, cdqs) {
+  const W = 280, H = 280, cx = 140, cy = 140, r = 100;
+  const labels = ['Literacy','Safety','AI Aware','Balance','Healthy Use','Cyber Dec.'];
+  const vals = [dli||0, css||0, aai||0, sbs||0, hui||0, cdqs||0];
+  const n = 6;
+  const angles = Array.from({length:n},(_, i)=> (i * 2 * Math.PI / n) - Math.PI/2);
+  
+  function pt(angle, radius) {
+    return [cx + radius * Math.cos(angle), cy + radius * Math.sin(angle)];
+  }
+  
+  let gridPaths = '';
+  [20,40,60,80,100].forEach(pct => {
+    const rr = r * pct/100;
+    const pts = angles.map(a => pt(a, rr));
+    gridPaths += `<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="rgba(0,212,255,0.1)" stroke-width="1"/>`;
+  });
+  
+  let axisLines = angles.map(a => {
+    const [x,y] = pt(a, r);
+    return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>`;
+  }).join('');
+  
+  const dataPts = angles.map((a, i) => pt(a, r * (vals[i]/100)));
+  const dataPath = dataPts.map((p,i) => (i===0?'M':'L')+p.join(',')).join(' ')+'Z';
+  
+  let labelEls = angles.map((a, i) => {
+    const [x, y] = pt(a, r + 22);
+    return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" fill="rgba(200,216,240,0.7)" font-size="9" font-family="DM Sans">${labels[i]}</text><text x="${pt(a,r+14)[0]}" y="${pt(a,r+14)[1]}" text-anchor="middle" dominant-baseline="middle" fill="var(--cyan)" font-size="9" font-family="JetBrains Mono">${vals[i]}</text>`;
+  }).join('');
+  
+  return `<svg viewBox="0 0 ${W} ${H}" style="max-width:280px;display:block;margin:0 auto">
+    ${gridPaths}${axisLines}
+    <path d="${dataPath}" fill="rgba(0,212,255,0.15)" stroke="var(--cyan)" stroke-width="2"/>
+    ${dataPts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--cyan)"/>`).join('')}
+    ${labelEls}
+  </svg>`;
+}
+
+// ============================================================
+// WARNING SYSTEM
+// ============================================================
+function renderWarning() {
+  const DLI = appState.DLI || 0;
+  const CSS_ = appState.CSS || 0;
+  const CDQS = appState.CDQS;
+  const DFR = appState.DFR || 0;
+  const SBS = appState.SBS || 0;
+  
+  // Risk assessment
+  const risks = [];
+  if(DLI > 0 && DLI < 40) risks.push({ label: 'Low Digital Literacy', severity: 'high', action: 'Complete Foundation Pages 1-5 and retake Self-Check' });
+  if(CSS_ > 0 && CSS_ < 50) risks.push({ label: 'Weak Cyber Safety Awareness', severity: 'high', action: 'Study Foundation Pages 3-6 and practice Safe Tech Lab' });
+  if(CDQS !== undefined && CDQS < 50) risks.push({ label: 'Poor Phishing/Threat Recognition', severity: 'high', action: 'Retake Safe Technology Lab with focus on threat identification' });
+  if(DFR > 70) risks.push({ label: 'High Digital Fatigue Risk', severity: 'moderate', action: 'Reduce total screen time and improve sleep hygiene' });
+  if(SBS > 0 && SBS < 40) risks.push({ label: 'Unbalanced Screen Usage', severity: 'moderate', action: 'Read Foundation Page 15 on Balanced Screen Time' });
+  
+  let overallRisk = 'safe';
+  let riskIcon = '✅';
+  let riskTitle = 'Safe Zone';
+  let riskDesc = 'Your digital behaviors show no significant risk indicators. Continue building your skills and maintaining good habits.';
+  
+  if(risks.filter(r=>r.severity==='high').length > 0) {
+    overallRisk = 'high'; riskIcon = '🚨'; riskTitle = 'High Digital Risk';
+    riskDesc = 'Several significant risk areas have been identified in your digital profile. Immediate action is recommended to protect your digital safety and wellbeing.';
+  } else if(risks.filter(r=>r.severity==='moderate').length > 0) {
+    overallRisk = 'moderate'; riskIcon = '⚠️'; riskTitle = 'Moderate Risk';
+    riskDesc = 'Some areas of concern have been identified. Addressing these will significantly strengthen your digital safety and health.';
+  }
+  
+  if(!appState.DLI && !appState.CDQS) {
+    overallRisk = 'moderate'; riskIcon = '📋'; riskTitle = 'Assessment Needed';
+    riskDesc = 'Complete at least the Digital Literacy Self-Check and Safe Technology Lab to generate your risk assessment.';
+  }
+  
+  const content = document.getElementById('warning-content');
+  content.innerHTML = `
+    <div class="warning-panel warning-${overallRisk}">
+      <div class="warning-icon">${riskIcon}</div>
+      <div class="warning-title">${riskTitle}</div>
+      <div class="warning-desc">${riskDesc}</div>
+    </div>
+    
+    ${risks.length > 0 ? `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px">
+      <h3 style="font-size:14px;color:var(--warning);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px">⚠️ Identified Risk Areas</h3>
+      ${risks.map(r => `
+        <div style="display:flex;gap:12px;padding:12px;border-radius:8px;background:rgba(255,${r.severity==='high'?'82,82':'171,64'},0.08);border:1px solid rgba(255,${r.severity==='high'?'82,82':'171,64'},0.2);margin-bottom:10px">
+          <span style="font-size:18px">${r.severity==='high'?'🔴':'🟡'}</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:${r.severity==='high'?'var(--danger)':'var(--warning)'}">${r.label}</div>
+            <div style="font-size:12px;color:var(--gray);margin-top:4px">💡 ${r.action}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    ` : appState.DLI ? `
+    <div style="background:rgba(0,230,118,0.05);border:1px solid rgba(0,230,118,0.2);border-radius:12px;padding:20px;margin-bottom:20px">
+      <h3 style="font-size:14px;color:var(--success);margin-bottom:10px">✅ No Risk Indicators Detected</h3>
+      <p style="font-size:13px;color:var(--gray)">Your assessments show no significant risk areas. Continue building your digital skills and helping peers develop theirs.</p>
+    </div>
+    ` : ''}
+    
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px">
+      <h3 style="font-size:14px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px">📊 Risk Indicators Summary</h3>
+      <div class="bar-chart">
+        <div class="bar-item"><div class="bar-label">Digital Literacy</div><div class="bar-track"><div class="bar-fill" style="width:${DLI}%;background:${DLI>=70?'var(--success)':DLI>=40?'var(--warning)':'var(--danger)'}"></div></div><div class="bar-val">${DLI||'N/A'}</div></div>
+        <div class="bar-item"><div class="bar-label">Cyber Safety</div><div class="bar-track"><div class="bar-fill" style="width:${CSS_}%;background:${CSS_>=70?'var(--success)':CSS_>=40?'var(--warning)':'var(--danger)'}"></div></div><div class="bar-val">${CSS_||'N/A'}</div></div>
+        <div class="bar-item"><div class="bar-label">Cyber Decisions</div><div class="bar-track"><div class="bar-fill" style="width:${CDQS||0}%;background:${(CDQS||0)>=70?'var(--success)':(CDQS||0)>=40?'var(--warning)':'var(--danger)'}"></div></div><div class="bar-val">${CDQS!==undefined?CDQS:'N/A'}</div></div>
+        <div class="bar-item"><div class="bar-label">Fatigue Risk</div><div class="bar-track"><div class="bar-fill" style="width:${DFR}%;background:${DFR<=30?'var(--success)':DFR<=60?'var(--warning)':'var(--danger)'}"></div></div><div class="bar-val">${DFR||'N/A'}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// REPORT
+// ============================================================
+function renderReport() {
+  const DLI = appState.DLI || 0;
+  const CSS_ = appState.CSS || 0;
+  const AAI = appState.AAI || 0;
+  const SBS = appState.SBS || 0;
+  const DFR = appState.DFR || 0;
+  const HUI = appState.HUI || 0;
+  const CDQS = appState.CDQS;
+  const AICS = appState.AICS || 0;
+  const DRR = appState.DRR || 0;
+  const overall = Math.round((DLI+CSS_+AAI+SBS)/4) || 0;
+  const today = new Date().toLocaleDateString('en-IN', {year:'numeric',month:'long',day:'numeric'});
+  
+  const content = document.getElementById('report-content');
+  content.innerHTML = `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;text-align:center">
+      <div style="font-size:12px;color:var(--gray);font-family:'JetBrains Mono',monospace;margin-bottom:16px">DIGITAL READINESS REPORT • ${today}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px">Digital Literacy & AI Readiness</div>
+      <div style="font-size:13px;color:var(--gray)">Developed by Mateen Yousuf — School Education Department Kashmir</div>
+      ${overall>0?`<div style="margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:56px;font-weight:700;color:${overall>=70?'var(--success)':overall>=50?'var(--cyan)':'var(--warning)'}">${overall}</div><div style="font-size:13px;color:var(--gray)">Overall Digital Readiness Score</div>`:''}
+    </div>
+    
+    <div class="report-section">
+      <h3>📊 Digital Competency Profile</h3>
+      <div class="report-item"><span class="ri-label">Digital Literacy Index</span><span class="ri-value" style="color:${DLI>=70?'var(--success)':DLI>=40?'var(--warning)':'var(--danger)'}">${DLI||'Not assessed'}</span></div>
+      <div class="report-item"><span class="ri-label">Cyber Safety Score</span><span class="ri-value">${CSS_||'Not assessed'}</span></div>
+      <div class="report-item"><span class="ri-label">Digital Responsibility Rating</span><span class="ri-value">${DRR||'Not assessed'}</span></div>
+      <div class="report-item"><span class="ri-label">Cyber Decision Quality</span><span class="ri-value">${CDQS!==undefined?CDQS:'Not assessed'}</span></div>
+    </div>
+    
+    <div class="report-section">
+      <h3>🤖 AI Awareness Profile</h3>
+      <div class="report-item"><span class="ri-label">AI Conceptual Understanding</span><span class="ri-value">${AICS||'Not assessed'}</span></div>
+      <div class="report-item"><span class="ri-label">AI Awareness Index</span><span class="ri-value">${AAI||'Not assessed'}</span></div>
+      <div class="report-item"><span class="ri-label">AI Readiness Level</span><span class="ri-value" style="color:var(--cyan)">${AAI>=80?'AI Champion':AAI>=60?'AI Aware':AAI>=40?'AI Learner':AAI>0?'AI Beginner':'Not assessed'}</span></div>
+    </div>
+    
+    <div class="report-section">
+      <h3>⏱️ Digital Wellness Profile</h3>
+      <div class="report-item"><span class="ri-label">Screen Balance Score</span><span class="ri-value">${SBS||'Not assessed'}</span></div>
+      <div class="report-item"><span class="ri-label">Digital Fatigue Risk</span><span class="ri-value" style="color:${DFR>60?'var(--danger)':DFR>30?'var(--warning)':'var(--success)'}">${DFR||'Not assessed'}</span></div>
+      <div class="report-item"><span class="ri-label">Healthy Use Index</span><span class="ri-value">${HUI||'Not assessed'}</span></div>
+    </div>
+    
+    <div class="report-section">
+      <h3>🗺️ Future Skills Roadmap</h3>
+      <p style="font-size:13px;color:#c8d8f0;line-height:1.8;margin-bottom:12px">Based on NEP 2020 and future workforce needs, here are the priority skills to develop:</p>
+      ${[
+        {skill:'Computational Thinking & Coding', priority:DLI<60?'High':'Medium', resource:'Start with Scratch, then Python basics'},
+        {skill:'Critical Information Evaluation', priority:CSS_<60?'High':'Medium', resource:'Practice SIFT method daily with news articles'},
+        {skill:'AI Literacy & Prompt Engineering', priority:AAI<60?'High':'Medium', resource:'Explore Foundation Pages 10-14 on AI'},
+        {skill:'Data Privacy & Security', priority:CSS_<70?'High':'Medium', resource:'Study Foundation Pages 6-7 and practice settings audits'},
+        {skill:'Digital Content Creation', priority:'Medium', resource:'Try creating educational videos or presentations'},
+        {skill:'Collaborative Digital Tools', priority:'Medium', resource:'Learn Google Workspace, GitHub, or Notion'}
+      ].map(r=>`
+        <div class="report-item">
+          <span class="ri-label">${r.skill}</span>
+          <div>
+            <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:${r.priority==='High'?'rgba(255,82,82,0.15)':'rgba(255,171,64,0.15)'};color:${r.priority==='High'?'var(--danger)':'var(--warning)'};">${r.priority} Priority</span>
+            <div style="font-size:11px;color:var(--gray);margin-top:4px">${r.resource}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    
+    <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+      <button class="print-btn" onclick="window.print()">🖨️ Print Report</button>
+      <button class="print-btn" style="background:rgba(0,212,255,0.1);border:1px solid var(--border)" onclick="resetAll()">🔄 Reset All Data</button>
+    </div>
+  `;
+}
+
+function resetAll() {
+  if(confirm('Reset all your assessment data? This cannot be undone.')) {
+    appState = {};
+    saveState();
+    location.reload();
+  }
+}
+
+// ============================================================
+// FRAMEWORK
+// ============================================================
+function initFramework() {
+  const tabs = document.getElementById('framework-tabs');
+  const panels = document.getElementById('framework-panels');
+  
+  FRAMEWORKS.forEach((f, i) => {
+    const tab = document.createElement('button');
+    tab.className = 'ftab' + (i===0?' active':'');
+    tab.textContent = f.title;
+    tab.onclick = () => switchFramework(i);
+    tabs.appendChild(tab);
+    
+    const panel = document.createElement('div');
+    panel.className = 'framework-content' + (i===0?' active':'');
+    panel.id = `fp-${i}`;
+    panel.innerHTML = f.content;
+    panels.appendChild(panel);
+  });
+}
+
+function switchFramework(idx) {
+  document.querySelectorAll('.ftab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.framework-content').forEach((p,i) => p.classList.toggle('active', i===idx));
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Init foundations grid
+  initFoundations();
+});
+</script>
+
+<!-- SERVICE WORKER — inline blob registration, works offline & in preview -->
+<script>
+(function() {
+  if (!('serviceWorker' in navigator)) return;
+  // Only register on a real HTTP/HTTPS origin, not blob/data URLs
+  if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+  try {
+    const swCode = `
+const CACHE='dl-studio-v1';
+const SHELL=['/'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(res=>{if(res&&res.status===200){const cl=res.clone();caches.open(CACHE).then(c=>c.put(e.request,cl));}return res;}).catch(()=>caches.match('/'))));});
+`;
+    const blob = new Blob([swCode], { type: 'application/javascript' });
+    const url = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url, { scope: '/' })
+      .then(() => URL.revokeObjectURL(url))
+      .catch(() => URL.revokeObjectURL(url));
+  } catch(e) { /* silent — SW is an enhancement, not required */ }
+})();
+</script>
+</body>
+</html>

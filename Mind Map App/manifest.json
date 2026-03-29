@@ -1,0 +1,11 @@
+{
+  "name": "MindMap – AI Visual Learning Tool",
+  "short_name": "MindMap",
+  "description": "AI-powered Mind Mapping Study Tool aligned with NEP 2020 & NCF 2023",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a1628",
+  "theme_color": "#06b6d4",
+  "orientation": "landscape-primary",
+  "categories": ["education","productivity"]
+}

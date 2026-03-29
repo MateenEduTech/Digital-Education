@@ -1,0 +1,41 @@
+{
+  "name": "IdeaSpark – Where Ideas Begin",
+  "short_name": "IdeaSpark",
+  "description": "AI-powered Creative Idea Generator for students. NEP 2020 & NCF 2023 aligned. By Mateen Yousuf, Teacher – SED, J&K.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1923",
+  "theme_color": "#0f1923",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='36' fill='%230f1923'/><text x='50%25' y='56%25' font-size='110' text-anchor='middle' dominant-baseline='middle'>💡</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230f1923'/><text x='50%25' y='56%25' font-size='300' text-anchor='middle' dominant-baseline='middle'>💡</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education"],
+  "lang": "en-IN",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Science Ideas",
+      "short_name": "Science",
+      "url": "./index.html",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text y='.9em' font-size='90'>🔬</text></svg>", "sizes": "96x96" }]
+    },
+    {
+      "name": "Business Ideas",
+      "short_name": "Business",
+      "url": "./index.html",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text y='.9em' font-size='90'>💼</text></svg>", "sizes": "96x96" }]
+    }
+  ]
+}

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Manual – Coding Fundamentals Trainer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050812; --surface: #0d1425; --surface2: #131d35;
+      --accent: #00d4ff; --accent2: #7c3aed; --accent3: #10b981; --accent4: #f59e0b;
+      --text: #e8f0fe; --muted: #6b7db3; --border: rgba(0,212,255,0.12);
+      --font-display: 'Syne', sans-serif; --font-mono: 'Space Mono', monospace; --font-body: 'Inter', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.75; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none;
+    }
+
+    /* BACK BAR */
+    .back-bar {
+      background: rgba(13,20,37,0.95); border-bottom: 1px solid var(--border);
+      padding: 12px 20px; display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0; z-index: 10; backdrop-filter: blur(20px);
+    }
+    .back-btn {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px;
+      font-family: var(--font-body); display: flex; align-items: center; gap: 6px;
+    }
+    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .bar-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; }
+
+    /* LAYOUT */
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 240px; flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      position: sticky; top: 53px; height: calc(100vh - 53px);
+      overflow-y: auto;
+    }
+    @media(max-width:768px) { .sidebar { display: none; } }
+    .sidebar-title {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted); padding: 0 16px 10px;
+    }
+    .sidebar-link {
+      display: block; padding: 8px 16px; font-size: 13px; color: var(--muted);
+      text-decoration: none; transition: all 0.2s; border-left: 2px solid transparent;
+    }
+    .sidebar-link:hover, .sidebar-link.active { color: var(--accent); border-left-color: var(--accent); background: rgba(0,212,255,0.04); }
+    .sidebar-group { margin-top: 16px; }
+
+    .content { flex: 1; padding: 40px 24px 80px; max-width: 760px; }
+
+    /* HERO */
+    .hero { margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+    .hero h1 {
+      font-family: var(--font-display); font-size: clamp(24px, 5vw, 40px); font-weight: 800;
+      background: linear-gradient(135deg, #00d4ff, #7c3aed, #10b981);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 10px;
+    }
+    .hero p { color: var(--muted); font-size: 15px; }
+    .author-card {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 16px 20px; margin-top: 20px; max-width: 420px;
+    }
+    .author-photo { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+    .author-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; }
+    .author-role { font-family: var(--font-mono); font-size: 11px; color: var(--accent); margin-top: 2px; }
+    .author-org { font-size: 12px; color: var(--muted); }
+
+    /* SECTIONS */
+    .manual-section { margin-bottom: 48px; }
+    .section-anchor { padding-top: 20px; }
+    .section-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
+    .manual-section h2 { font-family: var(--font-display); font-size: clamp(18px, 3.5vw, 26px); font-weight: 800; margin-bottom: 14px; }
+    .manual-section h2 span { color: var(--accent); }
+    .manual-section p { color: var(--muted); font-size: 15px; margin-bottom: 12px; }
+    .manual-section strong { color: var(--text); }
+
+    /* STEP CARDS */
+    .step-list { display: flex; flex-direction: column; gap: 12px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px 20px; display: flex; gap: 16px; align-items: flex-start;
+    }
+    .step-num {
+      background: rgba(0,212,255,0.15); color: var(--accent); font-family: var(--font-mono);
+      font-size: 14px; font-weight: 700; width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-body { flex: 1; }
+    .step-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .step-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .step-tip {
+      background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.15);
+      border-radius: 8px; padding: 8px 12px; margin-top: 8px;
+      font-size: 13px; color: var(--accent); font-family: var(--font-mono);
+    }
+
+    /* MODULE MANUAL CARDS */
+    .module-manual {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden;
+    }
+    .module-manual::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--mod-color, var(--accent));
+    }
+    .module-manual-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .module-manual-icon { font-size: 32px; }
+    .module-manual-title { font-family: var(--font-display); font-size: 18px; font-weight: 800; }
+    .module-manual-sub { font-size: 12px; color: var(--muted); font-family: var(--font-mono); margin-top: 2px; }
+
+    /* INSTRUCTION STEPS INSIDE MODULE */
+    .instructions { display: flex; flex-direction: column; gap: 10px; }
+    .instruction {
+      display: flex; gap: 12px; padding: 10px 14px;
+      background: var(--surface2); border-radius: 10px; align-items: flex-start;
+    }
+    .instruction-num {
+      background: rgba(255,255,255,0.05); color: var(--muted); font-family: var(--font-mono);
+      font-size: 11px; min-width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-weight: 700;
+    }
+    .instruction-text { font-size: 14px; color: var(--muted); line-height: 1.6; flex: 1; }
+    .instruction-text strong { color: var(--text); }
+
+    /* TIPS BOX */
+    .tips-box {
+      background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.2);
+      border-radius: 12px; padding: 16px 20px; margin-top: 14px;
+    }
+    .tips-title { color: var(--accent3); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+    .tips-item { font-size: 14px; color: var(--muted); padding: 4px 0; display: flex; gap: 8px; }
+
+    /* WARNING BOX */
+    .warn-box {
+      background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 12px; padding: 14px 18px; margin-top: 14px;
+    }
+    .warn-title { color: var(--accent4); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+    .warn-text { font-size: 14px; color: var(--muted); }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 18px; font-family: var(--font-mono); font-size: 13px;
+      color: var(--accent); margin: 12px 0; line-height: 1.8;
+    }
+
+    /* FAQ */
+    .faq-item {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      margin-bottom: 10px; overflow: hidden;
+    }
+    .faq-q {
+      padding: 14px 18px; font-weight: 600; cursor: pointer; display: flex;
+      justify-content: space-between; align-items: center; font-size: 14px;
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-a { padding: 0 18px 14px; font-size: 14px; color: var(--muted); line-height: 1.7; display: none; }
+    .faq-a.open { display: block; }
+    .faq-toggle { color: var(--muted); transition: transform 0.2s; font-size: 16px; }
+    .faq-toggle.open { transform: rotate(180deg); }
+
+    /* TABLE */
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th { background: var(--surface); color: var(--accent); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 14px; color: var(--muted); border-bottom: 1px solid rgba(255,255,255,0.04); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.01); }
+
+    .divider { height: 1px; background: var(--border); margin: 32px 0; }
+    .badge { display: inline-block; font-family: var(--font-mono); font-size: 10px; padding: 3px 10px; border-radius: 100px; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid; margin-right: 6px; margin-bottom: 4px; }
+    .b-blue { color: var(--accent); border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.08); }
+    .b-green { color: var(--accent3); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
+    .b-purple { color: #a78bfa; border-color: rgba(124,58,237,0.3); background: rgba(124,58,237,0.08); }
+  </style>
+</head>
+<body>
+
+<div class="back-bar">
+  <button class="back-btn" onclick="window.close()">← Back to App</button>
+  <div class="bar-title">📋 User Manual</div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">Manual Contents</div>
+    <a class="sidebar-link" href="#getting-started">Getting Started</a>
+    <a class="sidebar-link" href="#installation">Installation (PWA)</a>
+    <div class="sidebar-group">
+      <div class="sidebar-title">Modules</div>
+      <a class="sidebar-link" href="#module1">Algorithm Puzzles</a>
+      <a class="sidebar-link" href="#module2">Logic Building</a>
+      <a class="sidebar-link" href="#module3">Robot Maze</a>
+      <a class="sidebar-link" href="#module4">Concept Blocks</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-title">Other</div>
+      <a class="sidebar-link" href="#progress">Progress Tracking</a>
+      <a class="sidebar-link" href="#gamification">Gamification</a>
+      <a class="sidebar-link" href="#teacher">Teacher Guide</a>
+      <a class="sidebar-link" href="#faq">FAQ</a>
+      <a class="sidebar-link" href="#deploy">Deployment</a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="content">
+
+    <!-- HERO -->
+    <div class="hero">
+      <h1>📋 User Manual</h1>
+      <p>Complete guide to using every feature of the Coding Fundamentals Trainer — for students, teachers, and administrators.</p>
+      <span class="badge b-blue">NEP 2020</span>
+      <span class="badge b-green">NCF 2023</span>
+      <span class="badge b-purple">Offline PWA</span>
+      <div class="author-card">
+        <img class="author-photo" src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'"/>
+        <div>
+          <div class="author-name">Mateen Yousuf</div>
+          <div class="author-role">App Concept Developer</div>
+          <div class="author-org">Teacher – School Education Department, J&amp;K</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. GETTING STARTED -->
+    <div class="manual-section section-anchor" id="getting-started">
+      <div class="section-num">01 — Getting Started</div>
+      <h2>Opening the <span>App</span></h2>
+      <p>The Coding Fundamentals Trainer opens directly in any web browser. No installation is required to start using it — simply open <strong>index.html</strong> in your browser.</p>
+
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Open the App</div>
+            <div class="step-desc">Double-click <strong>index.html</strong> from your files folder, or open your browser and drag the file into it. The app loads with an animated splash screen.</div>
+            <div class="step-tip">💡 The splash screen shows for ~1.5 seconds and disappears automatically</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">View the Home Screen</div>
+            <div class="step-desc">The home screen (Landing Page) shows your stats (XP, puzzles solved, level, streak) and four module cards. Your progress is automatically loaded from your last session.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Navigate Using Bottom Bar</div>
+            <div class="step-desc">The bottom navigation bar gives quick access to: 🏠 Home, 🧩 Puzzles, 🔀 Logic, 🤖 Robot, 📊 Progress. Tap any icon to switch screens.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Start Learning</div>
+            <div class="step-desc">Tap any module card from the home screen, or tap the <strong>"🚀 Start Learning"</strong> button to go directly to Algorithm Puzzles — the recommended starting point.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 2. INSTALLATION -->
+    <div class="manual-section section-anchor" id="installation">
+      <div class="section-num">02 — Installation</div>
+      <h2>Installing as a <span>Mobile App (PWA)</span></h2>
+      <p>The app can be installed on Android phones and desktops to behave exactly like a native application — with its own icon, offline support, and full-screen mode.</p>
+
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Host the App Files</div>
+            <div class="step-desc">To install as a PWA, the files must be served from a local or online server. Options: <strong>VS Code Live Server</strong> (localhost), <strong>GitHub Pages</strong> (free online hosting), or <strong>Netlify</strong> (free drag-and-drop hosting).</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">On Android: Open in Chrome</div>
+            <div class="step-desc">Visit the hosted URL in Chrome on your Android device. After a few seconds, Chrome will show a banner: <strong>"Add Coding Fundamentals Trainer to Home Screen"</strong>. Tap "Install".</div>
+            <div class="step-tip">💡 If banner doesn't appear: tap Chrome menu (⋮) → "Add to Home screen"</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">On Desktop: Install from Browser</div>
+            <div class="step-desc">In Chrome/Edge on desktop, look for the install icon (⊕) in the address bar. Click it and confirm. The app opens in its own window like a desktop application.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Use Fully Offline</div>
+            <div class="step-desc">After the first load, the Service Worker caches all files. Turn off your internet — the app continues to work completely. All features, all modules, all progress tracking.</div>
+            <div class="step-tip">✅ Tested offline on Android 12, Windows 11, and macOS</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+// FREE HOSTING OPTIONS:<br>
+GitHub Pages: https://username.github.io/coding-trainer<br>
+Netlify: Drag project folder to netlify.com/drop<br>
+Cloudflare Pages: Connect GitHub repo for auto-deployment<br><br>
+// LOCAL TESTING:<br>
+VS Code Live Server: Right-click index.html → "Open with Live Server"<br>
+Python: python -m http.server 8000
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- MODULE 1 -->
+    <div class="manual-section section-anchor" id="module1">
+      <div class="section-num">03 — Module 1</div>
+      <div class="module-manual" style="--mod-color:#00d4ff;">
+        <div class="module-manual-header">
+          <div class="module-manual-icon">🧩</div>
+          <div>
+            <div class="module-manual-title">Algorithm Puzzles</div>
+            <div class="module-manual-sub">Drag-and-drop sequencing • 3 difficulty levels • Instant feedback</div>
+          </div>
+        </div>
+
+        <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Algorithm Puzzles teach students to arrange steps in the correct logical order — the foundational skill of algorithmic thinking. Real-world scenarios (making tea, sending a letter, computer startup) make abstract concepts concrete.</p>
+
+        <h3 style="font-family:var(--font-display);font-size:15px;margin-bottom:10px;color:var(--text);">How to Use:</h3>
+        <div class="instructions">
+          <div class="instruction">
+            <div class="instruction-num">1</div>
+            <div class="instruction-text"><strong>Select Difficulty Level:</strong> Choose Beginner (🟢), Intermediate (🟡), or Advanced (🔴) using the tabs at the top. Start with Beginner if new to the app.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">2</div>
+            <div class="instruction-text"><strong>Read the Question:</strong> Read the scenario carefully (e.g., "How do you make a cup of tea?"). Understand what the final goal is before arranging steps.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">3</div>
+            <div class="instruction-text"><strong>Drag and Drop Steps:</strong> <strong>On desktop:</strong> Click and drag each step card up or down to the correct position. <strong>On mobile:</strong> Long-press a step, then drag it. A number indicator shows its current position.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">4</div>
+            <div class="instruction-text"><strong>Check Your Order:</strong> When satisfied, tap <strong>"✅ Check Order"</strong>. The app immediately evaluates your sequence and shows whether it is correct.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">5</div>
+            <div class="instruction-text"><strong>Read the Explanation:</strong> Whether correct or wrong, an explanation appears that explains the logical reasoning behind the correct order. READ THIS CAREFULLY — it contains the learning.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">6</div>
+            <div class="instruction-text"><strong>Try Again or Move On:</strong> Use <strong>"🔄 Reset"</strong> to reshuffle and try again with the same puzzle. Use <strong>"Next →"</strong> to advance to the next challenge.</div>
+          </div>
+        </div>
+
+        <div class="tips-box">
+          <div class="tips-title">✅ Pedagogical Tips for Teachers</div>
+          <div class="tips-item"><span>→</span>Use Beginner level as a class demonstration on a projector — ask students to vote on which step comes next.</div>
+          <div class="tips-item"><span>→</span>After a correct solve, ask students: "What would happen if Step 2 and Step 3 were swapped?" This develops dependency thinking.</div>
+          <div class="tips-item"><span>→</span>Connect to math: "An algorithm has a first step just like a proof has a hypothesis." Link coding to subject matter.</div>
+          <div class="tips-item"><span>→</span>The Algorithm Visual (at bottom of screen) shows the sequence in pseudocode — encourage students to copy it as notes.</div>
+        </div>
+
+        <div class="warn-box">
+          <div class="warn-title">⚠️ Common Mistakes to Avoid</div>
+          <div class="warn-text">Students often arrange steps in the order they find them on screen (top-to-bottom) without actually reasoning about dependencies. Remind students to ask: "What must happen BEFORE this step can happen?"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 2 -->
+    <div class="manual-section section-anchor" id="module2">
+      <div class="section-num">04 — Module 2</div>
+      <div class="module-manual" style="--mod-color:#a78bfa;">
+        <div class="module-manual-header">
+          <div class="module-manual-icon">🔀</div>
+          <div>
+            <div class="module-manual-title">Logic Building</div>
+            <div class="module-manual-sub">MCQ • Flowcharts • Pattern recognition • 3 levels</div>
+          </div>
+        </div>
+
+        <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Logic Building develops conditional reasoning (IF-ELSE), loop tracing, compound logic, and pattern recognition — the building blocks of every decision-making structure in programming.</p>
+
+        <h3 style="font-family:var(--font-display);font-size:15px;margin-bottom:10px;color:var(--text);">How to Use — Main Exercises:</h3>
+        <div class="instructions">
+          <div class="instruction">
+            <div class="instruction-num">1</div>
+            <div class="instruction-text"><strong>Read the Logic Scenario:</strong> Each exercise presents a conditional statement or logic problem. For IF-ELSE questions, a flowchart diagram may appear below to visually represent the logic.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">2</div>
+            <div class="instruction-text"><strong>Evaluate Mentally First:</strong> Before tapping an answer, trace through the logic in your head. For IF-ELSE: first evaluate the condition (is it TRUE or FALSE?). For loops: trace each iteration step by step.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">3</div>
+            <div class="instruction-text"><strong>Select an Answer:</strong> Tap one of the four option buttons (A, B, C, D). The correct answer turns <strong style="color:var(--accent3)">green</strong>, wrong answers turn <strong style="color:#ef4444">red</strong>. All options are then disabled.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">4</div>
+            <div class="instruction-text"><strong>Read the Detailed Explanation:</strong> Whether correct or wrong, a full explanation appears that teaches the underlying concept. This is where the deep learning happens.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">5</div>
+            <div class="instruction-text"><strong>Move to Next Exercise:</strong> Tap <strong>"Next Exercise →"</strong> to advance. Exercises cycle through all questions at the selected difficulty level.</div>
+          </div>
+        </div>
+
+        <h3 style="font-family:var(--font-display);font-size:15px;margin:16px 0 10px;color:var(--text);">How to Use — Pattern Recognition Bonus:</h3>
+        <div class="instructions">
+          <div class="instruction">
+            <div class="instruction-num">1</div>
+            <div class="instruction-text"><strong>Observe the Sequence:</strong> A number sequence is displayed (e.g., 2, 4, 8, 16, ?). Identify the rule or pattern connecting the numbers.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">2</div>
+            <div class="instruction-text"><strong>Calculate the Next Number:</strong> Apply the pattern to find the missing value. Type your answer in the input field.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">3</div>
+            <div class="instruction-text"><strong>Check and Advance:</strong> Tap "Check". Correct answers automatically advance to the next pattern after 2 seconds. Wrong answers prompt you to try again. Sequences include arithmetic, geometric (powers of 2), Fibonacci, and perfect squares.</div>
+          </div>
+        </div>
+
+        <div class="tips-box">
+          <div class="tips-title">✅ Pedagogical Tips for Teachers</div>
+          <div class="tips-item"><span>→</span>Use the flowchart display as a visual teaching tool. Pause on the flowchart slide and ask: "What happens if the condition is FALSE instead?"</div>
+          <div class="tips-item"><span>→</span>Connect pattern recognition to the maths curriculum — Fibonacci appears in nature, geometric sequences appear in finance and science.</div>
+          <div class="tips-item"><span>→</span>Intermediate level introduces compound conditions (AND/OR). This is ideal for Grade 8–10 students and directly prepares them for Boolean algebra.</div>
+          <div class="tips-item"><span>→</span>Advanced exercises on topological sorting can be used to introduce graph theory concepts informally.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 3 -->
+    <div class="manual-section section-anchor" id="module3">
+      <div class="section-num">05 — Module 3</div>
+      <div class="module-manual" style="--mod-color:#10b981;">
+        <div class="module-manual-header">
+          <div class="module-manual-icon">🤖</div>
+          <div>
+            <div class="module-manual-title">Robot Maze — Problem Solving</div>
+            <div class="module-manual-sub">Command programming • Grid navigation • 3 maze sizes</div>
+          </div>
+        </div>
+
+        <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">The Robot Maze module is a simulation where students program a robot by entering a sequence of movement commands. The robot executes the program step-by-step with visual animation. This develops planning, debugging, and optimization skills.</p>
+
+        <h3 style="font-family:var(--font-display);font-size:15px;margin-bottom:10px;color:var(--text);">Understanding the Maze Grid:</h3>
+        <table>
+          <tr><th>Symbol</th><th>Meaning</th><th>Description</th></tr>
+          <tr><td style="font-size:20px;">🤖</td><td>Robot</td><td>Your robot's current position. Starts at top-left corner.</td></tr>
+          <tr><td style="font-size:20px;">🏆</td><td>Goal</td><td>Destination the robot must reach. Always at bottom-right area.</td></tr>
+          <tr><td style="font-size:20px;">🧱</td><td>Wall</td><td>Blocked cell. Robot cannot move into walls.</td></tr>
+          <tr><td style="color:var(--muted);">Empty</td><td>Path</td><td>Free cell the robot can move through.</td></tr>
+        </table>
+
+        <h3 style="font-family:var(--font-display);font-size:15px;margin:16px 0 10px;color:var(--text);">How to Program the Robot:</h3>
+        <div class="instructions">
+          <div class="instruction">
+            <div class="instruction-num">1</div>
+            <div class="instruction-text"><strong>Analyze the Maze:</strong> Before adding any commands, study the maze. Trace a valid path from 🤖 to 🏆 visually. Count how many steps UP, DOWN, LEFT, RIGHT are needed.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">2</div>
+            <div class="instruction-text"><strong>Add Commands:</strong> Tap the command buttons: <strong>⬆️ UP</strong>, <strong>⬇️ DOWN</strong>, <strong>⬅️ LEFT</strong>, <strong>➡️ RIGHT</strong>. Each tap adds one move to the Command Queue. Maximum 20 commands.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">3</div>
+            <div class="instruction-text"><strong>Review the Queue:</strong> The Command Queue shows all your programmed moves as colored chips. <strong>Click any chip to remove it.</strong> Plan carefully — like a real programmer!</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">4</div>
+            <div class="instruction-text"><strong>Run the Program:</strong> Tap <strong>"▶ Run Program"</strong>. Watch the robot animate through each command one by one (300ms per step). If it hits a wall, it stops early.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">5</div>
+            <div class="instruction-text"><strong>Interpret Results:</strong> If the robot reaches 🏆: SUCCESS! You see how many commands it took. If not: analyze where it stopped and debug your command sequence. Tap Reset to try again.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">6</div>
+            <div class="instruction-text"><strong>Optimize:</strong> After a successful run, challenge yourself to solve it in fewer commands. Fewer moves = more efficient algorithm. This introduces computational efficiency thinking.</div>
+          </div>
+        </div>
+
+        <div class="tips-box">
+          <div class="tips-title">✅ Pedagogical Tips for Teachers</div>
+          <div class="tips-item"><span>→</span><strong>Unplugged first:</strong> Before using the app, do a physical maze activity. Draw a 5×5 grid on the blackboard, have a student act as the robot, and take verbal commands from the class.</div>
+          <div class="tips-item"><span>→</span>After solving, ask: "Can anyone find a shorter path?" This introduces optimization — a core computer science concept.</div>
+          <div class="tips-item"><span>→</span>Connect to real-world: GPS apps find shortest paths using Dijkstra's algorithm. Self-driving cars program movement commands. Warehouse robots at Amazon use exactly this logic.</div>
+          <div class="tips-item"><span>→</span>The debugging cycle (run → observe failure → fix → rerun) is identical to real-world programming. Name it explicitly: "This is what programmers call debugging!"</div>
+          <div class="tips-item"><span>→</span>Hard level (7×7 maze) is suitable for competitive activity — which team programs the shortest path wins.</div>
+        </div>
+
+        <div class="warn-box">
+          <div class="warn-title">⚠️ Common Mistake</div>
+          <div class="warn-text">Students often tap commands randomly without planning first. Emphasize: <em>a programmer plans before they type</em>. Require students to write their command sequence on paper before entering it into the app.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 4 -->
+    <div class="manual-section section-anchor" id="module4">
+      <div class="section-num">06 — Module 4</div>
+      <div class="module-manual" style="--mod-color:#f59e0b;">
+        <div class="module-manual-header">
+          <div class="module-manual-icon">📦</div>
+          <div>
+            <div class="module-manual-title">Concept Blocks</div>
+            <div class="module-manual-sub">Visual concepts • Live demos • Block builder</div>
+          </div>
+        </div>
+
+        <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Concept Blocks introduces the four core programming concepts — Sequence, Loop, Condition, Function — through interactive explanations, animated demos, and a visual block builder. No syntax required.</p>
+
+        <h3 style="font-family:var(--font-display);font-size:15px;margin-bottom:10px;color:var(--text);">The Four Concept Panels:</h3>
+
+        <table>
+          <tr><th>Concept</th><th>Real-World Analogy</th><th>Programming Use</th></tr>
+          <tr><td>1️⃣ Sequence</td><td>Getting ready for school — steps in order</td><td>Every program runs line by line in sequence</td></tr>
+          <tr><td>🔁 Loop</td><td>Alarm clock repeating every day</td><td>FOR loops, WHILE loops — repeat code</td></tr>
+          <tr><td>❓ Condition</td><td>Traffic light — stop if red, go if green</td><td>IF-ELSE statements — program decisions</td></tr>
+          <tr><td>⚙️ Function</td><td>Recipe — write once, cook many times</td><td>Functions — reusable code blocks</td></tr>
+        </table>
+
+        <h3 style="font-family:var(--font-display);font-size:15px;margin:16px 0 10px;color:var(--text);">How to Use Concept Panels:</h3>
+        <div class="instructions">
+          <div class="instruction">
+            <div class="instruction-num">1</div>
+            <div class="instruction-text"><strong>Open a Concept:</strong> Tap any concept panel header to expand it. The panel reveals a detailed explanation with real-world analogies and a visual code block showing the concept.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">2</div>
+            <div class="instruction-text"><strong>Read the Code Block:</strong> The colored code block shows pseudocode (plain English structured like code). This bridges the gap between everyday language and programming syntax.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">3</div>
+            <div class="instruction-text"><strong>Run the Live Demo:</strong> Each concept has a "🎮 Try Demo" button. Click it to see an <em>animated simulation</em> of the concept executing in real-time. For loops: watch each iteration appear. For conditions: see the branch taken based on a random value.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">4</div>
+            <div class="instruction-text"><strong>Study the Flowchart:</strong> The Condition concept includes an interactive flowchart showing branching paths. This visual representation is the standard way programmers design logic before coding.</div>
+          </div>
+        </div>
+
+        <h3 style="font-family:var(--font-display);font-size:15px;margin:16px 0 10px;color:var(--text);">How to Use the Block Builder:</h3>
+        <div class="instructions">
+          <div class="instruction">
+            <div class="instruction-num">1</div>
+            <div class="instruction-text"><strong>Add Blocks:</strong> Click the block buttons: <strong>🟢 START</strong>, <strong>➡️ MOVE</strong>, <strong>❓ IF</strong>, <strong>🔁 LOOP</strong>, <strong>🔴 END</strong>. Each block represents a programming construct.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">2</div>
+            <div class="instruction-text"><strong>Build a Program:</strong> Create a valid program sequence. A complete program typically starts with START and ends with END. Add MOVE, IF, and LOOP blocks in between to create logic.</div>
+          </div>
+          <div class="instruction">
+            <div class="instruction-num">3</div>
+            <div class="instruction-text"><strong>Run the Program:</strong> Tap <strong>"▶ Run"</strong>. The output panel shows a step-by-step execution trace — exactly what a real programming language does when it runs your code.</div>
+          </div>
+        </div>
+
+        <div class="tips-box">
+          <div class="tips-title">✅ Pedagogical Tips for Teachers</div>
+          <div class="tips-item"><span>→</span>Use Concept Blocks as a pre-lesson activator. Show the Sequence demo before a Maths lesson on ordered operations.</div>
+          <div class="tips-item"><span>→</span>The loop demo is perfect for introducing multiplication tables: "LOOP 5 times: add 3" = the 3-times table.</div>
+          <div class="tips-item"><span>→</span>After the Condition lesson, give students a simple IF-ELSE scenario from daily life and ask them to draw their own flowchart.</div>
+          <div class="tips-item"><span>→</span>The Function concept connects to mathematics: a function in maths (f(x) = 2x) is exactly the same idea — a rule applied to any input.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- PROGRESS -->
+    <div class="manual-section section-anchor" id="progress">
+      <div class="section-num">07 — Progress Tracking</div>
+      <h2>My <span>Progress</span> Screen</h2>
+      <p>The Progress screen gives a comprehensive overview of learning achievements. Access it via the 📊 icon in the bottom navigation bar.</p>
+
+      <table>
+        <tr><th>Metric</th><th>What it Measures</th><th>How it's Earned</th></tr>
+        <tr><td>🧩 Puzzles Solved</td><td>Total challenges completed correctly</td><td>+1 per correct answer in any module</td></tr>
+        <tr><td>⚡ Total XP</td><td>Experience points — overall learning engagement</td><td>+20 Algorithm, +15 Logic, +25 Maze, +5-10 others</td></tr>
+        <tr><td>🔥 Streak</td><td>Consecutive days of app use</td><td>Open app on consecutive calendar days</td></tr>
+        <tr><td>Skill Bars</td><td>Mastery per module as a percentage</td><td>Increases with each correct completion per module</td></tr>
+      </table>
+
+      <p style="margin-top:12px;">Skill bars show percentage mastery for each module. Use these diagnostically — a low Logic bar means the student needs more practice with conditional reasoning.</p>
+
+      <div class="warn-box">
+        <div class="warn-title">⚠️ Progress Reset</div>
+        <div class="warn-text">The "🗑 Reset Progress" button permanently erases all stored data. This cannot be undone. Teachers should advise students not to use this button unless intentionally starting over.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- GAMIFICATION -->
+    <div class="manual-section section-anchor" id="gamification">
+      <div class="section-num">08 — Gamification System</div>
+      <h2>XP &amp; <span>Achievements</span></h2>
+      <p>The app uses a gamification system to sustain motivation and reward consistent practice — directly supporting NEP 2020's emphasis on joyful learning.</p>
+
+      <table>
+        <tr><th>Achievement</th><th>Requirement</th><th>Significance</th></tr>
+        <tr><td>🌟 First Steps</td><td>Solve 1 puzzle</td><td>Celebrates the beginning of the learning journey</td></tr>
+        <tr><td>🧩 Puzzle Master</td><td>Solve 5 puzzles</td><td>Recognizes consistent algorithm practice</td></tr>
+        <tr><td>🔀 Logic Star</td><td>3 logic exercises</td><td>Awards conditional reasoning competency</td></tr>
+        <tr><td>🤖 Robot Commander</td><td>1 maze success</td><td>Marks first successful complete program</td></tr>
+        <tr><td>⚡ Power Learner</td><td>100 XP earned</td><td>Rewards sustained engagement</td></tr>
+        <tr><td>📦 Concept Explorer</td><td>All 4 concepts opened</td><td>Celebrates conceptual breadth</td></tr>
+        <tr><td>🔥 On Fire!</td><td>3-day streak</td><td>Rewards habit formation (key to learning)</td></tr>
+        <tr><td>🏆 Champion Coder</td><td>500 XP earned</td><td>Master-level achievement for dedicated learners</td></tr>
+      </table>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- TEACHER GUIDE -->
+    <div class="manual-section section-anchor" id="teacher">
+      <div class="section-num">09 — Teacher's Guide</div>
+      <h2>Classroom <span>Integration</span></h2>
+      <p>This section provides a structured guide for teachers wishing to integrate the app into their NEP 2020 and NCF 2023 aligned curriculum.</p>
+
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-num">📅</div>
+          <div class="step-body">
+            <div class="step-title">Suggested Weekly Schedule (45-minute periods)</div>
+            <div class="step-desc">
+              <strong>Monday:</strong> Algorithm Puzzles (Beginner) — 20 min app + 10 min discussion<br>
+              <strong>Wednesday:</strong> Logic Building exercises — 20 min app + 10 min whiteboard<br>
+              <strong>Friday:</strong> Robot Maze challenge — 15 min planning on paper + 15 min app
+            </div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">🎯</div>
+          <div class="step-body">
+            <div class="step-title">Assessment Using the App</div>
+            <div class="step-desc">Use the Progress screen's skill bars as formative assessment data. Students with Algorithmic Thinking below 40% need additional sequencing practice. Students with Logic Building below 30% need more IF-ELSE real-world examples.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">🔗</div>
+          <div class="step-body">
+            <div class="step-title">Cross-Curricular Integration</div>
+            <div class="step-desc">
+              <strong>Mathematics:</strong> Use pattern recognition for sequences, loop concept for multiplication tables<br>
+              <strong>Science:</strong> Algorithm puzzles for lab procedures, conditions for hypothesis testing<br>
+              <strong>Language:</strong> Sequence puzzles for story ordering, function concept for paragraph structure
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FAQ -->
+    <div class="manual-section section-anchor" id="faq">
+      <div class="section-num">10 — FAQ</div>
+      <h2>Frequently Asked <span>Questions</span></h2>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">Does the app need internet to work? <span class="faq-toggle">▼</span></div>
+        <div class="faq-a">No. After the first load (which requires internet for Google Fonts), the Service Worker caches everything. The app works fully offline. If fonts cannot load offline, the app falls back to system fonts automatically — all functionality remains intact.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">Will my progress be saved if I close the browser? <span class="faq-toggle">▼</span></div>
+        <div class="faq-a">Yes. All progress is saved to LocalStorage automatically after every correct answer. It persists across browser sessions, app restarts, and even device restarts — as long as the same browser is used and browser data is not cleared.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">Can multiple students share one device? <span class="faq-toggle">▼</span></div>
+        <div class="faq-a">The app stores one profile per browser. Multiple students can use the same device by: (1) using different browser profiles, or (2) using the "Reset Progress" button between students. A future version may include multi-profile support.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">What age/grade is this app for? <span class="faq-toggle">▼</span></div>
+        <div class="faq-a">The app is designed for Grade 5 through Grade 12. Beginner levels are suitable for Grade 5–7, Intermediate for Grade 7–10, and Advanced for Grade 9–12. The content adapts through the difficulty system, making it appropriate for a wide range of learners.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">The drag-and-drop doesn't work on my phone. What should I do? <span class="faq-toggle">▼</span></div>
+        <div class="faq-a">On some older Android devices, drag-and-drop may be less responsive. Try: long-pressing the step for 1 second before dragging. If still unresponsive, use a mouse/stylus. The app is also being updated to include touch-optimized swipe controls.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFAQ(this)">How do I convert this app into an Android APK? <span class="faq-toggle">▼</span></div>
+        <div class="faq-a">Host the app on GitHub Pages or Netlify, then visit PWABuilder.com, enter your URL, and click "Build → Android". PWABuilder generates an APK/AAB file you can distribute or upload to the Google Play Store. This process takes approximately 10 minutes.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- DEPLOYMENT -->
+    <div class="manual-section section-anchor" id="deploy">
+      <div class="section-num">11 — Deployment</div>
+      <h2>Hosting &amp; <span>Deployment</span></h2>
+
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-num">🌐</div>
+          <div class="step-body">
+            <div class="step-title">GitHub Pages (Recommended — Free)</div>
+            <div class="step-desc">Create a free GitHub account → New repository → Upload all app files → Settings → Pages → Select main branch → Deploy. Your app is live at <code style="color:var(--accent);font-family:var(--font-mono);">username.github.io/repo-name</code></div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">⚡</div>
+          <div class="step-body">
+            <div class="step-title">Netlify (Easiest — Free)</div>
+            <div class="step-desc">Visit netlify.com → Drag your entire project folder onto the deploy area → Live URL generated instantly. No account required for basic deployment. Custom domain available.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">📱</div>
+          <div class="step-body">
+            <div class="step-title">Android APK via PWABuilder</div>
+            <div class="step-desc">Host app online → Visit pwabuilder.com → Enter URL → Build Android APK → Download and install on devices via ADB or share as APK file. No Google Play account needed for direct distribution.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">🏫</div>
+          <div class="step-body">
+            <div class="step-title">School Intranet Distribution</div>
+            <div class="step-desc">Place all files on a school server accessible via local network. Students connect to school WiFi and access <code style="color:var(--accent);font-family:var(--font-mono);">192.168.x.x:8080/index.html</code>. After first visit, Service Worker enables offline use even after disconnecting from WiFi.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="text-align:center;padding:32px 0 20px;border-top:1px solid var(--border);margin-top:40px;">
+      <div class="author-card" style="margin:0 auto;">
+        <img class="author-photo" src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'"/>
+        <div>
+          <div class="author-name">Mateen Yousuf</div>
+          <div class="author-role">App Concept Developer</div>
+          <div class="author-org">Teacher – School Education Department, J&amp;K</div>
+        </div>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-top:16px;">Coding Fundamentals Trainer · Aligned with NEP 2020 &amp; NCF 2023<br>Developed for students of J&amp;K and across India</p>
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end layout -->
+
+<script>
+function toggleFAQ(el) {
+  const answer = el.nextElementSibling;
+  const toggle = el.querySelector('.faq-toggle');
+  const isOpen = answer.classList.contains('open');
+  answer.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
+}
+</script>
+
+</body>
+</html>

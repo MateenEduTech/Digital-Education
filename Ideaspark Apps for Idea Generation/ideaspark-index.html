@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f1923">
+<meta name="description" content="Creative Idea Generator – NEP 2020 & NCF 2023 Aligned Innovation App by Mateen Yousuf">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json" onerror="this.remove()">
+<title>IdeaSpark – Where Ideas Begin</title>
+<style>
+/* =====================================================
+   IDEASPARK – Creative Idea Generator PWA
+   Author: Mateen Yousuf, Teacher – SED, J&K
+   NEP 2020 · NCF 2023 · PARAKH · NCERT Aligned
+   ===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Nunito:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --ink:       #0f1923;
+  --ink2:      #1a2a3a;
+  --ink3:      #243447;
+  --paper:     #f5f0e8;
+  --paper2:    #ede6d6;
+  --lime:      #b5e853;
+  --lime-dim:  #8cbd3a;
+  --coral:     #ff6b4a;
+  --sky:       #4db8ff;
+  --violet:    #9b7cff;
+  --amber:     #ffb830;
+  --mint:      #2ee8b5;
+  --txt:       #e8e0d0;
+  --muted:     #7a8fa0;
+  --border:    rgba(181,232,83,0.18);
+  --r:         16px;
+  --ff:        'Syne', 'Georgia', serif;
+  --fb:        'Nunito', 'Segoe UI', sans-serif;
+  --shadow:    0 24px 64px rgba(0,0,0,0.45);
+}
+
+/* ── BASE ── */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--ink);
+  color: var(--txt);
+  font-family: var(--fb);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* animated grain overlay */
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.6;
+}
+
+/* background orbs */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 20%, rgba(181,232,83,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 85% 70%, rgba(155,124,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 100%, rgba(77,184,255,0.05) 0%, transparent 60%);
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:200;
+  display: flex; align-items:center; gap:10px;
+  padding: 12px 20px;
+  background: rgba(15,25,35,0.88);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: var(--ff);
+  font-size: 1.3rem;
+  color: var(--lime);
+  flex-shrink:0;
+  letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--txt); }
+
+.nav-tabs {
+  display:flex; gap:4px;
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
+  flex:1;
+  scrollbar-width:none;
+}
+.nav-tabs::-webkit-scrollbar { display:none; }
+
+.nav-tab {
+  padding: 7px 13px;
+  border: 1px solid transparent;
+  border-radius: 50px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--fb);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.nav-tab.active {
+  background: var(--lime);
+  color: var(--ink);
+  border-color: var(--lime);
+}
+.nav-tab:hover:not(.active) {
+  border-color: var(--border);
+  color: var(--lime);
+}
+
+/* ── PAGES ── */
+.page { display:none; padding: 76px 0 60px; min-height:100vh; position:relative; z-index:1; }
+.page.active { display:block; animation: pageIn 0.4s ease both; }
+@keyframes pageIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+.container { max-width:920px; margin:0 auto; padding:0 18px; }
+
+/* ── SECTION HEADER ── */
+.sec-eyebrow {
+  font-size:0.68rem; font-weight:700; letter-spacing:2.5px;
+  text-transform:uppercase; color:var(--lime); margin-bottom:8px;
+}
+.sec-title {
+  font-family: var(--ff);
+  font-size: clamp(1.6rem,4vw,2.4rem);
+  color: var(--txt);
+  line-height:1.2;
+  margin-bottom:10px;
+}
+.sec-desc {
+  font-size:0.88rem; color:var(--muted); line-height:1.7;
+  max-width:640px; margin-bottom:28px;
+}
+
+/* ═══════════════════════════════
+   LANDING PAGE
+═══════════════════════════════ */
+.hero {
+  padding: 52px 18px 36px;
+  max-width:920px; margin:0 auto;
+}
+
+.hero-kicker {
+  display:inline-flex; align-items:center; gap:8px;
+  background: rgba(181,232,83,0.1);
+  border: 1px solid rgba(181,232,83,0.25);
+  color: var(--lime);
+  font-size:0.68rem; font-weight:700; letter-spacing:2px;
+  text-transform:uppercase; padding:6px 14px; border-radius:50px;
+  margin-bottom:22px;
+}
+
+.hero h1 {
+  font-family: var(--ff);
+  font-size: clamp(2.4rem, 7vw, 4.5rem);
+  line-height: 1.05;
+  margin-bottom: 18px;
+  letter-spacing:-1px;
+}
+.hero h1 .highlight {
+  color: var(--lime);
+  position:relative;
+}
+.hero h1 .highlight::after {
+  content:'';
+  position:absolute; bottom:-2px; left:0; right:0; height:3px;
+  background: var(--lime);
+  border-radius:2px;
+  opacity:0.4;
+}
+
+.hero-sub {
+  font-size:1rem; color:var(--muted); max-width:560px;
+  line-height:1.7; margin-bottom:20px;
+}
+
+/* policy pills */
+.pill-row {
+  display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px;
+}
+.pill {
+  padding:5px 14px;
+  border-radius:50px;
+  font-size:0.7rem; font-weight:700; letter-spacing:1px;
+  border: 1px solid;
+}
+.pill-g { background:rgba(181,232,83,0.08); border-color:rgba(181,232,83,0.3); color:var(--lime); }
+.pill-b { background:rgba(77,184,255,0.08); border-color:rgba(77,184,255,0.3); color:var(--sky); }
+.pill-v { background:rgba(155,124,255,0.08); border-color:rgba(155,124,255,0.3); color:var(--violet); }
+
+/* AUTHOR CARD */
+.author-card {
+  display:inline-flex; align-items:center; gap:16px;
+  background: rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius: var(--r);
+  padding:16px 22px;
+  margin-bottom:44px;
+}
+.author-photo {
+  width:64px; height:64px; border-radius:50%;
+  border:2px solid var(--lime);
+  object-fit:cover; flex-shrink:0;
+}
+.author-name {
+  font-family:var(--ff); font-size:1rem; color:var(--txt);
+  margin-bottom:3px;
+}
+.author-role { font-size:0.74rem; color:var(--lime); font-weight:600; }
+.author-sub  { font-size:0.7rem; color:var(--muted); margin-top:2px; }
+
+/* MODULE CARDS GRID */
+.module-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap:14px; margin-bottom:36px;
+}
+
+.mod-card {
+  background: var(--ink2);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:20px;
+  padding:26px 20px;
+  cursor:pointer;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  position:relative; overflow:hidden;
+}
+.mod-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background: var(--card-color, var(--lime));
+  opacity:0.8;
+}
+.mod-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: var(--card-color, var(--lime));
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+.mod-icon { font-size:2.4rem; margin-bottom:14px; display:block; }
+.mod-title {
+  font-family:var(--ff); font-size:1.05rem;
+  color:var(--txt); margin-bottom:6px;
+}
+.mod-desc { font-size:0.78rem; color:var(--muted); line-height:1.5; }
+.mod-arrow {
+  position:absolute; bottom:18px; right:18px;
+  font-size:1rem; color:var(--card-color, var(--lime));
+  opacity:0.6;
+}
+
+/* NEP CALLOUT */
+.nep-callout {
+  background: linear-gradient(135deg, rgba(181,232,83,0.06) 0%, rgba(77,184,255,0.04) 100%);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:26px 28px;
+  margin-bottom:32px;
+}
+.nep-callout-label {
+  font-size:0.68rem; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  color:var(--lime); margin-bottom:10px;
+}
+.nep-callout p {
+  font-size:0.88rem; color:var(--muted); line-height:1.7;
+}
+
+/* ═══════════════════════════════
+   IDEA GENERATOR (shared UI)
+═══════════════════════════════ */
+
+/* Filter row */
+.filter-row {
+  display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;
+}
+.filter-btn {
+  padding:8px 16px;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:50px;
+  background:transparent;
+  color:var(--muted);
+  font-family:var(--fb);
+  font-size:0.78rem; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+}
+.filter-btn.active { background:var(--lime); border-color:var(--lime); color:var(--ink); }
+.filter-btn:hover:not(.active) { border-color:var(--lime); color:var(--lime); }
+
+/* Difficulty row */
+.diff-row {
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  margin-bottom:24px;
+}
+.diff-row label { font-size:0.8rem; color:var(--muted); font-weight:600; }
+.diff-btn {
+  padding:6px 14px;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:50px;
+  background:transparent;
+  color:var(--muted);
+  font-size:0.74rem; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+}
+.diff-btn.active { background:var(--mint); border-color:var(--mint); color:var(--ink); }
+
+/* IDEA CARD */
+.idea-display {
+  background: var(--ink2);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:24px;
+  padding:36px 32px;
+  margin-bottom:20px;
+  min-height:200px;
+  position:relative; overflow:hidden;
+  transition: all 0.3s;
+}
+.idea-display::after {
+  content:'';
+  position:absolute; bottom:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg, var(--lime), var(--sky), var(--violet));
+}
+
+.idea-cat-tag {
+  display:inline-block;
+  background:rgba(181,232,83,0.1);
+  border:1px solid rgba(181,232,83,0.25);
+  color:var(--lime);
+  font-size:0.68rem; font-weight:700; letter-spacing:1.5px;
+  text-transform:uppercase; padding:4px 12px; border-radius:50px;
+  margin-bottom:16px;
+}
+
+.idea-title {
+  font-family: var(--ff);
+  font-size: clamp(1.2rem,3vw,1.7rem);
+  color:var(--txt); line-height:1.35;
+  margin-bottom:14px;
+  transition: opacity 0.25s;
+}
+
+.idea-desc {
+  font-size:0.88rem; color:var(--muted); line-height:1.7;
+  margin-bottom:0;
+  transition: opacity 0.25s;
+}
+
+/* Expandable detail */
+.idea-detail {
+  display:none;
+  margin-top:20px;
+  padding-top:20px;
+  border-top:1px solid rgba(255,255,255,0.07);
+}
+.idea-detail.open { display:block; }
+
+.detail-grid {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px; margin-top:14px;
+}
+.detail-block {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:12px; padding:14px;
+}
+.detail-label {
+  font-size:0.66rem; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  color:var(--lime); margin-bottom:6px;
+}
+.detail-text {
+  font-size:0.8rem; color:var(--muted); line-height:1.5;
+}
+
+/* big generate button */
+.gen-btn {
+  display:block; width:100%;
+  padding:16px;
+  background: var(--lime);
+  border:none; border-radius:var(--r);
+  color:var(--ink);
+  font-family:var(--ff);
+  font-size:1.05rem; font-weight:800;
+  cursor:pointer; transition:all 0.3s;
+  letter-spacing:0.3px;
+  margin-bottom:12px;
+}
+.gen-btn:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(181,232,83,0.3); }
+
+/* secondary row buttons */
+.btn-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.sec-btn {
+  padding:9px 18px;
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:var(--r);
+  background:transparent;
+  color:var(--muted);
+  font-family:var(--fb);
+  font-size:0.8rem; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+}
+.sec-btn:hover { border-color:var(--lime); color:var(--lime); }
+
+/* Saved ideas list */
+.saved-section { margin-top:36px; }
+.saved-label {
+  font-size:0.7rem; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  color:var(--muted); margin-bottom:12px;
+}
+.saved-list { display:flex; flex-direction:column; gap:10px; }
+.saved-item {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:12px;
+  padding:14px 18px;
+  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+}
+.saved-item-body { flex:1; }
+.saved-item-title { font-size:0.88rem; font-weight:600; color:var(--txt); margin-bottom:3px; }
+.saved-item-cat { font-size:0.72rem; color:var(--lime); }
+.del-btn { background:transparent; border:none; color:rgba(255,100,80,0.6); font-size:1rem; cursor:pointer; padding:2px 6px; flex-shrink:0; }
+
+/* ═══════════════════════════════
+   COMBINE IDEAS MODULE
+═══════════════════════════════ */
+.combine-grid {
+  display:grid; grid-template-columns:1fr auto 1fr; gap:12px;
+  align-items:center; margin-bottom:20px;
+}
+.combo-select {
+  width:100%;
+  background:var(--ink2);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:var(--r);
+  padding:14px 16px;
+  color:var(--txt);
+  font-family:var(--fb);
+  font-size:0.88rem;
+  cursor:pointer;
+  appearance:none;
+}
+.combo-select:focus { outline:none; border-color:var(--lime); }
+.combo-plus {
+  font-size:1.6rem; color:var(--lime); font-weight:700;
+  text-align:center;
+}
+
+/* ═══════════════════════════════
+   PORTFOLIO MODULE
+═══════════════════════════════ */
+.portfolio-stats {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+  gap:12px; margin-bottom:28px;
+}
+.pstat {
+  background:var(--ink2);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:var(--r);
+  padding:20px 16px; text-align:center;
+}
+.pstat-num {
+  font-family:var(--ff);
+  font-size:2.2rem; color:var(--lime); line-height:1;
+  margin-bottom:6px;
+}
+.pstat-label {
+  font-size:0.72rem; color:var(--muted);
+  text-transform:uppercase; letter-spacing:1px;
+}
+
+.badge-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(145px,1fr));
+  gap:12px; margin-bottom:28px;
+}
+.badge-card {
+  background:var(--ink2);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:var(--r);
+  padding:18px; text-align:center;
+  transition:all 0.3s;
+}
+.badge-card.earned {
+  border-color:var(--lime);
+  background:rgba(181,232,83,0.06);
+}
+.badge-card.locked { opacity:0.35; }
+.badge-emoji { font-size:2rem; margin-bottom:8px; }
+.badge-name { font-size:0.78rem; font-weight:700; margin-bottom:3px; color:var(--txt); }
+.badge-req  { font-size:0.7rem; color:var(--muted); }
+
+/* ═══════════════════════════════
+   TOAST
+═══════════════════════════════ */
+.toast {
+  position:fixed; bottom:24px; left:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:var(--lime); color:var(--ink);
+  padding:11px 22px; border-radius:50px;
+  font-weight:700; font-size:0.84rem;
+  z-index:1000; white-space:nowrap;
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════
+   INSTALL BANNER
+═══════════════════════════════ */
+.install-banner {
+  position:fixed; bottom:0; left:0; right:0;
+  background:var(--ink2); border-top:1px solid var(--border);
+  padding:14px 20px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  z-index:300;
+  transform:translateY(100%); transition:transform 0.4s;
+}
+.install-banner.show { transform:translateY(0); }
+.inst-text { font-size:0.82rem; color:var(--muted); }
+.inst-text strong { color:var(--txt); display:block; margin-bottom:2px; }
+.inst-btns { display:flex; gap:8px; flex-shrink:0; }
+.inst-yes {
+  padding:9px 18px; border-radius:50px;
+  background:var(--lime); border:none;
+  color:var(--ink); font-weight:700; font-size:0.8rem; cursor:pointer;
+}
+.inst-no {
+  padding:9px 18px; border-radius:50px;
+  background:transparent; border:1px solid rgba(255,255,255,0.12);
+  color:var(--muted); font-size:0.8rem; cursor:pointer;
+}
+
+/* ═══════════════════════════════
+   FOOTER DOCS LINKS
+═══════════════════════════════ */
+.doc-footer {
+  position:fixed; bottom:0; left:0; right:0; z-index:50;
+  background:rgba(15,25,35,0.9);
+  backdrop-filter:blur(12px);
+  border-top:1px solid rgba(181,232,83,0.1);
+  padding:8px 20px;
+  display:flex; justify-content:center; gap:24px;
+}
+.doc-link {
+  font-size:0.71rem; color:var(--muted); text-decoration:none;
+  font-weight:600; transition:color 0.2s;
+}
+.doc-link:hover { color:var(--lime); }
+
+/* ═══════════════════════════════
+   RESPONSIVE
+═══════════════════════════════ */
+@media(max-width:600px) {
+  nav { padding:10px 12px; }
+  .nav-logo { font-size:1.1rem; }
+  .hero { padding:36px 14px 28px; }
+  .container { padding:0 14px; }
+  .idea-display { padding:24px 18px; }
+  .detail-grid { grid-template-columns:1fr; }
+  .combine-grid { grid-template-columns:1fr; }
+  .combo-plus { display:none; }
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:var(--ink); }
+::-webkit-scrollbar-thumb { background:rgba(181,232,83,0.2); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav>
+  <div class="nav-logo">Idea<span>Spark</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home')">🏠 Home</button>
+    <button class="nav-tab" onclick="showPage('science')">🔬 Science</button>
+    <button class="nav-tab" onclick="showPage('entrepreneur')">💼 Entrepreneurship</button>
+    <button class="nav-tab" onclick="showPage('social')">🌱 Social Innovation</button>
+    <button class="nav-tab" onclick="showPage('combine')">🔀 Combine Ideas</button>
+    <button class="nav-tab" onclick="showPage('portfolio')">🏅 Portfolio</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+
+    <div class="hero-kicker">✦ NEP 2020 · NCF 2023 · PARAKH Aligned</div>
+
+    <h1>Where <span class="highlight">Ideas</span><br>Begin.</h1>
+
+    <p class="hero-sub">An AI-powered creativity engine for students — generate science projects, entrepreneurship ventures, and social innovation ideas aligned with NEP 2020 and NCF 2023.</p>
+
+    <div class="pill-row">
+      <span class="pill pill-g">NEP 2020</span>
+      <span class="pill pill-g">NCF 2023</span>
+      <span class="pill pill-b">PARAKH</span>
+      <span class="pill pill-b">NCERT Competencies</span>
+      <span class="pill pill-v">Design Thinking</span>
+      <span class="pill pill-v">Offline PWA</span>
+    </div>
+
+    <!-- Author -->
+    <div class="author-card">
+      <img class="author-photo" src="author.jpg" alt="Mateen Yousuf"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div style="display:none;width:64px;height:64px;border-radius:50%;border:2px solid var(--lime);background:var(--ink3);align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">👨‍🏫</div>
+      <div>
+        <div class="author-name">Mateen Yousuf</div>
+        <div class="author-role">Teacher – School Education Department, J&K</div>
+        <div class="author-sub">Concept Developer · IdeaSpark PWA</div>
+      </div>
+    </div>
+
+    <!-- Module Cards -->
+    <div class="module-grid">
+      <div class="mod-card" style="--card-color:var(--sky)" onclick="showPage('science')">
+        <span class="mod-icon">🔬</span>
+        <div class="mod-title">Science Projects</div>
+        <div class="mod-desc">Physics, chemistry, biology & environment — generate original experiment ideas</div>
+        <span class="mod-arrow">→</span>
+      </div>
+      <div class="mod-card" style="--card-color:var(--amber)" onclick="showPage('entrepreneur')">
+        <span class="mod-icon">💼</span>
+        <div class="mod-title">Entrepreneurship</div>
+        <div class="mod-desc">Business ideas, social enterprises & digital services for young innovators</div>
+        <span class="mod-arrow">→</span>
+      </div>
+      <div class="mod-card" style="--card-color:var(--mint)" onclick="showPage('social')">
+        <span class="mod-icon">🌱</span>
+        <div class="mod-title">Social Innovation</div>
+        <div class="mod-desc">Community problem-solving through creative, human-centred solutions</div>
+        <span class="mod-arrow">→</span>
+      </div>
+      <div class="mod-card" style="--card-color:var(--violet)" onclick="showPage('combine')">
+        <span class="mod-icon">🔀</span>
+        <div class="mod-title">Combine Ideas</div>
+        <div class="mod-desc">Mix two domains for breakthrough interdisciplinary project concepts</div>
+        <span class="mod-arrow">→</span>
+      </div>
+    </div>
+
+    <!-- NEP Callout -->
+    <div class="nep-callout">
+      <div class="nep-callout-label">Policy Alignment</div>
+      <p><strong style="color:var(--txt)">NEP 2020</strong> and <strong style="color:var(--txt)">NCF 2023</strong> call for education that nurtures creativity, innovation, and problem-solving — moving beyond rote learning toward project-based, experiential discovery. IdeaSpark operationalises this vision by helping every student become a creator and innovator. The app develops competencies assessed by <strong style="color:var(--txt)">PARAKH</strong> and promoted by <strong style="color:var(--txt)">NCERT</strong>'s innovation and entrepreneurship frameworks.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: SCIENCE PROJECTS
+══════════════════════════════════ -->
+<div class="page" id="page-science">
+  <div class="container" style="padding-top:28px;">
+    <div class="sec-eyebrow">Module 01</div>
+    <h2 class="sec-title">🔬 Science Project Ideas</h2>
+    <p class="sec-desc">Generate original science project concepts aligned with NCF 2023 thematic learning areas. Ideas span physics, chemistry, biology, environment, and technology.</p>
+
+    <div class="filter-row" id="sciCatFilter">
+      <button class="filter-btn active" data-cat="all" onclick="setSciCat(this,'all')">All Fields</button>
+      <button class="filter-btn" data-cat="physics" onclick="setSciCat(this,'physics')">⚡ Physics</button>
+      <button class="filter-btn" data-cat="chemistry" onclick="setSciCat(this,'chemistry')">🧪 Chemistry</button>
+      <button class="filter-btn" data-cat="biology" onclick="setSciCat(this,'biology')">🌿 Biology</button>
+      <button class="filter-btn" data-cat="environment" onclick="setSciCat(this,'environment')">🌍 Environment</button>
+      <button class="filter-btn" data-cat="technology" onclick="setSciCat(this,'technology')">💡 Technology</button>
+    </div>
+
+    <div class="diff-row">
+      <label>Level:</label>
+      <button class="diff-btn active" data-diff="beginner" onclick="setSciDiff(this,'beginner')">🟢 Beginner</button>
+      <button class="diff-btn" data-diff="intermediate" onclick="setSciDiff(this,'intermediate')">🟡 Intermediate</button>
+      <button class="diff-btn" data-diff="advanced" onclick="setSciDiff(this,'advanced')">🔴 Advanced</button>
+    </div>
+
+    <div class="idea-display" id="sciDisplay">
+      <div class="idea-cat-tag" id="sciCatTag">Science · All Fields</div>
+      <div class="idea-title" id="sciTitle">Press "Generate Idea" to get your science project concept!</div>
+      <div class="idea-desc" id="sciDesc">Choose a field and difficulty level above, then generate a personalised project idea.</div>
+      <div class="idea-detail" id="sciDetail">
+        <div class="detail-grid">
+          <div class="detail-block"><div class="detail-label">🎯 Objective</div><div class="detail-text" id="sciObj">—</div></div>
+          <div class="detail-block"><div class="detail-label">🧰 Materials</div><div class="detail-text" id="sciMat">—</div></div>
+          <div class="detail-block"><div class="detail-label">📋 Steps</div><div class="detail-text" id="sciSteps">—</div></div>
+          <div class="detail-block"><div class="detail-label">✅ Expected Outcome</div><div class="detail-text" id="sciOut">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="gen-btn" onclick="generateSciIdea()">⚡ Generate Science Project Idea</button>
+    <div class="btn-row">
+      <button class="sec-btn" onclick="toggleDetail('sciDetail')">📋 Expand Full Outline</button>
+      <button class="sec-btn" onclick="saveIdea('sci')">🔖 Save Idea</button>
+      <button class="sec-btn" onclick="copyIdea('sci')">📋 Copy</button>
+    </div>
+
+    <div class="saved-section">
+      <div class="saved-label">📌 Saved Science Ideas</div>
+      <div class="saved-list" id="sciSavedList"><div style="font-size:0.82rem;color:var(--muted);">No ideas saved yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: ENTREPRENEURSHIP
+══════════════════════════════════ -->
+<div class="page" id="page-entrepreneur">
+  <div class="container" style="padding-top:28px;">
+    <div class="sec-eyebrow">Module 02</div>
+    <h2 class="sec-title">💼 Entrepreneurship Ideas</h2>
+    <p class="sec-desc">Generate business and innovation ideas for young entrepreneurs. Aligned with NEP 2020's emphasis on entrepreneurial thinking and economic literacy.</p>
+
+    <div class="filter-row">
+      <button class="filter-btn active" data-cat="all" onclick="setEntCat(this,'all')">All Types</button>
+      <button class="filter-btn" data-cat="product" onclick="setEntCat(this,'product')">🛒 Product</button>
+      <button class="filter-btn" data-cat="digital" onclick="setEntCat(this,'digital')">📱 Digital</button>
+      <button class="filter-btn" data-cat="social" onclick="setEntCat(this,'social')">🤝 Social Enterprise</button>
+      <button class="filter-btn" data-cat="green" onclick="setEntCat(this,'green')">♻️ Green Business</button>
+    </div>
+
+    <div class="diff-row">
+      <label>Scale:</label>
+      <button class="diff-btn active" data-diff="small" onclick="setEntDiff(this,'small')">🟢 Small Scale</button>
+      <button class="diff-btn" data-diff="medium" onclick="setEntDiff(this,'medium')">🟡 Medium Scale</button>
+      <button class="diff-btn" data-diff="large" onclick="setEntDiff(this,'large')">🔴 Large Vision</button>
+    </div>
+
+    <div class="idea-display" id="entDisplay">
+      <div class="idea-cat-tag" id="entCatTag">Entrepreneurship</div>
+      <div class="idea-title" id="entTitle">Press "Generate Idea" to discover your business concept!</div>
+      <div class="idea-desc" id="entDesc">Select a business type and scale, then generate your entrepreneurship idea.</div>
+      <div class="idea-detail" id="entDetail">
+        <div class="detail-grid">
+          <div class="detail-block"><div class="detail-label">💡 Problem Solved</div><div class="detail-text" id="entProb">—</div></div>
+          <div class="detail-block"><div class="detail-label">👥 Target Customers</div><div class="detail-text" id="entCust">—</div></div>
+          <div class="detail-block"><div class="detail-label">🚀 Launch Steps</div><div class="detail-text" id="entSteps">—</div></div>
+          <div class="detail-block"><div class="detail-label">📈 Revenue Idea</div><div class="detail-text" id="entRev">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="gen-btn" style="background:var(--amber); box-shadow:none" onclick="generateEntIdea()">💼 Generate Entrepreneurship Idea</button>
+    <div class="btn-row">
+      <button class="sec-btn" onclick="toggleDetail('entDetail')">📋 Expand Full Outline</button>
+      <button class="sec-btn" onclick="saveIdea('ent')">🔖 Save Idea</button>
+      <button class="sec-btn" onclick="copyIdea('ent')">📋 Copy</button>
+    </div>
+
+    <div class="saved-section">
+      <div class="saved-label">📌 Saved Business Ideas</div>
+      <div class="saved-list" id="entSavedList"><div style="font-size:0.82rem;color:var(--muted);">No ideas saved yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: SOCIAL INNOVATION
+══════════════════════════════════ -->
+<div class="page" id="page-social">
+  <div class="container" style="padding-top:28px;">
+    <div class="sec-eyebrow">Module 03</div>
+    <h2 class="sec-title">🌱 Social Innovation Ideas</h2>
+    <p class="sec-desc">Generate community problem-solving ideas that create real-world impact. Builds the civic responsibility and social awareness goals of NCF 2023.</p>
+
+    <div class="filter-row">
+      <button class="filter-btn active" data-cat="all" onclick="setSocCat(this,'all')">All Issues</button>
+      <button class="filter-btn" data-cat="environment" onclick="setSocCat(this,'environment')">🌿 Environment</button>
+      <button class="filter-btn" data-cat="education" onclick="setSocCat(this,'education')">📚 Education Access</button>
+      <button class="filter-btn" data-cat="health" onclick="setSocCat(this,'health')">❤️ Health</button>
+      <button class="filter-btn" data-cat="waste" onclick="setSocCat(this,'waste')">♻️ Waste & Energy</button>
+    </div>
+
+    <div class="diff-row">
+      <label>Scope:</label>
+      <button class="diff-btn active" data-diff="local" onclick="setSocDiff(this,'local')">🟢 Local</button>
+      <button class="diff-btn" data-diff="district" onclick="setSocDiff(this,'district')">🟡 District</button>
+      <button class="diff-btn" data-diff="national" onclick="setSocDiff(this,'national')">🔴 National</button>
+    </div>
+
+    <div class="idea-display" id="socDisplay">
+      <div class="idea-cat-tag" id="socCatTag">Social Innovation</div>
+      <div class="idea-title" id="socTitle">Press "Generate Idea" to find your social impact project!</div>
+      <div class="idea-desc" id="socDesc">Select an issue area and scope, then generate your social innovation concept.</div>
+      <div class="idea-detail" id="socDetail">
+        <div class="detail-grid">
+          <div class="detail-block"><div class="detail-label">🎯 Community Problem</div><div class="detail-text" id="socProb">—</div></div>
+          <div class="detail-block"><div class="detail-label">👥 Beneficiaries</div><div class="detail-text" id="socBen">—</div></div>
+          <div class="detail-block"><div class="detail-label">🛠 Implementation</div><div class="detail-text" id="socImpl">—</div></div>
+          <div class="detail-block"><div class="detail-label">🌟 Expected Impact</div><div class="detail-text" id="socImp">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="gen-btn" style="background:var(--mint); box-shadow:none" onclick="generateSocIdea()">🌱 Generate Social Innovation Idea</button>
+    <div class="btn-row">
+      <button class="sec-btn" onclick="toggleDetail('socDetail')">📋 Expand Full Outline</button>
+      <button class="sec-btn" onclick="saveIdea('soc')">🔖 Save Idea</button>
+      <button class="sec-btn" onclick="copyIdea('soc')">📋 Copy</button>
+    </div>
+
+    <div class="saved-section">
+      <div class="saved-label">📌 Saved Social Ideas</div>
+      <div class="saved-list" id="socSavedList"><div style="font-size:0.82rem;color:var(--muted);">No ideas saved yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: COMBINE IDEAS
+══════════════════════════════════ -->
+<div class="page" id="page-combine">
+  <div class="container" style="padding-top:28px;">
+    <div class="sec-eyebrow">Module 04</div>
+    <h2 class="sec-title">🔀 Combine Ideas</h2>
+    <p class="sec-desc">Mix two different domains to spark breakthrough interdisciplinary project ideas. NCF 2023 emphasises cross-curricular thinking — this module makes it practical.</p>
+
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;font-weight:600;">Select two domains to combine:</div>
+
+    <div class="combine-grid">
+      <select class="combo-select" id="domain1">
+        <option value="science">🔬 Science</option>
+        <option value="technology">💡 Technology</option>
+        <option value="environment">🌍 Environment</option>
+        <option value="agriculture">🌾 Agriculture</option>
+        <option value="health">❤️ Health</option>
+        <option value="education">📚 Education</option>
+        <option value="arts">🎨 Arts & Culture</option>
+        <option value="sports">⚽ Sports</option>
+        <option value="business">💼 Business</option>
+        <option value="community">🏘 Community</option>
+      </select>
+      <div class="combo-plus">✕</div>
+      <select class="combo-select" id="domain2">
+        <option value="technology">💡 Technology</option>
+        <option value="environment">🌍 Environment</option>
+        <option value="agriculture">🌾 Agriculture</option>
+        <option value="health">❤️ Health</option>
+        <option value="education">📚 Education</option>
+        <option value="arts">🎨 Arts & Culture</option>
+        <option value="sports">⚽ Sports</option>
+        <option value="business">💼 Business</option>
+        <option value="community">🏘 Community</option>
+        <option value="science">🔬 Science</option>
+      </select>
+    </div>
+
+    <div class="idea-display" id="comboDisplay" style="min-height:160px;">
+      <div class="idea-cat-tag" id="comboCatTag">Interdisciplinary</div>
+      <div class="idea-title" id="comboTitle">Select two domains and press "Combine & Generate"!</div>
+      <div class="idea-desc" id="comboDesc">The app will find unexpected connections between your selected fields and generate an original project idea.</div>
+      <div class="idea-detail" id="comboDetail">
+        <div class="detail-grid">
+          <div class="detail-block"><div class="detail-label">🔗 Connection</div><div class="detail-text" id="comboConn">—</div></div>
+          <div class="detail-block"><div class="detail-label">🛠 How It Works</div><div class="detail-text" id="comboHow">—</div></div>
+          <div class="detail-block"><div class="detail-label">📊 Real-World Example</div><div class="detail-text" id="comboEx">—</div></div>
+          <div class="detail-block"><div class="detail-label">🚀 Next Step</div><div class="detail-text" id="comboNext">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="gen-btn" style="background:var(--violet);box-shadow:none" onclick="generateComboIdea()">🔀 Combine & Generate Idea</button>
+    <div class="btn-row">
+      <button class="sec-btn" onclick="toggleDetail('comboDetail')">📋 Expand</button>
+      <button class="sec-btn" onclick="saveIdea('combo')">🔖 Save</button>
+      <button class="sec-btn" onclick="copyIdea('combo')">📋 Copy</button>
+    </div>
+
+    <div class="saved-section">
+      <div class="saved-label">📌 Saved Combined Ideas</div>
+      <div class="saved-list" id="comboSavedList"><div style="font-size:0.82rem;color:var(--muted);">No ideas saved yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: PORTFOLIO
+══════════════════════════════════ -->
+<div class="page" id="page-portfolio">
+  <div class="container" style="padding-top:28px;">
+    <div class="sec-eyebrow">Your Innovation Journey</div>
+    <h2 class="sec-title">🏅 Idea Portfolio</h2>
+    <p class="sec-desc">Your personal record of creative thinking. Track your ideas, achievements, and progress aligned with PARAKH's competency development framework.</p>
+
+    <!-- Author card on progress page -->
+    <div class="author-card" style="margin-bottom:28px;">
+      <img class="author-photo" src="author.jpg" alt="Mateen Yousuf"
+           onerror="this.style.display='none'">
+      <div>
+        <div class="author-name">Mateen Yousuf</div>
+        <div class="author-role">Teacher – School Education Department, J&K</div>
+        <div class="author-sub">IdeaSpark · NEP 2020 & NCF 2023 Aligned</div>
+      </div>
+    </div>
+
+    <div class="portfolio-stats" id="portfolioStats"></div>
+
+    <div style="font-size:0.72rem;color:var(--muted);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;">🏆 Innovation Badges</div>
+    <div class="badge-grid" id="badgeGrid"></div>
+
+    <div style="text-align:center;margin-top:28px;">
+      <button class="sec-btn" onclick="resetAll()" style="color:rgba(255,100,80,0.7);border-color:rgba(255,100,80,0.2);">⚠ Reset All Data</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST + INSTALL + DOC LINKS -->
+<div class="toast" id="toast"></div>
+
+<div class="install-banner" id="installBanner">
+  <div class="inst-text">
+    <strong>Install IdeaSpark</strong>
+    Works offline · Add to Home Screen
+  </div>
+  <div class="inst-btns">
+    <button class="inst-yes" onclick="installApp()">Install</button>
+    <button class="inst-no"  onclick="closeInstall()">Later</button>
+  </div>
+</div>
+
+<div class="doc-footer">
+  <a href="conceptual-background.html" class="doc-link">📖 Conceptual Background</a>
+  <a href="user-manual.html" class="doc-link">📘 User Manual</a>
+</div>
+
+<script>
+/* =====================================================
+   IDEASPARK – COMPLETE JAVASCRIPT
+   Author: Mateen Yousuf, Teacher – SED, J&K
+   NEP 2020 · NCF 2023 · PARAKH Aligned
+   ===================================================== */
+
+// ── SERVICE WORKER (inline blob fallback) ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {
+      try {
+        const sw = `const C='ideaspark-v1';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match('./'))))})`;
+        const url = URL.createObjectURL(new Blob([sw],{type:'application/javascript'}));
+        navigator.serviceWorker.register(url,{scope:'./'}).then(()=>URL.revokeObjectURL(url)).catch(()=>{});
+      } catch(e){}
+    });
+  });
+}
+
+// ── INSTALL PROMPT ──
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e;
+  setTimeout(()=>document.getElementById('installBanner').classList.add('show'),3500);
+});
+function installApp(){ if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;} closeInstall(); }
+function closeInstall(){ document.getElementById('installBanner').classList.remove('show'); }
+
+// ── TOAST ──
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+// ── NAV ──
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const idx=['home','science','entrepreneur','social','combine','portfolio'].indexOf(id);
+  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='portfolio') renderPortfolio();
+}
+
+// ── TOGGLE DETAIL ──
+function toggleDetail(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// ══════════════════════════════════════
+// SCIENCE IDEAS DATA
+// ══════════════════════════════════════
+const SCI_IDEAS = {
+  physics: {
+    beginner:[
+      { title:"Simple Pendulum Clock", desc:"Build a pendulum using a string and weight to demonstrate periodic motion and timekeeping.", obj:"Understand oscillation and time periods", mat:"String, weight (nut/bolt), ruler, stopwatch", steps:"1. Tie weight to string. 2. Measure length. 3. Time 10 oscillations. 4. Change length and repeat. 5. Record and compare.", out:"Verify the relationship between pendulum length and time period" },
+      { title:"Homemade Electromagnet", desc:"Wind copper wire around an iron bolt to create a magnet powered by a battery.", obj:"Demonstrate electromagnetic induction", mat:"Copper wire, iron bolt, 9V battery, paper clips", steps:"1. Wind wire 50 times around bolt. 2. Connect to battery. 3. Test attraction of paper clips. 4. Increase coils and test again.", out:"Show how electric current creates magnetic fields" },
+      { title:"Balloon Rocket Experiment", desc:"Use a balloon on a string to model Newton's third law of motion.", obj:"Demonstrate action-reaction forces", mat:"Balloon, string (10m), straw, tape", steps:"1. Thread string through straw. 2. Tie string across room. 3. Inflate balloon on straw. 4. Release and measure distance.", out:"Verify Newton's 3rd law through observable rocket motion" }
+    ],
+    intermediate:[
+      { title:"Solar Water Heater Model", desc:"Build a scaled solar water heater using black pipes and insulation to demonstrate thermodynamics.", obj:"Measure temperature rise using solar energy", mat:"Black PVC pipe, foam insulation, clear plastic sheet, thermometer", steps:"1. Coil black pipe in insulated box. 2. Cover with clear plastic. 3. Run water through and measure inlet/outlet temperature. 4. Test at different times of day.", out:"Quantify solar energy conversion efficiency" },
+      { title:"Bernoulli Effect Demonstrator", desc:"Investigate how air speed affects pressure using paper strips and airflow.", obj:"Demonstrate the Bernoulli principle in aerodynamics", mat:"Paper strips, cardboard tube, ruler, anemometer", steps:"1. Hold paper strip horizontal. 2. Blow above the strip. 3. Observe lift. 4. Vary speed and measure angle of lift.", out:"Connect Bernoulli effect to wing lift and aircraft design" },
+      { title:"Optical Fibre Communication Model", desc:"Use a water stream or transparent tube to demonstrate total internal reflection.", obj:"Show how light travels through optical fibres", mat:"Laser pointer, transparent tube, water, prism", steps:"1. Shine laser into curved water stream. 2. Observe light following water curve. 3. Measure angle of total internal reflection.", out:"Model the physics of fibre optic internet cables" }
+    ],
+    advanced:[
+      { title:"Wind Turbine Efficiency Study", desc:"Build multiple blade designs to test which generates the most electricity under constant wind speed.", obj:"Optimise wind turbine blade geometry for maximum power output", mat:"3D-printed or cardboard blades, DC motor, LED, anemometer, multimeter", steps:"1. Build 3 blade designs (3-blade, 4-blade, curved). 2. Attach to DC motor. 3. Apply constant fan wind. 4. Measure voltage output. 5. Graph results.", out:"Determine which blade geometry maximises energy conversion" },
+      { title:"Piezoelectric Energy Harvester", desc:"Use piezoelectric crystals from buzzers to harvest mechanical energy from vibrations.", obj:"Investigate energy harvesting from ambient mechanical vibrations", mat:"Piezoelectric buzzer discs, capacitor, LED, oscilloscope", steps:"1. Connect disc to capacitor. 2. Apply mechanical stress. 3. Measure voltage with oscilloscope. 4. Test different materials and pressures.", out:"Measure energy output and explore self-powered sensor applications" }
+    ]
+  },
+  chemistry: {
+    beginner:[
+      { title:"Natural pH Indicator", desc:"Extract pigment from red cabbage to test the acidity or alkalinity of household liquids.", obj:"Identify acids and bases using a natural indicator", mat:"Red cabbage, water, various liquids (lemon juice, baking soda, milk)", steps:"1. Boil red cabbage. 2. Filter the purple liquid. 3. Add 5ml to each test liquid. 4. Record colour change. 5. Build a pH colour chart.", out:"Create a reusable natural pH indicator for 8+ substances" },
+      { title:"Soap Making from Oil", desc:"Make simple cold-process soap to understand saponification reactions.", obj:"Demonstrate the saponification chemical reaction", mat:"Coconut oil, sodium hydroxide solution, moulds, safety gloves", steps:"1. Carefully mix NaOH with water. 2. Add cooled oil slowly. 3. Stir until trace. 4. Pour into mould. 5. Wait 24 hours.", out:"Produce functional soap and explain the reaction to class" }
+    ],
+    intermediate:[
+      { title:"Water Purification Comparison", desc:"Test three purification methods (boiling, filtering, chlorination) on collected water samples.", obj:"Compare effectiveness of different water treatment techniques", mat:"Contaminated water samples, filter paper, sand, charcoal, chlorine tablets, microscope", steps:"1. Collect water samples from different sources. 2. Apply each purification method. 3. Test turbidity and bacterial count. 4. Compare results.", out:"Recommend best purification method for rural communities" },
+      { title:"Corrosion Prevention Study", desc:"Test five different coatings (oil, paint, galvanising, wax, bare) on iron nails exposed to saltwater.", obj:"Identify most effective anti-corrosion method", mat:"Iron nails, saltwater, motor oil, paint, zinc powder, wax, acrylic", steps:"1. Coat nails differently. 2. Submerge in saltwater. 3. Check every 2 days for 2 weeks. 4. Photograph and measure rust.", out:"Determine most cost-effective corrosion protection for local infrastructure" }
+    ],
+    advanced:[
+      { title:"Biodegradable Plastic from Starch", desc:"Synthesise and test biodegradable plastic from potato starch as a petroleum plastic alternative.", obj:"Create and characterise a biopolymer from renewable agricultural waste", mat:"Potato starch, glycerine, vinegar, water, heat source, mould", steps:"1. Mix 2 tbsp starch, 1 tbsp glycerine, 1 tbsp vinegar in water. 2. Heat while stirring until gel forms. 3. Pour into mould. 4. Test tensile strength, water resistance, and degradation.", out:"Compare properties with commercial plastic and estimate biodegradation time" }
+    ]
+  },
+  biology: {
+    beginner:[
+      { title:"Seed Germination Variables Study", desc:"Test how light, temperature, and soil type affect seed germination speed.", obj:"Identify optimal conditions for seed germination", mat:"Bean seeds, 6 small pots, different soils, lamp, thermometer", steps:"1. Sow seeds in identical pots. 2. Vary one condition per group. 3. Water equally. 4. Count germinated seeds daily for 10 days.", out:"Determine the single most important factor for fast germination" },
+      { title:"Osmosis in Plant Cells", desc:"Observe osmosis by placing potato slices in water, salt water, and sugar water.", obj:"Demonstrate osmosis in living cells", mat:"Potato, three bowls, salt, sugar, ruler, weighing scale", steps:"1. Cut equal potato slices. 2. Weigh each. 3. Place in plain, salty, and sugary water. 4. Weigh again after 2 hours. 5. Calculate % change.", out:"Explain cellular hydration and how plants absorb water from soil" }
+    ],
+    intermediate:[
+      { title:"Microplastics Impact on Plant Growth", desc:"Grow plants in soil containing different concentrations of microplastics to measure growth impact.", obj:"Quantify how microplastic soil contamination affects plant growth", mat:"Maize seeds, soil, ground plastic bags, pots, ruler, scale", steps:"1. Prepare soils with 0%, 1%, 5%, 10% plastic by weight. 2. Plant 5 seeds per pot. 3. Water equally. 4. Measure height every 3 days for 3 weeks.", out:"Quantify growth reduction at each contamination level" },
+      { title:"Antibiotic Effect on Bacteria", desc:"Use agar plates to test how common antiseptics inhibit bacterial growth.", obj:"Demonstrate antibiotic inhibition zones in bacteria cultures", mat:"Agar plates, bacteria culture (safe E. coli substitute), discs soaked in antiseptics", steps:"1. Spread bacteria on agar. 2. Place antiseptic discs. 3. Incubate for 24 hours. 4. Measure inhibition zones.", out:"Rank effectiveness of 5 common antiseptics against bacterial growth" }
+    ],
+    advanced:[
+      { title:"DNA Extraction from Fruit", desc:"Extract and visualise DNA from strawberries or bananas using household chemicals.", obj:"Isolate and characterise DNA from fruit cells", mat:"Strawberries, dish soap, salt, alcohol (isopropyl), coffee filter, test tubes", steps:"1. Mash strawberries with salt and soap solution. 2. Filter through coffee filter. 3. Layer cold alcohol on top slowly. 4. Observe DNA strands rising.", out:"Visualise DNA and connect to genetics topics in NCF 2023 curriculum" }
+    ]
+  },
+  environment: {
+    beginner:[
+      { title:"Air Quality Sticky Trap Monitor", desc:"Make sticky card traps to capture and compare airborne particles near roads, parks, and homes.", obj:"Measure and compare air pollution particulate density in different locations", mat:"Cardboard squares, petroleum jelly, magnifying glass, ruler", steps:"1. Coat cards with petroleum jelly. 2. Place at 5 locations for 48 hours. 3. Collect and count particles under lens. 4. Map results.", out:"Create a simple air quality map of your neighbourhood" },
+      { title:"Rainwater Harvesting Model", desc:"Build a small-scale roof catchment system using bottles and pipes.", obj:"Demonstrate rainwater collection and filtration", mat:"PET bottles, PVC pipe, sand, gravel, cotton, measuring cup", steps:"1. Build sloped roof from bottle. 2. Connect to filter system (gravel, sand, cotton). 3. Pour 500ml water. 4. Measure clean output.", out:"Calculate how much water a real roof could save monthly" }
+    ],
+    intermediate:[
+      { title:"Urban Heat Island Study", desc:"Measure temperature differences between paved urban zones and green spaces across a day.", obj:"Quantify the urban heat island effect in your locality", mat:"Data thermometer, GPS app, notebook, chart paper", steps:"1. Select 5 sites (road, park, market, field, water body). 2. Measure temperature at 8am, 12pm, 4pm, 8pm. 3. Record and graph.", out:"Identify which land use type is coolest and recommend tree planting zones" }
+    ],
+    advanced:[
+      { title:"Constructed Wetland Water Filter", desc:"Build a mini constructed wetland to filter greywater using aquatic plants and layered media.", obj:"Design and test a nature-based water treatment system", mat:"Large tray, gravel, sand, aquatic plants (water hyacinth), contaminated water", steps:"1. Layer gravel and sand in tray. 2. Plant water hyacinth. 3. Let system establish for 1 week. 4. Pass dirty water through. 5. Test before and after: turbidity, colour, smell.", out:"Achieve measurable water quality improvement and propose a scaled design" }
+    ]
+  },
+  technology: {
+    beginner:[
+      { title:"Solar-Powered Phone Charger", desc:"Build a basic solar charging circuit using a solar panel and voltage regulator.", obj:"Demonstrate renewable energy for practical electronics charging", mat:"5V solar panel, voltage regulator (7805), USB socket, wires, multimeter", steps:"1. Connect solar panel to regulator input. 2. Connect output to USB socket. 3. Test output voltage in sunlight. 4. Charge a device.", out:"Demonstrate viability of solar charging for low-power devices" },
+      { title:"Automatic Plant Watering System", desc:"Use a moisture sensor and relay to build an irrigation system that waters plants when soil is dry.", obj:"Build an automated IoT-inspired agricultural solution", mat:"Soil moisture sensor, relay module, water pump, Arduino/555 timer, 9V battery", steps:"1. Connect moisture sensor to relay. 2. Relay controls water pump. 3. Set threshold. 4. Test with dry and wet soil.", out:"Reduce water wastage through automatic irrigation triggering" }
+    ],
+    intermediate:[
+      { title:"Smart Street Light Prototype", desc:"Build a motion-activated LED street light that saves energy by switching off when no movement is detected.", obj:"Design energy-efficient public infrastructure using sensors", mat:"PIR motion sensor, LED, relay, timer circuit, 12V supply", steps:"1. Connect PIR to relay. 2. Relay switches LED. 3. Add timer delay. 4. Test sensitivity range. 5. Measure energy savings vs always-on.", out:"Calculate energy savings percentage over a 24-hour period" },
+      { title:"Low-Cost Air Quality Monitor", desc:"Build a particulate matter sensor using an MQ series gas sensor and display readings on an LCD.", obj:"Create an affordable air pollution monitoring device for rural use", mat:"MQ-135 sensor, Arduino, 16×2 LCD, wires, power supply", steps:"1. Connect sensor to Arduino analog pin. 2. Program to read and display values. 3. Calibrate in clean air. 4. Test near traffic and fire.", out:"Display real-time air quality index and identify pollution peaks" }
+    ],
+    advanced:[
+      { title:"Gesture-Controlled Wheelchair Prototype", desc:"Use an accelerometer and servo motors to build a wheelchair that responds to hand tilt gestures.", obj:"Design assistive technology using sensor-actuator systems", mat:"MPU-6050 accelerometer, servo motors, Arduino, chair model, wires", steps:"1. Mount accelerometer on glove. 2. Program Arduino to read tilt angles. 3. Map tilt to motor direction. 4. Build and test model wheelchair. 5. Evaluate response time.", out:"Demonstrate a functional gesture-control system and discuss assistive technology impact" }
+    ]
+  }
+};
+
+// ══════════════════════════════════════
+// ENTREPRENEURSHIP IDEAS DATA
+// ══════════════════════════════════════
+const ENT_IDEAS = {
+  product: {
+    small:[
+      { title:"Handmade Herbal Soap Business", desc:"Produce and sell natural soaps using locally sourced herbs, essential oils, and organic ingredients.", prob:"Demand for chemical-free personal care products in local markets", cust:"Health-conscious adults, local shops, gift buyers", steps:"1. Learn cold-process soap making. 2. Source local herbs. 3. Create 3 product variants. 4. Package attractively. 5. Sell at school fairs and markets.", rev:"Per-unit pricing at 2-3x material cost; bundle deals for recurring buyers" },
+      { title:"Upcycled Stationery Products", desc:"Create notebooks, folders and pen holders from discarded newspapers, cardboard, and waste fabric.", prob:"Demand for affordable, eco-friendly school supplies", cust:"School students, eco-conscious consumers, gift shops", steps:"1. Collect waste paper/cardboard. 2. Learn upcycling techniques. 3. Produce 50 units. 4. Sell at school. 5. Accept custom orders.", rev:"Sell at 5-10× material cost; margins of 70-80% possible" }
+    ],
+    medium:[
+      { title:"Organic Snack Brand", desc:"Produce and market healthy snacks (roasted seeds, dried fruit, nut bars) targeting health-conscious urban youth.", prob:"Gap between junk food and healthy alternatives in school canteens", cust:"School-age students, gyms, health stores", steps:"1. Develop 3 recipes. 2. Get food safety certification. 3. Design packaging. 4. Pilot in 5 schools. 5. Scale to local retail.", rev:"Subscription boxes, bulk institutional orders, online sales" }
+    ],
+    large:[
+      { title:"Local Artisan Craft Marketplace", desc:"Build a platform connecting J&K artisans with national buyers, focusing on Pashmina, wood carving, and paper mache.", prob:"Artisans lack access to national and global markets; middlemen take large margins", cust:"Domestic tourists, online buyers, exporters", steps:"1. Map 50 artisan families. 2. Build digital catalogue. 3. Partner with travel agencies. 4. Launch on existing e-commerce platforms. 5. Add own website.", rev:"Commission per sale, premium listing fees, storytelling content subscriptions" }
+    ]
+  },
+  digital:[
+    { title:"Homework Help Video Channel", desc:"Create subject-specific short video tutorials aligned with NCF 2023 curriculum for students in Classes 8-12.", prob:"Students lack clear video explanations for textbook concepts in local context", cust:"Middle and high school students, parents", steps:"1. Choose 2 subjects. 2. Script 10 tutorials. 3. Record with phone. 4. Upload to YouTube. 5. Grow to 1000 subscribers.", rev:"YouTube ad revenue, sponsored tutorials, premium notes PDF sales" },
+    { title:"Local Events & Services App", desc:"Build a simple offline-capable HTML app listing local services, events, and emergency contacts for a town or village.", prob:"Lack of organised digital directory for local services in rural areas", cust:"Residents, tourists, small businesses", steps:"1. Survey community for service categories. 2. Build simple HTML/CSS app. 3. Distribute via Bluetooth or QR code. 4. Update monthly.", rev:"Listing fees from businesses, local government partnerships" }
+  ],
+  social:[
+    { title:"Rural Women Digital Skills Centre", desc:"Set up a small centre teaching basic digital literacy, online selling, and smartphone usage to rural women.", prob:"Digital divide disproportionately affects rural women in J&K", cust:"Rural women aged 18-50, self-help groups", steps:"1. Partner with panchayat. 2. Secure a room. 3. Get 5 donated devices. 4. Train 2 volunteer teachers. 5. Run weekly 2-hour classes.", rev:"Nominal fees, NGO grants, government skill development funding" },
+    { title:"E-Waste Collection & Refurbishment Social Enterprise", desc:"Collect old electronics, refurbish working devices, donate to schools, and responsibly recycle the rest.", prob:"E-waste accumulation in communities; digital device shortage in rural schools", cust:"Schools, low-income families, corporate CSR programs", steps:"1. Announce collection drive. 2. Sort and assess devices. 3. Refurbish with volunteer technicians. 4. Donate or sell at low cost. 5. Partner with certified recyclers.", rev:"Refurbished device sales, corporate e-waste collection contracts" }
+  ],
+  green:[
+    { title:"Community Solar Micro-Grid Startup", desc:"Install shared solar panels in a village, charge per unit consumed, and reinvest in system expansion.", prob:"Unreliable grid electricity in remote villages; high fossil fuel costs", cust:"Off-grid village households and shops", steps:"1. Conduct energy needs survey. 2. Size a 2kW system. 3. Secure funding (PM-KUSUM scheme). 4. Install panels. 5. Build billing system.", rev:"Per-unit electricity sales at lower-than-grid rates; surplus energy export" },
+    { title:"Organic Waste Composting Business", desc:"Collect food waste from restaurants and markets, compost it, and sell the output to farmers and nurseries.", prob:"Organic waste disposal is a growing urban problem; farmers need affordable fertiliser", cust:"Restaurants, households, farmers, nurseries", steps:"1. Partner with 10 restaurants. 2. Set up composting site. 3. Produce first batch in 6 weeks. 4. Test and bag. 5. Sell to farmers.", rev:"Tipping fees from waste generators + compost sales to farmers" }
+  ]
+};
+
+// ══════════════════════════════════════
+// SOCIAL INNOVATION IDEAS DATA
+// ══════════════════════════════════════
+const SOC_IDEAS = {
+  environment: {
+    local:[
+      { title:"Village Plastic Clean-Up Brigade", desc:"Organise weekly student-led clean-up drives in the village, with data mapping of plastic hotspots.", prob:"Unmanaged plastic waste in public spaces poses health and environmental risks", ben:"Entire village community, especially children playing outdoors", impl:"1. Form 5-student teams. 2. Map 10 hotspot locations. 3. Hold weekly Saturday drives. 4. Record data. 5. Present to panchayat monthly.", imp:"Measurable reduction in open plastic waste; community awareness building" },
+      { title:"School Rooftop Garden Initiative", desc:"Convert unused school rooftop into a vegetable garden maintained by students, supplying the school kitchen.", prob:"Food security awareness gap; unused infrastructure; no hands-on agriculture learning", ben:"Students, school kitchen, local farmers (who can donate seedlings)", impl:"1. Survey rooftop load capacity. 2. Get school approval. 3. Build raised beds. 4. Plant seasonal vegetables. 5. Maintain as curriculum activity.", imp:"Fresh vegetables for mid-day meal; living classroom for NCF 2023 science" }
+    ],
+    district:[
+      { title:"River Health Monitoring Network", desc:"Train students at 10 schools along a river to collect and report weekly water quality data.", prob:"River pollution goes unmonitored in rural districts; no early warning system", ben:"Downstream communities, farmers, fisher families", impl:"1. Recruit 10 school science clubs. 2. Train students in water testing. 3. Set up shared data spreadsheet. 4. Report to district authority quarterly.", imp:"Create a citizen science pollution monitoring network for the river" }
+    ],
+    national:[
+      { title:"Zero-Carbon School Challenge", desc:"Design a framework for schools to audit, reduce and offset their carbon footprint, starting with a pilot network of 50 schools.", prob:"Schools contribute to national carbon emissions but have no structured reduction pathway", ben:"Students, communities near schools, national environment goals", impl:"1. Develop audit tool. 2. Pilot in 5 schools. 3. Publish results and best practices. 4. Scale via education department. 5. Share on national portal.", imp:"If 10,000 schools participate, model the potential carbon reduction annually" }
+    ]
+  },
+  education:[
+    { title:"Peer Tutoring Program for Struggling Students", desc:"Train high-achieving students to tutor weaker peers in maths and science during lunch breaks.", prob:"Students falling behind lack affordable extra help; bright students lack leadership opportunities", ben:"Struggling students (Classes 6-10), peer tutors who gain communication skills", impl:"1. Identify 20 peer tutors via teacher recommendation. 2. Train them in basic tutoring techniques. 3. Match with struggling students. 4. Run 30-minute daily sessions. 5. Track test scores.", imp:"Reduce failure rates by 20%; improve both tutor and learner outcomes" },
+    { title:"Community Library Revival", desc:"Reactivate a closed village library, stock it with donated books, and run after-school reading sessions.", prob:"Rural students lack access to books beyond textbooks; reading culture is declining", ben:"School children, young adults, the broader community", impl:"1. Survey community for interest. 2. Collect 200 book donations. 3. Catalogue and organise. 4. Train 2 student librarians. 5. Open 3 days/week.", imp:"Increase average reading hours per student per week from near-zero" }
+  ],
+  health:[
+    { title:"Menstrual Hygiene Awareness Campaign", desc:"Train girl students as peer educators to spread hygiene awareness and distribute pads in rural schools.", prob:"Menstrual hygiene taboo causes school absenteeism among adolescent girls in rural areas", ben:"Adolescent girls in Classes 7-12, younger sisters, mothers", impl:"1. Train 15 girl students as educators. 2. Create illustrated awareness material. 3. Partner with NGO for pad supply. 4. Hold sessions in 5 schools.", imp:"Measure absenteeism reduction; create supportive peer network" },
+    { title:"Village Mental Health Awareness Walk", desc:"Organise a monthly awareness walk about mental health, stress, and seeking help — led by students.", prob:"Mental health is stigmatised and unaddressed in rural communities; students face academic stress", ben:"Students, parents, elderly community members", impl:"1. Partner with school counsellor. 2. Design simple message banners. 3. Hold first walk with 50 participants. 4. Invite local doctor to speak. 5. Set up anonymous suggestion box.", imp:"Reduce stigma; identify 5+ students who need and receive counselling support" }
+  ],
+  waste:[
+    { title:"Decentralised Household Composting Drive", desc:"Distribute free compost bins to 50 households and train families to convert kitchen waste into compost.", prob:"Kitchen organic waste mixes with dry waste, contaminating landfills", ben:"50 families, local farmers, municipal waste workers", impl:"1. Get 50 bins donated or made cheaply. 2. Train families in 1-hour session. 3. Collect compost monthly. 4. Supply to school garden. 5. Expand via word-of-mouth.", imp:"Divert estimated 500kg organic waste per month from landfill" },
+    { title:"Solar Lantern Lending Library", desc:"Collect and maintain a pool of solar lanterns that can be borrowed by families during power cuts.", prob:"Frequent power cuts force families to use kerosene lamps that are expensive and polluting", ben:"Low-income families, students studying at night", impl:"1. Collect 20 solar lanterns (donations/CSR). 2. Set up charging station at school. 3. Create lending register. 4. Charge symbolic deposit. 5. Maintain and expand.", imp:"Reduce kerosene use; improve evening study time for students" }
+  ]
+};
+
+// ══════════════════════════════════════
+// COMBINATION IDEAS DATA
+// ══════════════════════════════════════
+const COMBO_IDEAS = {
+  "science+technology": { title:"IoT Soil Health Monitor", desc:"Build a sensor network that continuously monitors soil moisture, temperature, and pH, sending alerts to farmers via SMS.", conn:"Soil science + wireless sensor networks = precision agriculture", how:"Sensors buried in fields feed data to microcontrollers; data triggers SMS alerts when readings go out of range", ex:"Similar to the Fasal startup that monitors crop health using AI sensors", next:"Build a prototype sensor and test in a school garden over 30 days" },
+  "technology+environment": { title:"AI-Powered Waste Sorter", desc:"Use a camera and simple image recognition to automatically sort recyclable waste at schools and offices.", conn:"Computer vision + waste management = automated recycling", how:"Camera captures bin contents; algorithm classifies as plastic, paper, metal, or organic; servo-driven gates sort materials", ex:"Similar to AMP Robotics' waste sorting systems being piloted in Indian cities", next:"Build a simple classifier using a Raspberry Pi and pre-trained image model" },
+  "environment+agriculture": { title:"Biochar Soil Enrichment Programme", desc:"Convert agricultural waste into biochar — a carbon-rich soil amendment that improves crop yields and sequesters carbon.", conn:"Biomass waste + soil science = carbon-negative farming", how:"Crop residues are pyrolysed in a low-oxygen kiln; biochar is mixed into degraded soil to improve water and nutrient retention", ex:"Practiced in the Amazon basin for 2,500 years; now being scaled by startups in Maharashtra", next:"Build a small kiln from a metal drum; compare plant growth in biochar vs. control soil" },
+  "technology+health": { title:"Low-Cost ECG Device for Village Health Camps", desc:"Build a wearable that records heart rhythms and transmits data via Bluetooth to a phone for rural cardiac screening.", conn:"Biosignal processing + mobile health = accessible diagnostics", how:"Electrodes on skin pick up millivolt heart signals; instrumentation amplifier conditions the signal; Arduino processes and Bluetooth module transmits to phone", ex:"AliveCor's KardiaMobile device does this commercially; open-source designs exist for maker communities", next:"Assemble an AD8232-based circuit and test signal quality on 10 volunteers" },
+  "science+agriculture": { title:"Biopesticide Production from Neem", desc:"Extract and standardise neem-based biopesticide to replace chemical pesticides for small farmers.", conn:"Plant biochemistry + integrated pest management = sustainable farming", how:"Neem seeds are ground, soaked, and extracted; azadirachtin content is measured; solution is formulated and field-tested on crops", ex:"Neem-based products like Achook are commercially available; home production possible at 10% of market cost", next:"Extract neem oil from 1kg seeds; test pesticidal effect on aphids in school garden" },
+  "business+environment": { title:"Carbon Credit Aggregator for Smallholder Farmers", desc:"Help farmers in J&K monetise carbon stored in their forests and orchards by aggregating small landholdings into tradeable carbon credits.", conn:"Carbon finance + smallholder agriculture = climate business", how:"Farmers commit to tree planting and preservation; a tech platform aggregates their land; a verified measurement methodology quantifies stored carbon; credits are sold on voluntary carbon markets", ex:"Verra and Gold Standard certify such projects globally; India's carbon market is under development under PAT scheme", next:"Survey 20 farming families; estimate carbon sequestration potential of their orchards" },
+  "education+technology": { title:"Offline Peer Learning App Network", desc:"Build a mesh network of affordable tablets in a village school that share educational content peer-to-peer without internet.", conn:"Offline-first software + mesh networking = rural digital education", how:"Tablets run PWA apps that sync content via Bluetooth or Wi-Fi Direct when near each other; no central server needed; teachers upload new content via USB", ex:"Kolibri by Learning Equality and Sugar Labs operate on similar offline-first principles", next:"Set up a 3-device Bluetooth file-sharing demo using Progressive Web App technology" },
+  "arts+technology": { title:"Augmented Reality Heritage Trail", desc:"Create an AR app that overlays historical information and 3D reconstructions on real J&K heritage sites when viewed through a phone camera.", conn:"Cultural heritage + augmented reality = experiential history education", how:"GPS locates the user near a heritage site; AR app overlays historical photos, 3D building models, and audio narrations on the camera view", ex:"Google Lens and museum AR apps do this for major sites; smaller scale versions are buildable with WebXR", next:"Build a simple WebXR prototype at one local heritage site with 5 information markers" },
+  "community+health": { title:"Community Health Volunteer Training Network", desc:"Train one health volunteer per village using a tablet-based curriculum to deliver basic health checks, referrals, and awareness in remote areas.", conn:"Community mobilisation + digital health tools = last-mile healthcare", how:"Volunteers follow a protocol app guiding them through blood pressure, temperature, and symptom checks; data syncs to a district health database when connectivity is available", ex:"Inspired by ASHA worker system; enhanced with digital tools like CommCare used in 100+ countries", next:"Design a 10-session training curriculum and prototype the data collection app" },
+  "sports+technology": { title:"AI Coaching Assistant for Rural Athletes", desc:"Use video analysis on a phone to give rural athletes feedback on their technique in throwing, jumping, or running events.", conn:"Computer vision + sports science = democratised coaching", how:"Athlete records a video; AI app analyses key joint angles and timing; generates simple text feedback comparing to optimal benchmarks", ex:"Hudl and CoachAI do this commercially; simpler versions can be built with MediaPipe pose estimation", next:"Build a running stride analyser using MediaPipe Pose in a simple HTML5 app" },
+  "default": { title:"Interdisciplinary Innovation Project", desc:"Combining your two selected fields creates opportunities for breakthrough ideas that neither discipline could reach alone.", conn:"The intersection of two disciplines is where the most original ideas emerge", how:"Map the key tools, methods, and problems of each field, then look for places where a tool from one field solves a problem in the other", ex:"Modern innovations like GPS agriculture, AI diagnostics, and solar water pumps all emerged from similar cross-domain thinking", next:"List 5 keywords from each domain and try to combine each pair into a project statement" }
+};
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let sciCat='all', sciDiff='beginner';
+let entCat='all', entDiff='small';
+let socCat='all', socDiff='local';
+let currentSciIdea={}, currentEntIdea={}, currentSocIdea={}, currentComboIdea={};
+
+let savedIdeas = JSON.parse(localStorage.getItem('is_saved_ideas') || '[]');
+
+// ── SCIENCE GENERATORS ──
+function setSciCat(btn, cat) {
+  document.querySelectorAll('#sciCatFilter .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); sciCat=cat;
+}
+function setSciDiff(btn, diff) {
+  document.querySelectorAll('#page-science .diff-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); sciDiff=diff;
+}
+
+function generateSciIdea() {
+  const cats = sciCat==='all' ? Object.keys(SCI_IDEAS) : [sciCat];
+  const cat = cats[Math.floor(Math.random()*cats.length)];
+  const pool = SCI_IDEAS[cat]?.[sciDiff];
+  if (!pool || !pool.length) { toast('⚠ No ideas for this combination yet!'); return; }
+  const idea = pool[Math.floor(Math.random()*pool.length)];
+  currentSciIdea = { ...idea, cat, diff: sciDiff };
+
+  animateIdeaCard('sci', idea);
+  document.getElementById('sciCatTag').textContent = cat.charAt(0).toUpperCase()+cat.slice(1)+' · '+sciDiff.charAt(0).toUpperCase()+sciDiff.slice(1);
+  document.getElementById('sciObj').textContent   = idea.obj;
+  document.getElementById('sciMat').textContent   = idea.mat;
+  document.getElementById('sciSteps').textContent = idea.steps;
+  document.getElementById('sciOut').textContent   = idea.out;
+  document.getElementById('sciDetail').classList.remove('open');
+  incrementStat('sciIdeas');
+}
+
+// ── ENTREPRENEURSHIP GENERATORS ──
+function setEntCat(btn, cat) {
+  document.querySelectorAll('#page-entrepreneur .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); entCat=cat;
+}
+function setEntDiff(btn, diff) {
+  document.querySelectorAll('#page-entrepreneur .diff-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); entDiff=diff;
+}
+
+function generateEntIdea() {
+  let pool = [];
+  if (entCat === 'all') {
+    Object.keys(ENT_IDEAS).forEach(k => {
+      const d = ENT_IDEAS[k];
+      if (Array.isArray(d)) pool.push(...d);
+      else if (d[entDiff]) pool.push(...d[entDiff]);
+      else { Object.keys(d).forEach(s=>pool.push(...d[s])); }
+    });
+  } else {
+    const d = ENT_IDEAS[entCat];
+    if (!d) { toast('⚠ Try a different combination!'); return; }
+    if (Array.isArray(d)) pool = d;
+    else pool = d[entDiff] || Object.values(d).flat();
+  }
+  if (!pool.length) { toast('⚠ Try a different combination!'); return; }
+  const idea = pool[Math.floor(Math.random()*pool.length)];
+  currentEntIdea = { ...idea, cat: entCat };
+
+  animateIdeaCard('ent', idea);
+  document.getElementById('entCatTag').textContent = (entCat==='all'?'Entrepreneurship':entCat.charAt(0).toUpperCase()+entCat.slice(1)) + ' · ' + entDiff.charAt(0).toUpperCase()+entDiff.slice(1);
+  document.getElementById('entProb').textContent  = idea.prob  || '—';
+  document.getElementById('entCust').textContent  = idea.cust  || '—';
+  document.getElementById('entSteps').textContent = idea.steps || '—';
+  document.getElementById('entRev').textContent   = idea.rev   || '—';
+  document.getElementById('entDetail').classList.remove('open');
+  incrementStat('entIdeas');
+}
+
+// ── SOCIAL GENERATORS ──
+function setSocCat(btn, cat) {
+  document.querySelectorAll('#page-social .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); socCat=cat;
+}
+function setSocDiff(btn, diff) {
+  document.querySelectorAll('#page-social .diff-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); socDiff=diff;
+}
+
+function generateSocIdea() {
+  let pool = [];
+  if (socCat === 'all') {
+    Object.keys(SOC_IDEAS).forEach(k => {
+      const d = SOC_IDEAS[k];
+      if (Array.isArray(d)) pool.push(...d);
+      else if (d[socDiff]) pool.push(...d[socDiff]);
+      else Object.values(d).flat().forEach(i=>pool.push(i));
+    });
+  } else {
+    const d = SOC_IDEAS[socCat];
+    if (!d) { toast('⚠ Try a different combination!'); return; }
+    if (Array.isArray(d)) pool = d;
+    else pool = d[socDiff] || Object.values(d).flat();
+  }
+  if (!pool.length) { toast('⚠ Try a different combination!'); return; }
+  const idea = pool[Math.floor(Math.random()*pool.length)];
+  currentSocIdea = { ...idea, cat: socCat };
+
+  animateIdeaCard('soc', idea);
+  document.getElementById('socCatTag').textContent = (socCat==='all'?'Social Innovation':socCat.charAt(0).toUpperCase()+socCat.slice(1)) + ' · ' + socDiff.charAt(0).toUpperCase()+socDiff.slice(1);
+  document.getElementById('socProb').textContent  = idea.prob || '—';
+  document.getElementById('socBen').textContent   = idea.ben  || '—';
+  document.getElementById('socImpl').textContent  = idea.impl || '—';
+  document.getElementById('socImp').textContent   = idea.imp  || '—';
+  document.getElementById('socDetail').classList.remove('open');
+  incrementStat('socIdeas');
+}
+
+// ── COMBO GENERATOR ──
+function generateComboIdea() {
+  const d1 = document.getElementById('domain1').value;
+  const d2 = document.getElementById('domain2').value;
+  if (d1 === d2) { toast('⚠ Choose two different domains!'); return; }
+
+  const key1 = d1+'+'+d2;
+  const key2 = d2+'+'+d1;
+  const idea = COMBO_IDEAS[key1] || COMBO_IDEAS[key2] || COMBO_IDEAS['default'];
+  currentComboIdea = { ...idea, cat: d1+' × '+d2 };
+
+  const d1l = d1.charAt(0).toUpperCase()+d1.slice(1);
+  const d2l = d2.charAt(0).toUpperCase()+d2.slice(1);
+
+  animateIdeaCard('combo', idea);
+  document.getElementById('comboCatTag').textContent = d1l + ' × ' + d2l;
+  document.getElementById('comboConn').textContent  = idea.conn || '—';
+  document.getElementById('comboHow').textContent   = idea.how  || '—';
+  document.getElementById('comboEx').textContent    = idea.ex   || '—';
+  document.getElementById('comboNext').textContent  = idea.next || '—';
+  document.getElementById('comboDetail').classList.remove('open');
+  incrementStat('comboIdeas');
+}
+
+// ── ANIMATE IDEA CARD ──
+function animateIdeaCard(prefix, idea) {
+  const titleEl = document.getElementById(prefix+'Title');
+  const descEl  = document.getElementById(prefix+'Desc');
+  titleEl.style.opacity='0'; descEl.style.opacity='0';
+  setTimeout(()=>{
+    titleEl.textContent = idea.title;
+    descEl.textContent  = idea.desc;
+    titleEl.style.opacity='1'; descEl.style.opacity='1';
+  }, 220);
+}
+
+// ── SAVE IDEA ──
+function saveIdea(type) {
+  const map = { sci: currentSciIdea, ent: currentEntIdea, soc: currentSocIdea, combo: currentComboIdea };
+  const idea = map[type];
+  if (!idea || !idea.title || idea.title.includes('Press')) { toast('⚠ Generate an idea first!'); return; }
+  if (savedIdeas.find(i=>i.title===idea.title)) { toast('Already saved!'); return; }
+  savedIdeas.unshift({ type, title:idea.title, desc:idea.desc, cat:idea.cat||type, date:new Date().toLocaleDateString() });
+  if (savedIdeas.length > 40) savedIdeas.pop();
+  localStorage.setItem('is_saved_ideas', JSON.stringify(savedIdeas));
+  renderSavedList(type);
+  toast('✅ Idea saved to portfolio!');
+  incrementStat('savedIdeas');
+}
+
+function copyIdea(type) {
+  const map = { sci: currentSciIdea, ent: currentEntIdea, soc: currentSocIdea, combo: currentComboIdea };
+  const idea = map[type];
+  if (!idea || !idea.title) { toast('⚠ Generate an idea first!'); return; }
+  const text = idea.title + '\n\n' + idea.desc;
+  navigator.clipboard ? navigator.clipboard.writeText(text).then(()=>toast('📋 Copied!')) : toast('Done!');
+}
+
+function renderSavedList(type) {
+  const listId = { sci:'sciSavedList', ent:'entSavedList', soc:'socSavedList', combo:'comboSavedList' }[type];
+  const el = document.getElementById(listId);
+  if (!el) return;
+  const items = savedIdeas.filter(i=>i.type===type);
+  if (!items.length) { el.innerHTML='<div style="font-size:0.82rem;color:var(--muted);">No ideas saved yet.</div>'; return; }
+  el.innerHTML = items.map((item,idx) => `
+    <div class="saved-item">
+      <div class="saved-item-body">
+        <div class="saved-item-title">${item.title}</div>
+        <div class="saved-item-cat">${item.cat || ''} · ${item.date}</div>
+      </div>
+      <button class="del-btn" onclick="deleteIdea('${item.title}','${type}')">✕</button>
+    </div>
+  `).join('');
+}
+
+function deleteIdea(title, type) {
+  savedIdeas = savedIdeas.filter(i=>i.title!==title);
+  localStorage.setItem('is_saved_ideas', JSON.stringify(savedIdeas));
+  renderSavedList(type);
+  toast('🗑 Removed');
+}
+
+// ══════════════════════════════════
+// PORTFOLIO / STATS
+// ══════════════════════════════════
+const BADGES = [
+  { id:'first_idea',   emoji:'💡', name:'First Idea',       req:'Generate 1 idea',           threshold:1,  stat:'total' },
+  { id:'sci5',         emoji:'🔬', name:'Science Explorer', req:'5 science ideas',            threshold:5,  stat:'sciIdeas' },
+  { id:'ent3',         emoji:'💼', name:'Young Entrepreneur',req:'3 business ideas',          threshold:3,  stat:'entIdeas' },
+  { id:'soc3',         emoji:'🌱', name:'Changemaker',      req:'3 social ideas',             threshold:3,  stat:'socIdeas' },
+  { id:'combo5',       emoji:'🔀', name:'Interdisciplinarian',req:'5 combined ideas',         threshold:5,  stat:'comboIdeas' },
+  { id:'saved5',       emoji:'🔖', name:'Idea Collector',   req:'Save 5 ideas',               threshold:5,  stat:'savedIdeas' },
+  { id:'ideas20',      emoji:'🚀', name:'Idea Machine',     req:'Generate 20 ideas total',    threshold:20, stat:'total' },
+  { id:'allmod',       emoji:'🏆', name:'Complete Innovator',req:'Use all 4 modules',         threshold:1,  stat:'allModules' },
+];
+
+function getStats() {
+  return JSON.parse(localStorage.getItem('is_stats') || JSON.stringify({
+    sciIdeas:0, entIdeas:0, socIdeas:0, comboIdeas:0, savedIdeas:0, allModules:0, total:0
+  }));
+}
+
+function incrementStat(key) {
+  const s = getStats();
+  s[key] = (s[key]||0)+1;
+  s.total = (s.sciIdeas||0)+(s.entIdeas||0)+(s.socIdeas||0)+(s.comboIdeas||0);
+  if (s.sciIdeas>0 && s.entIdeas>0 && s.socIdeas>0 && s.comboIdeas>0) s.allModules=1;
+  localStorage.setItem('is_stats', JSON.stringify(s));
+  checkBadges(s);
+}
+
+function checkBadges(stats) {
+  const earned = JSON.parse(localStorage.getItem('is_badges') || '[]');
+  BADGES.forEach(b => {
+    if (!earned.includes(b.id) && (stats[b.stat]||0) >= b.threshold) {
+      earned.push(b.id);
+      localStorage.setItem('is_badges', JSON.stringify(earned));
+      setTimeout(()=>toast('🏅 Badge: '+b.name), 500);
+    }
+  });
+}
+
+function renderPortfolio() {
+  const s = getStats();
+  const earned = JSON.parse(localStorage.getItem('is_badges') || '[]');
+
+  document.getElementById('portfolioStats').innerHTML = [
+    { label:'Science Ideas', val:s.sciIdeas||0 },
+    { label:'Business Ideas', val:s.entIdeas||0 },
+    { label:'Social Ideas', val:s.socIdeas||0 },
+    { label:'Combined Ideas', val:s.comboIdeas||0 },
+    { label:'Ideas Saved', val:s.savedIdeas||0 },
+    { label:'Badges Earned', val:earned.length },
+  ].map(i=>`<div class="pstat"><div class="pstat-num">${i.val}</div><div class="pstat-label">${i.label}</div></div>`).join('');
+
+  document.getElementById('badgeGrid').innerHTML = BADGES.map(b=>`
+    <div class="badge-card ${earned.includes(b.id)?'earned':'locked'}">
+      <div class="badge-emoji">${b.emoji}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-req">${b.req}</div>
+    </div>
+  `).join('');
+}
+
+function resetAll() {
+  if (!confirm('Reset all ideas, badges and progress?')) return;
+  ['is_stats','is_badges','is_saved_ideas'].forEach(k=>localStorage.removeItem(k));
+  savedIdeas=[];
+  renderPortfolio();
+  ['sci','ent','soc','combo'].forEach(renderSavedList);
+  toast('✅ Data reset');
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  ['sci','ent','soc','combo'].forEach(renderSavedList);
+});
+</script>
+</body>
+</html>

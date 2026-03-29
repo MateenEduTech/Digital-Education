@@ -1,0 +1,2405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#00d4ff" />
+  <meta name="description" content="AI-powered Coding Fundamentals Trainer – Think Like a Programmer. NEP 2020 aligned." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Coding Fundamentals Trainer</title>
+  <link rel="manifest" href="manifest.json" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================
+       ROOT VARIABLES & RESET
+    ============================================ */
+    :root {
+      --bg: #050812;
+      --surface: #0d1425;
+      --surface2: #131d35;
+      --accent: #00d4ff;
+      --accent2: #7c3aed;
+      --accent3: #10b981;
+      --accent4: #f59e0b;
+      --text: #e8f0fe;
+      --muted: #6b7db3;
+      --border: rgba(0,212,255,0.15);
+      --glow: 0 0 20px rgba(0,212,255,0.3);
+      --radius: 16px;
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================
+       SCREENS & NAVIGATION
+    ============================================ */
+    .screen { display: none; min-height: 100vh; position: relative; z-index: 1; }
+    .screen.active { display: block; }
+
+    /* ============================================
+       LANDING PAGE
+    ============================================ */
+    #landing {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+    #landing.active { display: flex; }
+
+    .landing-hero {
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+      padding: 40px 20px 20px;
+    }
+
+    /* NEP badge */
+    .nep-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+    .badge {
+      background: rgba(0,212,255,0.1);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .badge.green { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: var(--accent3); }
+    .badge.purple { background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.3); color: #a78bfa; }
+
+    .app-logo-svg {
+      margin: 0 auto 20px;
+      display: block;
+    }
+
+    .app-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 7vw, 56px);
+      font-weight: 800;
+      background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .app-tagline {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-size: clamp(12px, 3vw, 16px);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .app-desc {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 580px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+
+    /* Author card */
+    .author-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      max-width: 420px;
+      margin: 0 auto 40px;
+      box-shadow: var(--glow);
+    }
+    .author-photo {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+      flex-shrink: 0;
+    }
+    .author-info { text-align: left; }
+    .author-name {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .author-role {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+    .author-org {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Module cards grid */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 32px;
+    }
+
+    .module-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-color, var(--accent));
+      opacity: 0.7;
+    }
+    .module-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), var(--glow);
+      border-color: var(--card-color, var(--accent));
+    }
+    .module-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+    .module-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .module-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+    .module-meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .module-badge {
+      background: rgba(255,255,255,0.05);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Quick stats */
+    .stats-row {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* Quick nav buttons */
+    .quick-nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .nav-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-btn:hover {
+      background: rgba(0,212,255,0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .nav-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 600;
+    }
+    .nav-btn.primary:hover { opacity: 0.85; }
+
+    /* ============================================
+       BOTTOM NAV BAR
+    ============================================ */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(13,20,37,0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 10px;
+      font-family: var(--font-body);
+      gap: 4px;
+    }
+    .nav-item.active { color: var(--accent); }
+    .nav-item:hover { color: var(--accent); }
+    .nav-item .nav-icon { font-size: 22px; }
+
+    /* ============================================
+       MODULE SCREENS - SHARED STYLES
+    ============================================ */
+    .module-screen {
+      padding: 20px 16px 80px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .screen-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-top: 12px;
+    }
+    .back-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .screen-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    /* Progress bar */
+    .progress-bar-wrap {
+      background: var(--surface);
+      border-radius: 100px;
+      height: 6px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 100px;
+      transition: width 0.4s ease;
+    }
+
+    /* Challenge card */
+    .challenge-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .challenge-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .challenge-question {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 8px;
+      font-family: var(--font-display);
+    }
+    .challenge-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    /* Drag-and-drop steps */
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .step-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: grab;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .step-item:hover { border-color: var(--accent); transform: scale(1.01); }
+    .step-item.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+      transform: scale(0.98);
+    }
+    .step-item.drag-over {
+      border-color: var(--accent);
+      background: rgba(0,212,255,0.05);
+    }
+    .step-handle { color: var(--muted); font-size: 18px; cursor: grab; }
+    .step-num {
+      background: rgba(0,212,255,0.15);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+    .step-text { font-size: 14px; flex: 1; }
+
+    /* Options for MCQ */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 480px) { .options-grid { grid-template-columns: 1fr; } }
+    .option-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 14px;
+      text-align: left;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .option-btn:hover { border-color: var(--accent); background: rgba(0,212,255,0.05); }
+    .option-btn.correct { border-color: var(--accent3); background: rgba(16,185,129,0.1); color: var(--accent3); }
+    .option-btn.wrong { border-color: #ef4444; background: rgba(239,68,68,0.1); color: #ef4444; }
+    .option-btn.selected { border-color: var(--accent); background: rgba(0,212,255,0.1); }
+    .option-letter {
+      background: rgba(255,255,255,0.05);
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Action buttons */
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-success { background: var(--accent3); color: #000; }
+    .btn-purple { background: var(--accent2); color: #fff; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Feedback box */
+    .feedback-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+      display: none;
+      animation: slideUp 0.3s ease;
+    }
+    .feedback-box.show { display: block; }
+    .feedback-box.success { border-color: var(--accent3); background: rgba(16,185,129,0.05); }
+    .feedback-box.error { border-color: #ef4444; background: rgba(239,68,68,0.05); }
+    .feedback-icon { font-size: 28px; margin-bottom: 8px; }
+    .feedback-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feedback-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       MODULE 1 - ALGORITHM PUZZLES
+    ============================================ */
+    .puzzle-visual {
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--accent);
+      line-height: 1.8;
+      border: 1px solid var(--border);
+      min-height: 80px;
+    }
+
+    /* ============================================
+       MODULE 2 - LOGIC BUILDING
+    ============================================ */
+    .flowchart-area {
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .flow-node {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      min-width: 180px;
+      max-width: 240px;
+    }
+    .flow-start { background: rgba(0,212,255,0.2); border: 2px solid var(--accent); color: var(--accent); border-radius: 30px; }
+    .flow-process { background: rgba(124,58,237,0.2); border: 2px solid var(--accent2); color: #a78bfa; }
+    .flow-decision { background: rgba(245,158,11,0.15); border: 2px dashed var(--accent4); color: var(--accent4); transform: rotate(0); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); padding: 20px 24px; }
+    .flow-end { background: rgba(16,185,129,0.2); border: 2px solid var(--accent3); color: var(--accent3); border-radius: 30px; }
+    .flow-arrow {
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1;
+      padding: 4px 0;
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      justify-content: center;
+    }
+    .flow-label { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+
+    /* Condition blocks */
+    .condition-blocks {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .condition-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .condition-keyword {
+      background: rgba(124,58,237,0.2);
+      color: #a78bfa;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(124,58,237,0.4);
+    }
+    .condition-value {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    /* ============================================
+       MODULE 3 - MAZE / ROBOT PUZZLE
+    ============================================ */
+    .maze-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .maze-grid {
+      display: grid;
+      gap: 2px;
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 8px;
+      border: 1px solid var(--border);
+    }
+    .maze-cell {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: all 0.2s;
+    }
+    .cell-path { background: rgba(255,255,255,0.03); }
+    .cell-wall { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.1); }
+    .cell-robot { background: rgba(0,212,255,0.15); }
+    .cell-goal { background: rgba(16,185,129,0.15); }
+    .cell-visited { background: rgba(0,212,255,0.05); }
+
+    .command-palette {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .cmd-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: var(--font-mono);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cmd-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .cmd-btn:active { transform: scale(0.95); }
+
+    .command-queue {
+      background: var(--surface2);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      min-height: 52px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+    }
+    .cmd-chip {
+      background: rgba(0,212,255,0.15);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(0,212,255,0.3);
+      cursor: pointer;
+    }
+    .cmd-chip:hover { background: rgba(239,68,68,0.2); color: #ef4444; border-color: #ef4444; }
+    .queue-label { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+
+    /* ============================================
+       PROGRESS SCREEN
+    ============================================ */
+    .progress-screen { padding: 20px 16px 80px; max-width: 700px; margin: 0 auto; }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .stat-icon { font-size: 36px; flex-shrink: 0; }
+    .stat-info { flex: 1; }
+    .stat-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .stat-value { font-family: var(--font-mono); font-size: 28px; color: var(--accent); font-weight: 700; }
+    .stat-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .achievement {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 12px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .achievement.earned {
+      border-color: var(--accent4);
+      box-shadow: 0 0 16px rgba(245,158,11,0.1);
+    }
+    .achievement.locked { opacity: 0.4; }
+    .achievement-icon { font-size: 32px; margin-bottom: 8px; }
+    .achievement-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+    .achievement-desc { font-size: 10px; color: var(--muted); }
+
+    /* Skill bars */
+    .skill-item { margin-bottom: 16px; }
+    .skill-header { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+    .skill-pct { font-family: var(--font-mono); color: var(--accent); }
+    .skill-bar { height: 8px; background: var(--surface2); border-radius: 100px; overflow: hidden; }
+    .skill-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+    /* ============================================
+       SECTION HEADERS
+    ============================================ */
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      margin: 24px 0 14px;
+      color: var(--text);
+    }
+    .section-title span { color: var(--accent); }
+
+    /* ============================================
+       LEVEL SELECTOR
+    ============================================ */
+    .level-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .level-tab {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .level-tab.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+
+    /* ============================================
+       TOAST NOTIFICATION
+    ============================================ */
+    #toast {
+      position: fixed;
+      top: 20px;
+      right: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      z-index: 1000;
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      max-width: 300px;
+      font-size: 14px;
+    }
+    #toast.show { transform: translateX(0); }
+    #toast.success { border-color: var(--accent3); }
+    #toast.error { border-color: #ef4444; }
+
+    /* ============================================
+       CONCEPT PANELS
+    ============================================ */
+    .concept-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .concept-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+    .concept-icon { font-size: 24px; }
+    .concept-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; flex: 1; }
+    .concept-toggle { color: var(--muted); transition: transform 0.2s; }
+    .concept-toggle.open { transform: rotate(180deg); }
+    .concept-body { font-size: 14px; color: var(--muted); line-height: 1.7; display: none; }
+    .concept-body.open { display: block; }
+    .concept-code {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      margin: 10px 0;
+      line-height: 1.8;
+    }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 600px) {
+      .maze-cell { width: 38px; height: 38px; font-size: 16px; }
+      .author-card { flex-direction: column; text-align: center; }
+      .author-info { text-align: center; }
+    }
+
+    /* ============================================
+       SCROLL PADDING FOR BOTTOM NAV
+    ============================================ */
+    .padded-bottom { padding-bottom: 80px; }
+
+    /* ============================================
+       LOADING OVERLAY
+    ============================================ */
+    #loader {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s;
+    }
+    #loader.hidden { opacity: 0; pointer-events: none; }
+    .loader-logo { font-size: 64px; margin-bottom: 16px; animation: pulse 1.5s infinite; }
+    .loader-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .loader-sub { font-size: 13px; color: var(--muted); }
+    .loader-bar { width: 200px; height: 3px; background: var(--surface); border-radius: 100px; margin-top: 24px; overflow: hidden; }
+    .loader-fill { height: 100%; background: var(--accent); animation: loadBar 1.5s ease forwards; }
+    @keyframes loadBar { from { width: 0; } to { width: 100%; } }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+    /* ============================================
+       CONCEPTS VISUAL BLOCKS
+    ============================================ */
+    .visual-block-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+    .visual-block {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      border: 2px solid;
+    }
+    .vb-seq { background: rgba(0,212,255,0.1); border-color: var(--accent); color: var(--accent); }
+    .vb-loop { background: rgba(124,58,237,0.1); border-color: var(--accent2); color: #a78bfa; }
+    .vb-cond { background: rgba(245,158,11,0.1); border-color: var(--accent4); color: var(--accent4); }
+    .vb-func { background: rgba(16,185,129,0.1); border-color: var(--accent3); color: var(--accent3); }
+
+  </style>
+</head>
+<body>
+
+<!-- ===================== LOADER ===================== -->
+<div id="loader">
+  <div class="loader-logo">💻</div>
+  <div class="loader-title">Coding Fundamentals Trainer</div>
+  <div class="loader-sub">NEP 2020 · NCF 2023 Aligned</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- ===================== TOAST ===================== -->
+<div id="toast"><span id="toast-icon">✅</span> <span id="toast-msg">Great job!</span></div>
+
+<!-- ============================================================
+     SCREEN 1: LANDING / HOME
+============================================================ -->
+<div id="landing" class="screen active">
+  <div class="landing-hero">
+
+    <div class="nep-badges">
+      <span class="badge">NEP 2020</span>
+      <span class="badge green">NCF 2023</span>
+      <span class="badge purple">PARAKH Aligned</span>
+      <span class="badge">NCERT Framework</span>
+    </div>
+
+    <!-- App Logo SVG -->
+    <svg class="app-logo-svg" width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="80" height="80" rx="20" fill="#0d1425"/>
+      <rect x="1" y="1" width="78" height="78" rx="19" stroke="url(#grad1)" stroke-width="1.5"/>
+      <text x="12" y="54" font-size="40" font-family="monospace">&lt;/&gt;</text>
+      <defs>
+        <linearGradient id="grad1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#00d4ff"/>
+          <stop offset="0.5" stop-color="#7c3aed"/>
+          <stop offset="1" stop-color="#10b981"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <h1 class="app-title">Coding Fundamentals<br>Trainer</h1>
+    <div class="app-tagline">✦ Think Like a Programmer ✦</div>
+    <p class="app-desc">An AI-powered digital thinking lab for students — master algorithmic thinking, logic building, and computational problem-solving aligned with NEP 2020 and NCF 2023.</p>
+
+    <!-- Author Card with embedded photo -->
+    <div class="author-card">
+      <img id="author-photo" class="author-photo" src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'" />
+      <div class="author-info">
+        <div class="author-name">Mateen Yousuf</div>
+        <div class="author-role">Concept Developer</div>
+        <div class="author-org">Teacher – School Education Department, J&K</div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-num" id="home-puzzles-done">0</div>
+        <div class="stat-label">Puzzles Solved</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="home-xp">0</div>
+        <div class="stat-label">XP Earned</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="home-level">1</div>
+        <div class="stat-label">Current Level</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="home-streak">🔥0</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Module Cards -->
+  <div class="modules-grid" style="max-width:900px;width:100%;padding:0 16px;">
+
+    <div class="module-card" style="--card-color:#00d4ff" onclick="showScreen('algo')">
+      <span class="module-icon">🧩</span>
+      <div class="module-title">Algorithm Puzzles</div>
+      <div class="module-desc">Arrange steps in correct order, design procedures, and solve sequencing challenges to master algorithmic thinking.</div>
+      <div class="module-meta">
+        <span class="module-badge">MODULE 1</span>
+        <span class="module-badge">15 Challenges</span>
+        <span class="module-badge">NEP 2020</span>
+      </div>
+    </div>
+
+    <div class="module-card" style="--card-color:#a78bfa" onclick="showScreen('logic')">
+      <span class="module-icon">🔀</span>
+      <div class="module-title">Logic Building</div>
+      <div class="module-desc">Pattern recognition, conditional reasoning, and decision-making exercises that introduce programming logic concepts.</div>
+      <div class="module-meta">
+        <span class="module-badge">MODULE 2</span>
+        <span class="module-badge">12 Exercises</span>
+        <span class="module-badge">NCF 2023</span>
+      </div>
+    </div>
+
+    <div class="module-card" style="--card-color:#10b981" onclick="showScreen('maze')">
+      <span class="module-icon">🤖</span>
+      <div class="module-title">Problem-Solving</div>
+      <div class="module-desc">Guide a robot through mazes, plan shortest paths, and solve grid puzzles using algorithmic problem-solving.</div>
+      <div class="module-meta">
+        <span class="module-badge">MODULE 3</span>
+        <span class="module-badge">10 Scenarios</span>
+        <span class="module-badge">PARAKH</span>
+      </div>
+    </div>
+
+    <div class="module-card" style="--card-color:#f59e0b" onclick="showScreen('concepts')">
+      <span class="module-icon">📦</span>
+      <div class="module-title">Concept Blocks</div>
+      <div class="module-desc">Learn coding concepts — sequence, loops, conditions, functions — through visual blocks without writing code syntax.</div>
+      <div class="module-meta">
+        <span class="module-badge">MODULE 4</span>
+        <span class="module-badge">Interactive</span>
+        <span class="module-badge">Visual</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Quick Nav -->
+  <div class="quick-nav" style="padding:0 16px 100px;">
+    <button class="nav-btn primary" onclick="showScreen('algo')">🚀 Start Learning</button>
+    <button class="nav-btn" onclick="showScreen('progress')">📊 My Progress</button>
+    <button class="nav-btn" onclick="window.open('conceptual-background.html','_blank')">📖 About App</button>
+    <button class="nav-btn" onclick="window.open('user-manual.html','_blank')">📋 User Manual</button>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     SCREEN 2: ALGORITHM PUZZLES
+============================================================ -->
+<div id="algo" class="screen">
+  <div class="module-screen">
+
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('landing')">←</button>
+      <div>
+        <div class="screen-title">🧩 Algorithm Puzzles</div>
+        <div style="font-size:12px;color:var(--muted);font-family:var(--font-mono);">Arrange steps · Build logic · Think sequentially</div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="algo-progress" style="width:0%"></div>
+    </div>
+
+    <!-- Level tabs -->
+    <div class="level-tabs">
+      <button class="level-tab active" onclick="loadAlgoPuzzle(0, this)">🟢 Beginner</button>
+      <button class="level-tab" onclick="loadAlgoPuzzle(1, this)">🟡 Intermediate</button>
+      <button class="level-tab" onclick="loadAlgoPuzzle(2, this)">🔴 Advanced</button>
+    </div>
+
+    <!-- Puzzle card -->
+    <div class="challenge-card">
+      <div class="challenge-label">
+        <span>🧩 Puzzle Challenge</span>
+        <span id="algo-num" style="margin-left:auto;">1 / 5</span>
+      </div>
+      <div class="challenge-question" id="algo-question">Loading...</div>
+      <div class="challenge-sub" id="algo-sub">Drag and drop the steps into the correct order.</div>
+
+      <!-- Drag-and-drop steps -->
+      <div class="steps-container" id="algo-steps"></div>
+
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="checkAlgo()">✅ Check Order</button>
+        <button class="btn btn-secondary" onclick="resetAlgo()">🔄 Reset</button>
+        <button class="btn btn-secondary" onclick="nextAlgo()">Next →</button>
+      </div>
+
+      <div class="feedback-box" id="algo-feedback">
+        <div class="feedback-icon" id="algo-fb-icon">✅</div>
+        <div class="feedback-title" id="algo-fb-title">Correct!</div>
+        <div class="feedback-text" id="algo-fb-text"></div>
+      </div>
+    </div>
+
+    <!-- Concept hint -->
+    <div class="challenge-card" style="background:rgba(0,212,255,0.03);">
+      <div class="challenge-label">💡 Concept: What is an Algorithm?</div>
+      <div class="challenge-sub">An <strong style="color:var(--accent)">algorithm</strong> is a finite set of well-defined steps to solve a problem. Just like a recipe tells you exactly what to do step-by-step, algorithms tell computers exactly what to do. Every program you write runs an algorithm!</div>
+      <div class="puzzle-visual" id="algo-visual">
+        STEP 1 → STEP 2 → STEP 3 → ... → RESULT ✓
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 3: LOGIC BUILDING
+============================================================ -->
+<div id="logic" class="screen">
+  <div class="module-screen">
+
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('landing')">←</button>
+      <div>
+        <div class="screen-title">🔀 Logic Building</div>
+        <div style="font-size:12px;color:var(--muted);font-family:var(--font-mono);">Conditions · Decisions · Patterns</div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="logic-progress" style="width:0%"></div>
+    </div>
+
+    <div class="level-tabs">
+      <button class="level-tab active" onclick="loadLogicExercise(0, this)">🟢 Beginner</button>
+      <button class="level-tab" onclick="loadLogicExercise(1, this)">🟡 Intermediate</button>
+      <button class="level-tab" onclick="loadLogicExercise(2, this)">🔴 Advanced</button>
+    </div>
+
+    <div class="challenge-card">
+      <div class="challenge-label">
+        <span>🔀 Logic Exercise</span>
+        <span id="logic-num" style="margin-left:auto;">1 / 4</span>
+      </div>
+      <div class="challenge-question" id="logic-question">Loading...</div>
+      <div class="challenge-sub" id="logic-sub">Choose the correct answer.</div>
+
+      <!-- Flowchart Visual (for IF/ELSE) -->
+      <div id="logic-flowchart" class="flowchart-area" style="display:none;"></div>
+
+      <!-- MCQ Options -->
+      <div class="options-grid" id="logic-options"></div>
+
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="nextLogic()">Next Exercise →</button>
+      </div>
+
+      <div class="feedback-box" id="logic-feedback">
+        <div class="feedback-icon" id="logic-fb-icon">✅</div>
+        <div class="feedback-title" id="logic-fb-title">Correct!</div>
+        <div class="feedback-text" id="logic-fb-text"></div>
+      </div>
+    </div>
+
+    <!-- Pattern recognition challenge -->
+    <div class="challenge-card">
+      <div class="challenge-label">🔍 Pattern Recognition Bonus</div>
+      <div class="challenge-sub">Find the next number in the sequence: <strong style="color:var(--accent)" id="pattern-seq">2, 4, 8, 16, ?</strong></div>
+      <div class="action-row">
+        <input id="pattern-input" type="number" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:8px;font-size:16px;width:100px;" placeholder="?" />
+        <button class="btn btn-primary" onclick="checkPattern()">Check</button>
+      </div>
+      <div id="pattern-result" style="margin-top:10px;font-size:14px;display:none;"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 4: MAZE / ROBOT PROBLEM SOLVING
+============================================================ -->
+<div id="maze" class="screen">
+  <div class="module-screen">
+
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('landing')">←</button>
+      <div>
+        <div class="screen-title">🤖 Problem Solving</div>
+        <div style="font-size:12px;color:var(--muted);font-family:var(--font-mono);">Guide the robot · Plan the path · Solve the maze</div>
+      </div>
+    </div>
+
+    <div class="level-tabs">
+      <button class="level-tab active" onclick="loadMaze(0, this)">🟢 Easy</button>
+      <button class="level-tab" onclick="loadMaze(1, this)">🟡 Medium</button>
+      <button class="level-tab" onclick="loadMaze(2, this)">🔴 Hard</button>
+    </div>
+
+    <div class="challenge-card">
+      <div class="challenge-label">🤖 Robot Navigation · Level <span id="maze-level-label">1</span></div>
+      <div class="challenge-question" id="maze-title">Guide the Robot to the Goal</div>
+      <div class="challenge-sub" id="maze-desc">Use commands below to program the robot's path. Plan your moves before running!</div>
+
+      <div class="maze-container">
+        <div class="maze-grid" id="maze-grid"></div>
+
+        <!-- Command queue -->
+        <div style="width:100%;max-width:500px;">
+          <div style="font-size:12px;color:var(--muted);font-family:var(--font-mono);margin-bottom:6px;">📋 Your Command Queue (click to remove):</div>
+          <div class="command-queue" id="command-queue">
+            <span class="queue-label">Add commands below ↓</span>
+          </div>
+        </div>
+
+        <!-- Command palette -->
+        <div class="command-palette">
+          <button class="cmd-btn" onclick="addCmd('⬆️ UP')">⬆️ UP</button>
+          <button class="cmd-btn" onclick="addCmd('⬇️ DOWN')">⬇️ DOWN</button>
+          <button class="cmd-btn" onclick="addCmd('⬅️ LEFT')">⬅️ LEFT</button>
+          <button class="cmd-btn" onclick="addCmd('➡️ RIGHT')">➡️ RIGHT</button>
+        </div>
+
+        <div class="action-row" style="justify-content:center;">
+          <button class="btn btn-primary" onclick="runMaze()">▶ Run Program</button>
+          <button class="btn btn-secondary" onclick="clearCmds()">🗑 Clear</button>
+          <button class="btn btn-secondary" onclick="resetMaze()">🔄 Reset</button>
+        </div>
+      </div>
+
+      <div class="feedback-box" id="maze-feedback">
+        <div class="feedback-icon" id="maze-fb-icon">🤖</div>
+        <div class="feedback-title" id="maze-fb-title">Keep going!</div>
+        <div class="feedback-text" id="maze-fb-text"></div>
+      </div>
+    </div>
+
+    <div class="challenge-card" style="background:rgba(16,185,129,0.03);">
+      <div class="challenge-label">💡 Concept: Algorithmic Problem Solving</div>
+      <div class="challenge-sub">When robots (or programs) follow instructions, they use <strong style="color:var(--accent3)">algorithms</strong>. An efficient algorithm finds the goal in the <strong style="color:var(--accent3)">fewest steps</strong>. Can you find the shortest path?</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 5: CONCEPT BLOCKS
+============================================================ -->
+<div id="concepts" class="screen">
+  <div class="module-screen">
+
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('landing')">←</button>
+      <div>
+        <div class="screen-title">📦 Concept Blocks</div>
+        <div style="font-size:12px;color:var(--muted);font-family:var(--font-mono);">Core programming concepts — visually</div>
+      </div>
+    </div>
+
+    <div class="visual-block-row">
+      <div class="visual-block vb-seq">SEQUENCE</div>
+      <div class="visual-block vb-loop">LOOP</div>
+      <div class="visual-block vb-cond">CONDITION</div>
+      <div class="visual-block vb-func">FUNCTION</div>
+    </div>
+
+    <!-- Concept 1: Sequence -->
+    <div class="concept-panel">
+      <div class="concept-header" onclick="toggleConcept('c1')">
+        <span class="concept-icon">1️⃣</span>
+        <span class="concept-title">Sequence — Do things in order</span>
+        <span class="concept-toggle" id="toggle-c1">▼</span>
+      </div>
+      <div class="concept-body" id="body-c1">
+        <p>A <strong style="color:var(--accent)">sequence</strong> is a set of instructions that run one after another in a specific order. This is the most basic concept in programming.</p>
+        <div class="concept-code">
+Step 1: Wake up<br>
+Step 2: Brush teeth<br>
+Step 3: Have breakfast<br>
+Step 4: Go to school<br>
+→ Each step happens in ORDER
+        </div>
+        <p>In code, every line executes in sequence unless told otherwise. Changing the order changes the result!</p>
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-secondary" onclick="showSequenceDemo()">🎮 Try Demo</button>
+        </div>
+        <div id="seq-demo" style="display:none;margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <!-- Concept 2: Loop -->
+    <div class="concept-panel">
+      <div class="concept-header" onclick="toggleConcept('c2')">
+        <span class="concept-icon">🔁</span>
+        <span class="concept-title">Loop — Repeat actions</span>
+        <span class="concept-toggle" id="toggle-c2">▼</span>
+      </div>
+      <div class="concept-body" id="body-c2">
+        <p>A <strong style="color:#a78bfa)">loop</strong> repeats a block of instructions multiple times. Instead of writing the same step over and over, you use a loop!</p>
+        <div class="concept-code" style="color:#a78bfa;">
+REPEAT 5 times:<br>
+&nbsp;&nbsp;→ Print "Hello World"<br>
+<br>
+// Result: Hello World (5 times)<br>
+// Much better than writing it 5 times!
+        </div>
+        <p>Types of loops: <strong>FOR loop</strong> (repeat a set number of times), <strong>WHILE loop</strong> (repeat while a condition is true).</p>
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-secondary" onclick="showLoopDemo()">🎮 Try Loop Demo</button>
+        </div>
+        <div id="loop-demo" style="display:none;margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <!-- Concept 3: Condition -->
+    <div class="concept-panel">
+      <div class="concept-header" onclick="toggleConcept('c3')">
+        <span class="concept-icon">❓</span>
+        <span class="concept-title">Condition — Make decisions</span>
+        <span class="concept-toggle" id="toggle-c3">▼</span>
+      </div>
+      <div class="concept-body" id="body-c3">
+        <p>A <strong style="color:var(--accent4)">condition</strong> (IF-ELSE) lets your program make decisions based on whether something is true or false.</p>
+        <div class="concept-code" style="color:var(--accent4);">
+IF it is raining:<br>
+&nbsp;&nbsp;→ Take umbrella<br>
+ELSE:<br>
+&nbsp;&nbsp;→ Wear sunglasses<br>
+<br>
+// The program chooses a path based on the condition!
+        </div>
+        <div class="flowchart-area" style="margin-top:12px;">
+          <div class="flow-node flow-start">Start</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node flow-decision">Is it raining?</div>
+          <div class="flow-row">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <span class="flow-label">YES ←</span>
+              <div class="flow-node flow-process" style="min-width:120px;font-size:12px;">Take umbrella ☂️</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <span class="flow-label">→ NO</span>
+              <div class="flow-node flow-process" style="min-width:120px;font-size:12px;">Wear sunglasses 😎</div>
+            </div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node flow-end">Go outside</div>
+        </div>
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn btn-secondary" onclick="showConditionDemo()">🎮 Try Condition Demo</button>
+        </div>
+        <div id="cond-demo" style="display:none;margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <!-- Concept 4: Function -->
+    <div class="concept-panel">
+      <div class="concept-header" onclick="toggleConcept('c4')">
+        <span class="concept-icon">⚙️</span>
+        <span class="concept-title">Function — Reusable blocks</span>
+        <span class="concept-toggle" id="toggle-c4">▼</span>
+      </div>
+      <div class="concept-body" id="body-c4">
+        <p>A <strong style="color:var(--accent3)">function</strong> is a named block of steps you can reuse. Instead of repeating the same instructions, you define them once and call the function whenever needed.</p>
+        <div class="concept-code" style="color:var(--accent3);">
+FUNCTION makeTea():<br>
+&nbsp;&nbsp;Boil water<br>
+&nbsp;&nbsp;Add tea bag<br>
+&nbsp;&nbsp;Pour in cup<br>
+&nbsp;&nbsp;Add sugar<br>
+<br>
+makeTea() // Call the function!<br>
+makeTea() // Use it again anytime!
+        </div>
+        <p>Functions make code <strong>reusable</strong>, <strong>organized</strong>, and easier to understand.</p>
+      </div>
+    </div>
+
+    <!-- Interactive block builder -->
+    <div class="challenge-card" style="margin-top:20px;">
+      <div class="challenge-label">🎮 Block Builder — Build a mini program!</div>
+      <div class="challenge-sub">Drag blocks to build a simple algorithm. See it come to life!</div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <button class="cmd-btn" onclick="addBlock('START')">🟢 START</button>
+        <button class="cmd-btn" onclick="addBlock('MOVE')">➡️ MOVE</button>
+        <button class="cmd-btn" onclick="addBlock('IF')">❓ IF</button>
+        <button class="cmd-btn" onclick="addBlock('LOOP')">🔁 LOOP</button>
+        <button class="cmd-btn" onclick="addBlock('END')">🔴 END</button>
+      </div>
+
+      <div id="block-program" style="background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:12px;min-height:60px;font-family:var(--font-mono);font-size:13px;line-height:2;color:var(--accent);">
+        Click blocks above to build your program...
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="runBlockProgram()">▶ Run</button>
+        <button class="btn btn-secondary" onclick="clearBlocks()">🗑 Clear</button>
+      </div>
+      <div id="block-output" style="display:none;margin-top:12px;background:var(--surface2);border-radius:10px;padding:12px;font-family:var(--font-mono);font-size:13px;color:var(--accent3);line-height:1.8;"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 6: PROGRESS
+============================================================ -->
+<div id="progress" class="screen">
+  <div class="progress-screen">
+
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('landing')">←</button>
+      <div>
+        <div class="screen-title">📊 My Progress</div>
+        <div style="font-size:12px;color:var(--muted);font-family:var(--font-mono);">Track your learning journey</div>
+      </div>
+    </div>
+
+    <!-- Author credit on progress page too -->
+    <div class="author-card" style="margin-bottom:24px;">
+      <img class="author-photo" src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'"/>
+      <div class="author-info">
+        <div class="author-name">Mateen Yousuf</div>
+        <div class="author-role">App Concept Developer</div>
+        <div class="author-org">Teacher – School Education Department, J&K</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🧩</div>
+      <div class="stat-info">
+        <div class="stat-title">Puzzles Solved</div>
+        <div class="stat-value" id="prog-puzzles">0</div>
+        <div class="stat-sub">Algorithm challenges completed</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-info">
+        <div class="stat-title">Total XP</div>
+        <div class="stat-value" id="prog-xp">0</div>
+        <div class="stat-sub">Experience points earned</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-info">
+        <div class="stat-title">Learning Streak</div>
+        <div class="stat-value" id="prog-streak">0 days</div>
+        <div class="stat-sub">Consecutive days practiced</div>
+      </div>
+    </div>
+
+    <!-- Skill progress -->
+    <div class="section-title">🧠 Skill Mastery</div>
+
+    <div class="challenge-card">
+      <div class="skill-item">
+        <div class="skill-header"><span>Algorithmic Thinking</span><span class="skill-pct" id="sk-algo">0%</span></div>
+        <div class="skill-bar"><div class="skill-fill" id="sk-algo-bar" style="width:0%"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Logic Building</span><span class="skill-pct" id="sk-logic">0%</span></div>
+        <div class="skill-bar"><div class="skill-fill" id="sk-logic-bar" style="width:0%;background:linear-gradient(90deg,#a78bfa,#7c3aed)"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Problem Solving</span><span class="skill-pct" id="sk-maze">0%</span></div>
+        <div class="skill-bar"><div class="skill-fill" id="sk-maze-bar" style="width:0%;background:linear-gradient(90deg,#10b981,#059669)"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span>Concept Understanding</span><span class="skill-pct" id="sk-concepts">0%</span></div>
+        <div class="skill-bar"><div class="skill-fill" id="sk-concepts-bar" style="width:0%;background:linear-gradient(90deg,#f59e0b,#d97706)"></div></div>
+      </div>
+    </div>
+
+    <!-- Achievements -->
+    <div class="section-title">🏆 Achievements</div>
+
+    <div class="achievements-grid" id="achievements-grid">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="action-row" style="margin-top:24px;justify-content:center;">
+      <button class="btn btn-secondary" onclick="resetProgress()">🗑 Reset Progress</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     BOTTOM NAVIGATION
+============================================================ -->
+<div class="bottom-nav" id="bottom-nav">
+  <button class="nav-item active" id="nav-home" onclick="showScreen('landing')">
+    <span class="nav-icon">🏠</span>Home
+  </button>
+  <button class="nav-item" id="nav-algo" onclick="showScreen('algo')">
+    <span class="nav-icon">🧩</span>Puzzles
+  </button>
+  <button class="nav-item" id="nav-logic" onclick="showScreen('logic')">
+    <span class="nav-icon">🔀</span>Logic
+  </button>
+  <button class="nav-item" id="nav-maze" onclick="showScreen('maze')">
+    <span class="nav-icon">🤖</span>Robot
+  </button>
+  <button class="nav-item" id="nav-progress" onclick="showScreen('progress')">
+    <span class="nav-icon">📊</span>Progress
+  </button>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+// =============================================
+// APP STATE & STORAGE
+// =============================================
+let appData = {
+  xp: 0,
+  puzzlesSolved: 0,
+  streak: 0,
+  lastDate: null,
+  algoProgress: 0,
+  logicProgress: 0,
+  mazeProgress: 0,
+  conceptsViewed: 0,
+  achievements: {}
+};
+
+function saveData() {
+  localStorage.setItem('cft_data', JSON.stringify(appData));
+}
+
+function loadData() {
+  const d = localStorage.getItem('cft_data');
+  if (d) appData = {...appData, ...JSON.parse(d)};
+  checkStreak();
+  updateHomeStats();
+}
+
+function checkStreak() {
+  const today = new Date().toDateString();
+  if (appData.lastDate === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (appData.lastDate === yesterday) {
+    appData.streak = (appData.streak || 0) + 1;
+  } else if (appData.lastDate !== today) {
+    if (appData.lastDate) appData.streak = 0;
+  }
+  appData.lastDate = today;
+  saveData();
+}
+
+function addXP(amount) {
+  appData.xp += amount;
+  appData.puzzlesSolved += 1;
+  saveData();
+  updateHomeStats();
+  showToast('success', `+${amount} XP earned! 🎉`);
+}
+
+function updateHomeStats() {
+  const level = Math.floor(appData.xp / 100) + 1;
+  document.getElementById('home-puzzles-done').textContent = appData.puzzlesSolved;
+  document.getElementById('home-xp').textContent = appData.xp;
+  document.getElementById('home-level').textContent = level;
+  document.getElementById('home-streak').textContent = '🔥' + (appData.streak || 0);
+  // Progress page
+  const pe = document.getElementById('prog-puzzles');
+  if (pe) pe.textContent = appData.puzzlesSolved;
+  const xe = document.getElementById('prog-xp');
+  if (xe) xe.textContent = appData.xp;
+  const se = document.getElementById('prog-streak');
+  if (se) se.textContent = (appData.streak || 0) + ' days';
+  updateSkillBars();
+  updateAchievements();
+}
+
+function updateSkillBars() {
+  const algoPct = Math.min(100, appData.algoProgress * 20);
+  const logicPct = Math.min(100, appData.logicProgress * 25);
+  const mazePct = Math.min(100, appData.mazeProgress * 33);
+  const concPct = Math.min(100, appData.conceptsViewed * 25);
+  ['algo','logic','maze','concepts'].forEach((k, i) => {
+    const pct = [algoPct, logicPct, mazePct, concPct][i];
+    const pe = document.getElementById('sk-' + k);
+    const be = document.getElementById('sk-' + k + '-bar');
+    if (pe) pe.textContent = pct + '%';
+    if (be) be.style.width = pct + '%';
+  });
+}
+
+// =============================================
+// SCREEN NAVIGATION
+// =============================================
+const screens = ['landing','algo','logic','maze','concepts','progress'];
+const navIds = {landing:'nav-home',algo:'nav-algo',logic:'nav-logic',maze:'nav-maze',progress:'nav-progress'};
+
+function showScreen(id) {
+  screens.forEach(s => {
+    const el = document.getElementById(s);
+    if (el) { el.classList.remove('active'); el.style.display = ''; }
+  });
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add('active');
+    if (id === 'landing') el.style.display = 'flex';
+    else el.style.display = 'block';
+  }
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navIds[id]) document.getElementById(navIds[id])?.classList.add('active');
+  window.scrollTo(0,0);
+  if (id === 'progress') updateHomeStats();
+}
+
+// =============================================
+// TOAST
+// =============================================
+function showToast(type, msg) {
+  const t = document.getElementById('toast');
+  const i = document.getElementById('toast-icon');
+  const m = document.getElementById('toast-msg');
+  i.textContent = type === 'success' ? '✅' : '❌';
+  m.textContent = msg;
+  t.className = 'show ' + type;
+  setTimeout(() => t.className = '', 2800);
+}
+
+// =============================================
+// MODULE 1: ALGORITHM PUZZLES
+// =============================================
+const algoPuzzles = [
+  // Beginner
+  [
+    {
+      q: "How do you make a cup of tea?",
+      sub: "Arrange these steps in the correct order to make tea:",
+      steps: ["Add tea bag", "Boil water", "Pour water in cup", "Add sugar & milk", "Remove tea bag"],
+      correct: [1, 0, 2, 4, 3],
+      visual: "WATER→BOIL→CUP→TEA BAG→WAIT→SUGAR→REMOVE→ENJOY ☕",
+      explain: "Algorithms must follow a logical sequence! Boiling water first is essential — you can't pour cold water on a tea bag and expect tea. Each step depends on the previous one."
+    },
+    {
+      q: "How do you send a letter?",
+      sub: "Arrange the steps to correctly send a letter:",
+      steps: ["Seal the envelope", "Write the letter", "Put in mailbox", "Fold and insert in envelope", "Write address on envelope"],
+      correct: [1, 3, 0, 4, 2],
+      visual: "WRITE→FOLD→SEAL→ADDRESS→MAILBOX 📬",
+      explain: "Notice that you must write before folding, fold before sealing, and address before mailing. Algorithms have dependencies between steps!"
+    },
+    {
+      q: "How do you plant a seed?",
+      sub: "Order the gardening steps correctly:",
+      steps: ["Water the seed", "Dig a hole", "Cover with soil", "Place seed in hole", "Wait for growth"],
+      correct: [1, 3, 2, 0, 4],
+      visual: "DIG→SEED→SOIL→WATER→WAIT🌱",
+      explain: "You can't water before planting, or plant without digging! Sequence matters in algorithms — wrong order = wrong result."
+    }
+  ],
+  // Intermediate
+  [
+    {
+      q: "How does a computer start up?",
+      sub: "Arrange the computer startup steps:",
+      steps: ["Load operating system", "Press power button", "BIOS checks hardware", "Login screen appears", "Hardware powers on"],
+      correct: [1, 4, 2, 0, 3],
+      visual: "POWER→HARDWARE CHECK→BIOS→OS LOAD→LOGIN 🖥️",
+      explain: "Computer startup is a precise algorithm — each step triggers the next. BIOS must check hardware before loading the OS, just like a pilot checks instruments before takeoff!"
+    },
+    {
+      q: "How do you solve a maths problem?",
+      sub: "Order these problem-solving steps:",
+      steps: ["Check your answer", "Understand the problem", "Implement your strategy", "Plan a strategy", "Identify given information"],
+      correct: [1, 4, 3, 2, 0],
+      visual: "READ→IDENTIFY→PLAN→SOLVE→VERIFY ✓",
+      explain: "This is Polya's 4-step method for problem solving — used by mathematicians and programmers alike! Always verify your solution."
+    }
+  ],
+  // Advanced
+  [
+    {
+      q: "How does a search engine find results?",
+      sub: "Order the search engine steps:",
+      steps: ["Rank results by relevance", "User types query", "Return top results", "Index matches query to web pages", "Display results page"],
+      correct: [1, 3, 0, 2, 4],
+      visual: "QUERY→INDEX SEARCH→RANKING→RETURN→DISPLAY 🔍",
+      explain: "Search engines run complex algorithms! Google processes your query, searches billions of indexed pages, ranks by relevance, and displays results — all in under a second!"
+    }
+  ]
+];
+
+let currentAlgoLevel = 0;
+let currentAlgoIndex = 0;
+let algoStepsOrder = [];
+let dragSrcEl = null;
+
+function loadAlgoPuzzle(level, tabEl) {
+  currentAlgoLevel = level;
+  currentAlgoIndex = 0;
+  if (tabEl) {
+    document.querySelectorAll('#algo .level-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+  }
+  renderAlgoPuzzle();
+}
+
+function renderAlgoPuzzle() {
+  const puzzles = algoPuzzles[currentAlgoLevel] || algoPuzzles[0];
+  const puzzle = puzzles[currentAlgoIndex] || puzzles[0];
+
+  document.getElementById('algo-question').textContent = puzzle.q;
+  document.getElementById('algo-sub').textContent = puzzle.sub;
+  document.getElementById('algo-visual').textContent = puzzle.visual;
+  document.getElementById('algo-num').textContent = (currentAlgoIndex + 1) + ' / ' + puzzles.length;
+  document.getElementById('algo-progress').style.width = ((currentAlgoIndex / puzzles.length) * 100) + '%';
+
+  // Shuffle steps
+  algoStepsOrder = [...Array(puzzle.steps.length).keys()];
+  algoStepsOrder.sort(() => Math.random() - 0.5);
+
+  renderSteps(puzzle.steps, algoStepsOrder);
+  hideFeedback('algo');
+}
+
+function renderSteps(steps, order) {
+  const container = document.getElementById('algo-steps');
+  container.innerHTML = '';
+  order.forEach((stepIdx, position) => {
+    const div = document.createElement('div');
+    div.className = 'step-item';
+    div.draggable = true;
+    div.dataset.stepIdx = stepIdx;
+    div.innerHTML = `
+      <span class="step-handle">⠿</span>
+      <span class="step-num">${position + 1}</span>
+      <span class="step-text">${steps[stepIdx]}</span>
+    `;
+    // Touch-friendly drag
+    div.addEventListener('dragstart', handleDragStart);
+    div.addEventListener('dragover', handleDragOver);
+    div.addEventListener('drop', handleDrop);
+    div.addEventListener('dragend', handleDragEnd);
+    container.appendChild(div);
+  });
+}
+
+function handleDragStart(e) {
+  dragSrcEl = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.step-item').forEach(el => el.classList.remove('drag-over'));
+  this.classList.add('drag-over');
+  return false;
+}
+function handleDrop(e) {
+  e.stopPropagation();
+  if (dragSrcEl !== this) {
+    const container = document.getElementById('algo-steps');
+    const items = [...container.querySelectorAll('.step-item')];
+    const srcIdx = items.indexOf(dragSrcEl);
+    const tgtIdx = items.indexOf(this);
+    if (srcIdx < tgtIdx) container.insertBefore(dragSrcEl, this.nextSibling);
+    else container.insertBefore(dragSrcEl, this);
+    // Update step numbers
+    [...container.querySelectorAll('.step-item')].forEach((el, i) => {
+      el.querySelector('.step-num').textContent = i + 1;
+    });
+  }
+  return false;
+}
+function handleDragEnd() {
+  document.querySelectorAll('.step-item').forEach(el => {
+    el.classList.remove('dragging','drag-over');
+  });
+}
+
+function checkAlgo() {
+  const puzzles = algoPuzzles[currentAlgoLevel] || algoPuzzles[0];
+  const puzzle = puzzles[currentAlgoIndex] || puzzles[0];
+  const container = document.getElementById('algo-steps');
+  const items = [...container.querySelectorAll('.step-item')];
+  const userOrder = items.map(el => parseInt(el.dataset.stepIdx));
+
+  // Build correct order: correct array maps position → original index
+  const correct = puzzle.correct;
+  const isCorrect = userOrder.every((val, idx) => val === correct[idx]);
+
+  const fb = document.getElementById('algo-feedback');
+  fb.classList.add('show');
+
+  if (isCorrect) {
+    fb.classList.remove('error'); fb.classList.add('success');
+    document.getElementById('algo-fb-icon').textContent = '🎉';
+    document.getElementById('algo-fb-title').textContent = 'Perfect Sequence!';
+    document.getElementById('algo-fb-text').textContent = puzzle.explain;
+    addXP(20);
+    appData.algoProgress++;
+    saveData();
+  } else {
+    fb.classList.remove('success'); fb.classList.add('error');
+    document.getElementById('algo-fb-icon').textContent = '🔄';
+    document.getElementById('algo-fb-title').textContent = 'Not quite right...';
+    document.getElementById('algo-fb-text').textContent = "Think about which step must come first. What needs to happen before the next step can begin?";
+  }
+}
+
+function resetAlgo() {
+  const puzzles = algoPuzzles[currentAlgoLevel] || algoPuzzles[0];
+  const puzzle = puzzles[currentAlgoIndex] || puzzles[0];
+  algoStepsOrder.sort(() => Math.random() - 0.5);
+  renderSteps(puzzle.steps, algoStepsOrder);
+  hideFeedback('algo');
+}
+
+function nextAlgo() {
+  const puzzles = algoPuzzles[currentAlgoLevel] || algoPuzzles[0];
+  currentAlgoIndex = (currentAlgoIndex + 1) % puzzles.length;
+  renderAlgoPuzzle();
+}
+
+function hideFeedback(module) {
+  const fb = document.getElementById(module + '-feedback');
+  if (fb) { fb.classList.remove('show','success','error'); }
+}
+
+// =============================================
+// MODULE 2: LOGIC BUILDING
+// =============================================
+const logicExercises = [
+  // Beginner
+  [
+    {
+      q: "A traffic light shows RED. What should a driver do?",
+      sub: "Apply conditional logic to find the correct action:",
+      options: ["Speed up", "STOP the car", "Turn off engine", "Honk horn"],
+      correct: 1,
+      showFlow: true,
+      explain: "IF light = RED → STOP. This is exactly how conditional statements work in programming! The action depends on the condition (light color).",
+      flowParts: { condition: "Light = RED?", yes: "STOP 🛑", no: "Continue driving 🚗" }
+    },
+    {
+      q: "IF score ≥ 35 THEN 'Pass' ELSE 'Fail'. A student scores 40. What is the result?",
+      sub: "Evaluate this conditional statement:",
+      options: ["Fail", "Pass", "Cannot determine", "Re-exam"],
+      correct: 1,
+      explain: "40 ≥ 35 is TRUE, so the condition is met → result is 'Pass'. This is a basic IF-ELSE statement — the foundation of programming decisions!",
+      showFlow: false
+    },
+    {
+      q: "Which pattern comes next? ⬛⬜⬛⬜⬛⬜ → ?",
+      sub: "Identify the pattern and choose the next element:",
+      options: ["⬛", "⬜", "🔵", "🟡"],
+      correct: 0,
+      explain: "The pattern alternates: Black, White, Black, White... After ⬜ comes ⬛. Pattern recognition is essential in algorithm design!",
+      showFlow: false
+    }
+  ],
+  // Intermediate
+  [
+    {
+      q: "A loop runs 3 times and adds 5 each time. Starting from 0, what is the result?",
+      sub: "Trace through this loop:",
+      options: ["10", "15", "20", "5"],
+      correct: 1,
+      explain: "0+5=5 (run 1), 5+5=10 (run 2), 10+5=15 (run 3). Result: 15. Tracing through loops step-by-step is called 'loop tracing' — a key debugging skill!",
+      showFlow: false
+    },
+    {
+      q: "IF x > 10 AND y < 5. If x=12 and y=3, is the condition TRUE or FALSE?",
+      sub: "Evaluate this compound condition:",
+      options: ["TRUE", "FALSE", "Maybe", "Error"],
+      correct: 0,
+      explain: "12 > 10 is TRUE. 3 < 5 is TRUE. TRUE AND TRUE = TRUE! Compound conditions use AND/OR logic — both parts must be true for AND.",
+      showFlow: false
+    }
+  ],
+  // Advanced
+  [
+    {
+      q: "An algorithm has 3 steps: A, B, C. B must run before C but after A. Which order is valid?",
+      sub: "Apply dependency analysis:",
+      options: ["B→A→C", "A→C→B", "A→B→C", "C→B→A"],
+      correct: 2,
+      explain: "A must come first, B second (after A, before C), C last. This is topological sorting — used in real compilers and build systems!",
+      showFlow: false
+    }
+  ]
+];
+
+let currentLogicLevel = 0;
+let currentLogicIndex = 0;
+
+function loadLogicExercise(level, tabEl) {
+  currentLogicLevel = level;
+  currentLogicIndex = 0;
+  if (tabEl) {
+    document.querySelectorAll('#logic .level-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+  }
+  renderLogicExercise();
+}
+
+function renderLogicExercise() {
+  const exercises = logicExercises[currentLogicLevel] || logicExercises[0];
+  const ex = exercises[currentLogicIndex] || exercises[0];
+
+  document.getElementById('logic-question').textContent = ex.q;
+  document.getElementById('logic-sub').textContent = ex.sub;
+  document.getElementById('logic-num').textContent = (currentLogicIndex + 1) + ' / ' + exercises.length;
+  document.getElementById('logic-progress').style.width = ((currentLogicIndex / exercises.length) * 100) + '%';
+
+  // Flowchart
+  const flowEl = document.getElementById('logic-flowchart');
+  if (ex.showFlow && ex.flowParts) {
+    flowEl.style.display = 'flex';
+    flowEl.innerHTML = `
+      <div class="flow-node flow-start">Start</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node flow-decision">${ex.flowParts.condition}</div>
+      <div class="flow-row">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <span class="flow-label">YES</span>
+          <div class="flow-node flow-process" style="min-width:120px;font-size:12px;">${ex.flowParts.yes}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <span class="flow-label">NO</span>
+          <div class="flow-node flow-process" style="min-width:120px;font-size:12px;">${ex.flowParts.no}</div>
+        </div>
+      </div>
+    `;
+  } else {
+    flowEl.style.display = 'none';
+  }
+
+  // Options
+  const optsEl = document.getElementById('logic-options');
+  optsEl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  ex.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => checkLogic(i, ex, btn);
+    optsEl.appendChild(btn);
+  });
+
+  hideFeedback('logic');
+}
+
+function checkLogic(idx, ex, btn) {
+  // Disable all options
+  document.querySelectorAll('#logic-options .option-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === ex.correct) b.classList.add('correct');
+    else if (b === btn) b.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('logic-feedback');
+  fb.classList.add('show');
+
+  if (idx === ex.correct) {
+    fb.classList.remove('error'); fb.classList.add('success');
+    document.getElementById('logic-fb-icon').textContent = '🎉';
+    document.getElementById('logic-fb-title').textContent = 'Correct Answer!';
+    document.getElementById('logic-fb-text').textContent = ex.explain;
+    addXP(15);
+    appData.logicProgress++;
+    saveData();
+  } else {
+    fb.classList.remove('success'); fb.classList.add('error');
+    document.getElementById('logic-fb-icon').textContent = '🤔';
+    document.getElementById('logic-fb-title').textContent = 'Not quite!';
+    document.getElementById('logic-fb-text').textContent = ex.explain;
+  }
+}
+
+function nextLogic() {
+  const exercises = logicExercises[currentLogicLevel] || logicExercises[0];
+  currentLogicIndex = (currentLogicIndex + 1) % exercises.length;
+  renderLogicExercise();
+}
+
+// Pattern recognition
+const patterns = [
+  { seq: '2, 4, 8, 16, ?', answer: 32 },
+  { seq: '1, 1, 2, 3, 5, ?', answer: 8 },
+  { seq: '10, 20, 30, 40, ?', answer: 50 },
+  { seq: '1, 4, 9, 16, ?', answer: 25 }
+];
+let currentPattern = 0;
+
+function checkPattern() {
+  const p = patterns[currentPattern];
+  const val = parseInt(document.getElementById('pattern-input').value);
+  const res = document.getElementById('pattern-result');
+  res.style.display = 'block';
+  if (val === p.answer) {
+    res.innerHTML = `✅ <span style="color:var(--accent3)">Correct! ${p.answer} is right. You spotted the pattern!</span>`;
+    addXP(10);
+    setTimeout(() => {
+      currentPattern = (currentPattern + 1) % patterns.length;
+      document.getElementById('pattern-seq').textContent = patterns[currentPattern].seq;
+      document.getElementById('pattern-input').value = '';
+      res.style.display = 'none';
+    }, 2000);
+  } else {
+    res.innerHTML = `❌ <span style="color:#ef4444">Try again! Look more carefully at the pattern.</span>`;
+  }
+}
+
+// =============================================
+// MODULE 3: MAZE / ROBOT
+// =============================================
+const mazes = [
+  // Easy 5x5
+  {
+    size: 5,
+    grid: [
+      [0,0,1,0,0],
+      [1,0,1,0,1],
+      [1,0,0,0,1],
+      [1,1,0,1,1],
+      [0,0,0,0,2]
+    ],
+    robot: {r:0, c:0},
+    goal: {r:4, c:4},
+    title: "Find the Path!",
+    desc: "Guide 🤖 Robot to reach 🏆 Goal. Walls (🧱) block the way!"
+  },
+  // Medium 6x6
+  {
+    size: 6,
+    grid: [
+      [0,0,1,0,0,0],
+      [1,0,1,0,1,0],
+      [1,0,0,0,1,0],
+      [1,1,1,0,1,0],
+      [0,0,0,0,1,0],
+      [1,1,1,0,0,2]
+    ],
+    robot: {r:0, c:0},
+    goal: {r:5, c:5},
+    title: "Medium Maze",
+    desc: "Plan a longer path. Think ahead before adding commands!"
+  },
+  // Hard 7x7
+  {
+    size: 7,
+    grid: [
+      [0,0,0,1,0,0,0],
+      [1,1,0,1,0,1,0],
+      [0,0,0,0,0,1,0],
+      [0,1,1,1,1,1,0],
+      [0,0,0,0,0,0,0],
+      [1,1,1,1,1,0,1],
+      [0,0,0,0,0,0,2]
+    ],
+    robot: {r:0, c:0},
+    goal: {r:6, c:6},
+    title: "Advanced Maze",
+    desc: "Complex path requires careful planning. Efficiency matters!"
+  }
+];
+
+let currentMazeLevel = 0;
+let mazeState = null;
+let commandQueue = [];
+let mazeRunning = false;
+
+function loadMaze(level, tabEl) {
+  currentMazeLevel = level;
+  if (tabEl) {
+    document.querySelectorAll('#maze .level-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+  }
+  resetMaze();
+}
+
+function resetMaze() {
+  const m = mazes[currentMazeLevel];
+  mazeState = {
+    grid: JSON.parse(JSON.stringify(m.grid)),
+    robot: {...m.robot},
+    goal: {...m.goal}
+  };
+  commandQueue = [];
+  document.getElementById('maze-level-label').textContent = currentMazeLevel + 1;
+  document.getElementById('maze-title').textContent = m.title;
+  document.getElementById('maze-desc').textContent = m.desc;
+  renderMaze();
+  updateCommandQueue();
+  hideFeedback('maze');
+}
+
+function renderMaze() {
+  const m = mazes[currentMazeLevel];
+  const grid = document.getElementById('maze-grid');
+  grid.style.gridTemplateColumns = `repeat(${m.size}, 1fr)`;
+  grid.innerHTML = '';
+
+  for (let r = 0; r < m.size; r++) {
+    for (let c = 0; c < m.size; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'maze-cell';
+      const isRobot = mazeState.robot.r === r && mazeState.robot.c === c;
+      const isGoal = mazeState.goal.r === r && mazeState.goal.c === c;
+      const isWall = mazeState.grid[r][c] === 1;
+
+      if (isRobot && isGoal) {
+        cell.classList.add('cell-goal');
+        cell.textContent = '🎉';
+      } else if (isRobot) {
+        cell.classList.add('cell-robot');
+        cell.textContent = '🤖';
+      } else if (isGoal) {
+        cell.classList.add('cell-goal');
+        cell.textContent = '🏆';
+      } else if (isWall) {
+        cell.classList.add('cell-wall');
+        cell.textContent = '🧱';
+      } else {
+        cell.classList.add('cell-path');
+      }
+      grid.appendChild(cell);
+    }
+  }
+}
+
+function addCmd(cmd) {
+  if (commandQueue.length >= 20) {
+    showToast('error', 'Max 20 commands!');
+    return;
+  }
+  commandQueue.push(cmd);
+  updateCommandQueue();
+}
+
+function clearCmds() {
+  commandQueue = [];
+  updateCommandQueue();
+}
+
+function updateCommandQueue() {
+  const el = document.getElementById('command-queue');
+  el.innerHTML = '';
+  if (commandQueue.length === 0) {
+    el.innerHTML = '<span class="queue-label">Add commands below ↓</span>';
+    return;
+  }
+  commandQueue.forEach((cmd, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'cmd-chip';
+    chip.title = 'Click to remove';
+    chip.textContent = cmd;
+    chip.onclick = () => { commandQueue.splice(i, 1); updateCommandQueue(); };
+    el.appendChild(chip);
+  });
+}
+
+async function runMaze() {
+  if (mazeRunning) return;
+  if (commandQueue.length === 0) {
+    showToast('error', 'Add commands first!');
+    return;
+  }
+  mazeRunning = true;
+
+  const m = mazes[currentMazeLevel];
+  // Reset robot position
+  mazeState.robot = {...m.robot};
+
+  for (const cmd of commandQueue) {
+    const dir = cmd.includes('UP') ? [-1,0] : cmd.includes('DOWN') ? [1,0] : cmd.includes('LEFT') ? [0,-1] : [0,1];
+    const nr = mazeState.robot.r + dir[0];
+    const nc = mazeState.robot.c + dir[1];
+
+    if (nr < 0 || nr >= m.size || nc < 0 || nc >= m.size || mazeState.grid[nr][nc] === 1) {
+      // Hit wall or boundary
+      renderMaze();
+      break;
+    }
+    mazeState.robot = {r: nr, c: nc};
+    renderMaze();
+    await sleep(300);
+  }
+
+  mazeRunning = false;
+
+  // Check if reached goal
+  if (mazeState.robot.r === mazeState.goal.r && mazeState.robot.c === mazeState.goal.c) {
+    const fb = document.getElementById('maze-feedback');
+    fb.classList.add('show', 'success');
+    document.getElementById('maze-fb-icon').textContent = '🏆';
+    document.getElementById('maze-fb-title').textContent = `Goal Reached in ${commandQueue.length} steps!`;
+    document.getElementById('maze-fb-text').textContent = `Excellent problem solving! You found a valid path. Can you find a shorter path? Fewer commands = more efficient algorithm!`;
+    addXP(25);
+    appData.mazeProgress++;
+    saveData();
+  } else {
+    const fb = document.getElementById('maze-feedback');
+    fb.classList.add('show', 'error');
+    document.getElementById('maze-fb-icon').textContent = '🤔';
+    document.getElementById('maze-fb-title').textContent = "Didn't reach the goal";
+    document.getElementById('maze-fb-text').textContent = "Think step by step. Trace the path visually on the grid before programming the robot. Which turns are needed?";
+  }
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// =============================================
+// MODULE 4: CONCEPTS
+// =============================================
+function toggleConcept(id) {
+  const body = document.getElementById('body-' + id);
+  const toggle = document.getElementById('toggle-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    appData.conceptsViewed = Math.min(4, appData.conceptsViewed + 1);
+    saveData();
+    updateHomeStats();
+  }
+}
+
+let blockProgram = [];
+
+function addBlock(type) {
+  blockProgram.push(type);
+  renderBlockProgram();
+}
+
+function renderBlockProgram() {
+  const el = document.getElementById('block-program');
+  if (blockProgram.length === 0) {
+    el.textContent = 'Click blocks above to build your program...';
+    return;
+  }
+  el.innerHTML = blockProgram.map((b, i) => {
+    const colors = {START:'#00d4ff',MOVE:'#a78bfa',IF:'#f59e0b',LOOP:'#7c3aed',END:'#10b981'};
+    return `<span style="color:${colors[b]||'#fff'}">${i+1}. ${b}</span>`;
+  }).join('<br>');
+}
+
+function clearBlocks() {
+  blockProgram = [];
+  renderBlockProgram();
+  document.getElementById('block-output').style.display = 'none';
+}
+
+function runBlockProgram() {
+  const out = document.getElementById('block-output');
+  if (blockProgram.length === 0) { showToast('error', 'Add some blocks first!'); return; }
+
+  let output = '▶ Running program...\n';
+  let i = 0;
+  for (const block of blockProgram) {
+    i++;
+    if (block === 'START') output += `✅ Step ${i}: Program started\n`;
+    else if (block === 'MOVE') output += `➡️ Step ${i}: Moving forward\n`;
+    else if (block === 'IF') output += `❓ Step ${i}: Checking condition... (TRUE)\n`;
+    else if (block === 'LOOP') output += `🔁 Step ${i}: Repeating 3 times...\n`;
+    else if (block === 'END') output += `🔴 Step ${i}: Program ended\n`;
+  }
+  output += '\n✨ Program executed successfully!';
+
+  out.style.display = 'block';
+  out.textContent = output;
+  addXP(5);
+}
+
+// Demos for concepts
+function showSequenceDemo() {
+  const el = document.getElementById('seq-demo');
+  el.style.display = 'block';
+  el.innerHTML = '<div style="font-family:var(--font-mono);font-size:12px;color:var(--accent)"></div>';
+  const steps = ['🌅 Step 1: Wake up', '🦷 Step 2: Brush teeth', '🍳 Step 3: Breakfast', '🎒 Step 4: Go to school'];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < steps.length) {
+      el.querySelector('div').innerHTML += steps[i] + '<br>';
+      i++;
+    } else { clearInterval(interval); el.querySelector('div').innerHTML += '<br>✅ Sequence complete!'; }
+  }, 600);
+}
+
+function showLoopDemo() {
+  const el = document.getElementById('loop-demo');
+  el.style.display = 'block';
+  el.innerHTML = '<div style="font-family:var(--font-mono);font-size:12px;color:#a78bfa">LOOP running...</div>';
+  let count = 0;
+  const interval = setInterval(() => {
+    count++;
+    el.querySelector('div').innerHTML += `<br>🔁 Iteration ${count}: Hello World!`;
+    if (count >= 5) {
+      clearInterval(interval);
+      el.querySelector('div').innerHTML += '<br><br>✅ Loop completed 5 times!';
+    }
+  }, 500);
+}
+
+function showConditionDemo() {
+  const el = document.getElementById('cond-demo');
+  const score = Math.floor(Math.random() * 100);
+  el.style.display = 'block';
+  el.innerHTML = `<div style="font-family:var(--font-mono);font-size:13px;">
+    <span style="color:var(--muted)">Score generated: </span><span style="color:var(--accent4);font-size:20px;font-weight:bold;">${score}</span><br><br>
+    <span style="color:var(--accent4)">IF score ≥ 35:</span><br>
+    &nbsp;→ ${score >= 35 ? '<span style="color:var(--accent3)">✅ PASS!</span>' : '<span style="color:var(--muted)">Pass (not taken)</span>'}<br>
+    <span style="color:var(--accent4)">ELSE:</span><br>
+    &nbsp;→ ${score < 35 ? '<span style="color:#ef4444">❌ FAIL</span>' : '<span style="color:var(--muted)">Fail (not taken)</span>'}
+  </div>`;
+}
+
+// =============================================
+// ACHIEVEMENTS
+// =============================================
+const achievementDefs = [
+  { id:'first_solve', icon:'🌟', name:'First Steps', desc:'Solve your first puzzle', condition: d => d.puzzlesSolved >= 1 },
+  { id:'algo5', icon:'🧩', name:'Puzzle Master', desc:'Solve 5 puzzles', condition: d => d.puzzlesSolved >= 5 },
+  { id:'logic_star', icon:'🔀', name:'Logic Star', desc:'Complete 3 logic exercises', condition: d => d.logicProgress >= 3 },
+  { id:'maze_solver', icon:'🤖', name:'Robot Commander', desc:'Successfully guide the robot', condition: d => d.mazeProgress >= 1 },
+  { id:'xp100', icon:'⚡', name:'Power Learner', desc:'Earn 100 XP', condition: d => d.xp >= 100 },
+  { id:'concepts_all', icon:'📦', name:'Concept Explorer', desc:'Open all concept blocks', condition: d => d.conceptsViewed >= 4 },
+  { id:'streak3', icon:'🔥', name:'On Fire!', desc:'3-day learning streak', condition: d => d.streak >= 3 },
+  { id:'xp500', icon:'🏆', name:'Champion Coder', desc:'Earn 500 XP', condition: d => d.xp >= 500 },
+];
+
+function updateAchievements() {
+  achievementDefs.forEach(a => {
+    if (a.condition(appData) && !appData.achievements[a.id]) {
+      appData.achievements[a.id] = true;
+      saveData();
+      showToast('success', `🏆 Achievement: ${a.name}!`);
+    }
+  });
+
+  const grid = document.getElementById('achievements-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  achievementDefs.forEach(a => {
+    const earned = appData.achievements[a.id];
+    const div = document.createElement('div');
+    div.className = 'achievement ' + (earned ? 'earned' : 'locked');
+    div.innerHTML = `<div class="achievement-icon">${a.icon}</div><div class="achievement-name">${a.name}</div><div class="achievement-desc">${a.desc}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+function resetProgress() {
+  if (confirm('Reset all progress? This cannot be undone.')) {
+    appData = { xp:0, puzzlesSolved:0, streak:0, lastDate:null, algoProgress:0, logicProgress:0, mazeProgress:0, conceptsViewed:0, achievements:{} };
+    saveData();
+    updateHomeStats();
+    showToast('success', 'Progress reset!');
+  }
+}
+
+// =============================================
+// PWA SERVICE WORKER REGISTRATION
+// =============================================
+// PWA Service Worker - only register when served from file:// or same-origin server
+// Skipped silently in preview/iframe environments (e.g. Claude.ai)
+if ('serviceWorker' in navigator) {
+  const isPreview = window.location.hostname.includes('claudeusercontent') ||
+                    window.location.hostname.includes('claude.ai') ||
+                    window.self !== window.top; // inside an iframe
+  if (!isPreview) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(() => console.log('✅ Service Worker registered'))
+        .catch(() => {}); // silently ignore - e.g. file:// protocol
+    });
+  }
+}
+
+// =============================================
+// INIT
+// =============================================
+window.addEventListener('load', () => {
+  // Hide loader after animation
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 1600);
+
+  loadData();
+  loadAlgoPuzzle(0);
+  loadLogicExercise(0);
+  loadMaze(0);
+  updateAchievements();
+  renderBlockProgram();
+});
+</script>
+
+</body>
+</html>

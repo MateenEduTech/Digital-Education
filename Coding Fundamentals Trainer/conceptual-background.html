@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conceptual Background – Coding Fundamentals Trainer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050812;
+      --surface: #0d1425;
+      --surface2: #131d35;
+      --accent: #00d4ff;
+      --accent2: #7c3aed;
+      --accent3: #10b981;
+      --accent4: #f59e0b;
+      --text: #e8f0fe;
+      --muted: #6b7db3;
+      --border: rgba(0,212,255,0.12);
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --font-body: 'Inter', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.75;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; position: relative; }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 40px 20px 32px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .badge {
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .badge-blue { color: var(--accent); background: rgba(0,212,255,0.1); border-color: rgba(0,212,255,0.3); }
+    .badge-green { color: var(--accent3); background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); }
+    .badge-purple { color: #a78bfa; background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.3); }
+    .badge-yellow { color: var(--accent4); background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 5vw, 44px);
+      font-weight: 800;
+      background: linear-gradient(135deg, #00d4ff, #7c3aed, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .hero-sub {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .hero p { color: var(--muted); font-size: 15px; max-width: 640px; margin: 0 auto; }
+
+    /* AUTHOR */
+    .author-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin: 24px auto 0;
+      max-width: 460px;
+      box-shadow: 0 0 30px rgba(0,212,255,0.08);
+    }
+    .author-photo {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+      flex-shrink: 0;
+    }
+    .author-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+    .author-role { font-family: var(--font-mono); font-size: 11px; color: var(--accent); margin-top: 3px; }
+    .author-org { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+    /* SECTIONS */
+    .section { margin-bottom: 48px; }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .section h2 span { color: var(--accent); }
+    .section p { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+    .section strong { color: var(--text); }
+
+    /* CARDS */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 14px;
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card p { color: var(--muted); font-size: 14px; }
+
+    /* MODULE TABLE */
+    .module-row {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .module-row:last-child { border-bottom: none; }
+    .module-num {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      color: var(--accent);
+      font-weight: 700;
+      min-width: 36px;
+    }
+    .module-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .module-detail { font-size: 13px; color: var(--muted); }
+
+    /* THEORY GRID */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .theory-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .theory-icon { font-size: 28px; margin-bottom: 10px; }
+    .theory-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .theory-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* NEP ALIGNMENT BOXES */
+    .nep-box {
+      background: var(--surface);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+    }
+    .nep-box.green { border-left-color: var(--accent3); }
+    .nep-box.purple { border-left-color: #a78bfa; }
+    .nep-box.yellow { border-left-color: var(--accent4); }
+    .nep-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .nep-box.green .nep-label { color: var(--accent3); }
+    .nep-box.purple .nep-label { color: #a78bfa; }
+    .nep-box.yellow .nep-label { color: var(--accent4); }
+    .nep-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .nep-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* PROBLEM SOLUTION */
+    .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media(max-width:600px) { .ps-grid { grid-template-columns: 1fr; } }
+    .ps-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .ps-card.problem { border-top: 3px solid #ef4444; }
+    .ps-card.solution { border-top: 3px solid var(--accent3); }
+    .ps-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+    .ps-card.problem .ps-label { color: #ef4444; }
+    .ps-card.solution .ps-label { color: var(--accent3); }
+    .ps-item { font-size: 13px; color: var(--muted); padding: 4px 0; display: flex; gap: 8px; }
+
+    /* IMPACT */
+    .impact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .impact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .impact-icon { font-size: 32px; margin-bottom: 8px; }
+    .impact-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .impact-desc { font-size: 12px; color: var(--muted); }
+
+    /* BACK BUTTON */
+    .back-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(20px);
+    }
+    .back-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: var(--font-body);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .bar-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+    /* UL */
+    ul.styled { list-style: none; padding: 0; }
+    ul.styled li {
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    ul.styled li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Back bar -->
+<div class="back-bar">
+  <button class="back-btn" onclick="window.close()">← Back to App</button>
+  <div class="bar-title">📖 Conceptual Background</div>
+</div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badges">
+      <span class="badge badge-blue">NEP 2020</span>
+      <span class="badge badge-green">NCF 2023</span>
+      <span class="badge badge-purple">PARAKH</span>
+      <span class="badge badge-yellow">NCERT Framework</span>
+    </div>
+    <h1>Coding Fundamentals Trainer</h1>
+    <div class="hero-sub">✦ Conceptual Background Document ✦</div>
+    <p>A comprehensive overview of the educational philosophy, theoretical foundations, policy alignment, and problem-solving approach behind this NEP 2020 and NCF 2023 aligned digital learning application.</p>
+
+    <div class="author-card">
+      <img class="author-photo" src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'"/>
+      <div>
+        <div class="author-name">Mateen Yousuf</div>
+        <div class="author-role">Concept Developer &amp; Author</div>
+        <div class="author-org">Teacher – School Education Department, J&amp;K</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. CORE IDEA -->
+  <div class="section">
+    <div class="section-num">01 — Core Idea</div>
+    <h2>What is the <span>Coding Fundamentals Trainer</span>?</h2>
+    <p>The Coding Fundamentals Trainer is an <strong>AI-powered offline Progressive Web App (PWA)</strong> that introduces students to computational thinking and coding logic <em>without requiring knowledge of any specific programming language</em>. It is a digital thinking laboratory that builds the foundational cognitive skills every programmer needs.</p>
+    <p>The app operates on a fundamental insight: <strong>the true barrier to coding is not syntax — it is thinking</strong>. Students who struggle with programming do so not because they cannot memorize commands, but because they have not developed the underlying logical, sequential, and analytical mindset that programming demands.</p>
+    <p>By separating the <em>thinking</em> from the <em>typing</em>, this app allows learners at every level — from Class 3 to Class 12 — to build genuine computational competency that will transfer to any programming language they later encounter.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 2. PROBLEMS IT SOLVES -->
+  <div class="section">
+    <div class="section-num">02 — Problem Analysis</div>
+    <h2>Problems This App <span>Solves</span></h2>
+
+    <div class="ps-grid">
+      <div class="ps-card problem">
+        <div class="ps-label">❌ Problems in Current Education</div>
+        <div class="ps-item"><span>→</span>Students fear coding due to syntax complexity</div>
+        <div class="ps-item"><span>→</span>Coding taught as rote memorization of commands</div>
+        <div class="ps-item"><span>→</span>No development of underlying logical thinking</div>
+        <div class="ps-item"><span>→</span>Apps require internet, excluding rural students</div>
+        <div class="ps-item"><span>→</span>One-size-fits-all — no adaptive difficulty</div>
+        <div class="ps-item"><span>→</span>Passive learning with no interactivity</div>
+        <div class="ps-item"><span>→</span>No alignment with NEP 2020 competency framework</div>
+        <div class="ps-item"><span>→</span>Students quit after early frustration</div>
+      </div>
+      <div class="ps-card solution">
+        <div class="ps-label">✅ How This App Solves Them</div>
+        <div class="ps-item"><span>→</span>Builds logic without any syntax pressure</div>
+        <div class="ps-item"><span>→</span>Uses puzzles, mazes, drag-drop for active learning</div>
+        <div class="ps-item"><span>→</span>Explicitly trains decomposition and sequencing</div>
+        <div class="ps-item"><span>→</span>Fully offline PWA — works without internet</div>
+        <div class="ps-item"><span>→</span>Three difficulty levels per module</div>
+        <div class="ps-item"><span>→</span>Gamified with XP, badges, streaks</div>
+        <div class="ps-item"><span>→</span>Directly maps to NEP 2020 and NCF 2023 goals</div>
+        <div class="ps-item"><span>→</span>Immediate feedback builds confidence and persistence</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 3. POLICY ALIGNMENT -->
+  <div class="section">
+    <div class="section-num">03 — Policy Alignment</div>
+    <h2>NEP 2020 &amp; NCF 2023 <span>Alignment</span></h2>
+    <p>This application is not merely inspired by national education policy — it operationalizes specific mandates and learning outcomes described in these frameworks.</p>
+
+    <div class="nep-box">
+      <div class="nep-label">National Education Policy 2020</div>
+      <div class="nep-title">Computational Thinking from Early Grades</div>
+      <div class="nep-text">NEP 2020 (Section 4.23) explicitly mandates the introduction of <strong>computational thinking and coding from Grade 6</strong>. It emphasizes that coding education should develop <strong>logical reasoning and problem-solving</strong>, not just technical syntax. This app is the direct pedagogical instrument to implement this mandate — making coding accessible to every student regardless of their technical background. NEP also stresses <strong>digital literacy</strong> as a core 21st century competency, and this app serves as a gateway to that literacy.</div>
+    </div>
+
+    <div class="nep-box green">
+      <div class="nep-label">National Curriculum Framework 2023</div>
+      <div class="nep-title">Competency-Based Learning through Activity</div>
+      <div class="nep-text">NCF 2023 moves decisively away from rote memorization toward <strong>competency-based, activity-driven learning</strong>. It identifies computational thinking as a cross-curricular competency that should be developed across subjects — not just in Computer Science. The framework's emphasis on <strong>constructivist pedagogy</strong> (learning by doing, exploring, and building) is directly implemented through the app's puzzle challenges, maze navigation, and block-building activities. NCF also emphasizes <strong>joyful learning</strong>, which the app delivers through gamification.</div>
+    </div>
+
+    <div class="nep-box purple">
+      <div class="nep-label">PARAKH — Performance Assessment Framework</div>
+      <div class="nep-title">Holistic Competency Assessment</div>
+      <div class="nep-text">PARAKH (Performance Assessment, Review, and Analysis of Knowledge for Holistic Development) emphasizes assessing <strong>higher-order thinking skills</strong> — analysis, application, and evaluation — rather than just recall. The app's exercises directly assess and develop these competencies: algorithmic thinking (decomposition, analysis), logic building (application of conditional reasoning), and problem solving (evaluation of strategies). Progress tracking in the app provides formative assessment aligned with PARAKH's holistic development goals.</div>
+    </div>
+
+    <div class="nep-box yellow">
+      <div class="nep-label">NCERT Digital Learning Framework</div>
+      <div class="nep-title">Technology-Integrated Inclusive Education</div>
+      <div class="nep-text">NCERT's technology integration guidelines emphasize <strong>inclusive access</strong> — educational technology must work for students in remote areas, on low-end devices, and without reliable internet. This app's offline-first PWA architecture directly addresses this. It installs like a native app on Android devices and functions entirely without connectivity. NCERT also endorses <strong>experiential learning</strong> through simulations and interactive environments — implemented here through the maze robot simulation and visual concept blocks.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 4. THEORETICAL FOUNDATIONS -->
+  <div class="section">
+    <div class="section-num">04 — Educational Theory</div>
+    <h2>Theoretical <span>Foundations</span></h2>
+    <p>The app's design is grounded in well-established educational psychology and learning science research:</p>
+
+    <div class="theory-grid">
+      <div class="theory-card">
+        <div class="theory-icon">🧠</div>
+        <div class="theory-title">Computational Thinking (Wing, 2006)</div>
+        <div class="theory-desc">Jeannette Wing's landmark framework identifies Decomposition, Pattern Recognition, Abstraction, and Algorithm Design as the four pillars of computational thinking. All four modules explicitly target these pillars.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">🏗️</div>
+        <div class="theory-title">Constructivism (Piaget, Vygotsky)</div>
+        <div class="theory-desc">Students build knowledge through active exploration. Puzzle-solving and maze navigation require learners to construct understanding, not receive it. Vygotsky's Zone of Proximal Development is implemented through difficulty scaffolding.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">🎯</div>
+        <div class="theory-title">Problem-Based Learning (Barrows)</div>
+        <div class="theory-desc">Students learn best when content is embedded in authentic problems. The maze challenges and algorithm puzzles present real-world scenarios (sending a letter, starting a computer) that give context to abstract concepts.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">🔄</div>
+        <div class="theory-title">Cognitive Load Theory (Sweller)</div>
+        <div class="theory-desc">By removing syntax learning, the app dramatically reduces extraneous cognitive load, freeing working memory for deeper conceptual understanding. Difficulty levels prevent cognitive overload for beginners.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">🎮</div>
+        <div class="theory-title">Flow Theory (Csikszentmihalyi)</div>
+        <div class="theory-desc">XP rewards, streak tracking, and adaptive difficulty keep students in the optimal challenge zone — the "flow state" — where engagement and learning are maximized.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">📊</div>
+        <div class="theory-title">Mastery Learning (Bloom)</div>
+        <div class="theory-desc">Students must demonstrate mastery at one level before accessing harder challenges. Immediate corrective feedback with explanations ensures mastery is genuine, not accidental.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">🌱</div>
+        <div class="theory-title">Growth Mindset (Dweck)</div>
+        <div class="theory-desc">The app's feedback language ("Not quite yet!"), retry encouragement, and progressive challenge model actively cultivate a growth mindset — the belief that ability can be developed through effort.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">🔢</div>
+        <div class="theory-title">Polya's Problem Solving Model</div>
+        <div class="theory-desc">Each challenge follows Polya's 4 steps: Understand the problem, Plan a strategy, Implement, Verify. The algorithm puzzle module explicitly teaches this meta-cognitive framework.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 5. MODULE BREAKDOWN -->
+  <div class="section">
+    <div class="section-num">05 — App Architecture</div>
+    <h2>Module <span>Breakdown</span></h2>
+    <p>The app is organized into four core learning modules, each targeting distinct computational competencies:</p>
+
+    <div class="card">
+      <div class="module-row">
+        <div class="module-num">01</div>
+        <div>
+          <div class="module-name">🧩 Algorithm Puzzles</div>
+          <div class="module-detail">Drag-and-drop sequencing challenges that teach step-by-step algorithmic thinking. Students arrange real-world procedures in correct order, building the mental model of a program as a sequence of instructions.</div>
+        </div>
+        <div>
+          <div class="module-detail" style="color:var(--accent);">Competencies: Decomposition, Sequencing, Dependency Analysis</div>
+          <div class="module-detail">NEP Alignment: Computational thinking from Grade 6</div>
+          <div class="module-detail">Difficulty: Beginner → Intermediate → Advanced</div>
+        </div>
+      </div>
+      <div class="module-row">
+        <div class="module-num">02</div>
+        <div>
+          <div class="module-name">🔀 Logic Building</div>
+          <div class="module-detail">Multiple-choice and open-ended exercises developing conditional reasoning (IF-ELSE), loop tracing, compound conditions, and pattern recognition. Visual flowcharts make abstract logic concrete.</div>
+        </div>
+        <div>
+          <div class="module-detail" style="color:#a78bfa;">Competencies: Conditional Logic, Pattern Recognition, Loop Analysis</div>
+          <div class="module-detail">NCF Alignment: Analytical thinking across subjects</div>
+          <div class="module-detail">Includes: Fibonacci/geometric sequence challenges</div>
+        </div>
+      </div>
+      <div class="module-row">
+        <div class="module-num">03</div>
+        <div>
+          <div class="module-name">🤖 Problem Solving</div>
+          <div class="module-detail">Robot maze navigation requires students to write a complete program (command sequence) before running it — building planning and strategic thinking. Real-time animation gives immediate visual feedback.</div>
+        </div>
+        <div>
+          <div class="module-detail" style="color:var(--accent3);">Competencies: Algorithmic Problem Solving, Optimization, Debugging</div>
+          <div class="module-detail">PARAKH Alignment: Application and evaluation level thinking</div>
+          <div class="module-detail">Encourages path optimization (efficiency thinking)</div>
+        </div>
+      </div>
+      <div class="module-row">
+        <div class="module-num">04</div>
+        <div>
+          <div class="module-name">📦 Concept Blocks</div>
+          <div class="module-detail">Visual, interactive introduction to core programming concepts: Sequence, Loop, Condition, Function. Uses animated demos, interactive flowcharts, and a mini block-building interface to make abstract concepts tangible.</div>
+        </div>
+        <div>
+          <div class="module-detail" style="color:var(--accent4);">Competencies: Abstraction, Conceptual Understanding, Transfer Learning</div>
+          <div class="module-detail">NCERT Alignment: Experiential, visual learning</div>
+          <div class="module-detail">Prepares for block-based coding (Scratch) and text coding</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 6. TECHNICAL DESIGN -->
+  <div class="section">
+    <div class="section-num">06 — Technical Design</div>
+    <h2>Technology &amp; <span>Architecture</span></h2>
+    <p>The app is deliberately built with <strong>only HTML, CSS, and JavaScript</strong> — no frameworks, no servers, no external dependencies. This design philosophy ensures:</p>
+
+    <div class="card">
+      <div class="card-title">⚡ Progressive Web App (PWA)</div>
+      <p>Installed directly on Android devices via "Add to Home Screen." Appears on the device exactly like a native app, with a splash screen, app icon, and full-screen mode. No Google Play Store required.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📡 Offline-First Architecture</div>
+      <p>A Service Worker caches all app assets on first load. Students in areas with no internet — or on zero-data connections — can use the app fully. The gap between urban and rural digital access is bridged.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">💾 Local Storage Persistence</div>
+      <p>All student data (XP, progress, streaks, achievements) is stored in the browser's LocalStorage. No login required, no server needed. Progress persists across sessions without any cloud infrastructure.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📱 Cross-Platform Compatibility</div>
+      <p>Works on Android phones, tablets, Windows computers, MacBooks, and Chromebooks. Any device with a modern browser can run the app. One codebase, every device.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 7. USES -->
+  <div class="section">
+    <div class="section-num">07 — Uses &amp; Applications</div>
+    <h2>Who Uses It &amp; <span>How</span></h2>
+
+    <div class="theory-grid">
+      <div class="theory-card">
+        <div class="theory-icon">👨‍🎓</div>
+        <div class="theory-title">Students (Grade 5–12)</div>
+        <div class="theory-desc">Self-paced independent learning of coding foundations. Can be used at home, on the bus, or during free periods. Gamification maintains motivation over weeks and months.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">👩‍🏫</div>
+        <div class="theory-title">Classroom Teachers</div>
+        <div class="theory-desc">Use as a digital warm-up activity (5–10 min). Assign specific modules that align with lesson topics. Use pattern challenges for math lessons. Use logic building for science hypothesis-testing discussions.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">🏫</div>
+        <div class="theory-title">Schools with Limited Resources</div>
+        <div class="theory-desc">Requires no internet after initial installation. Runs on low-spec Android devices. No annual subscription, no maintenance cost. Suitable for government schools across J&K and India.</div>
+      </div>
+      <div class="theory-card">
+        <div class="theory-icon">🚀</div>
+        <div class="theory-title">Digital Literacy Programs</div>
+        <div class="theory-desc">Use as a gateway to block-based coding platforms (Scratch, Code.org). Students who complete this app are cognitively prepared for actual programming. Bridges the gap between non-coders and beginner coders.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 8. LONG TERM IMPACT -->
+  <div class="section">
+    <div class="section-num">08 — Long-Term Impact</div>
+    <h2>Expected <span>Impact</span></h2>
+
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-icon">🧠</div>
+        <div class="impact-title">Computational Thinking</div>
+        <div class="impact-desc">Students develop a programmer's mindset applicable to any discipline</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">📐</div>
+        <div class="impact-title">Math Performance</div>
+        <div class="impact-desc">Algorithmic and sequential thinking improves mathematical reasoning</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">💼</div>
+        <div class="impact-title">Career Readiness</div>
+        <div class="impact-desc">Prepares students for technology careers aligned with India's digital economy goals</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">🌍</div>
+        <div class="impact-title">Digital Equity</div>
+        <div class="impact-desc">Offline access ensures rural students receive the same learning opportunities</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">🔬</div>
+        <div class="impact-title">Scientific Reasoning</div>
+        <div class="impact-desc">Hypothesis testing, systematic problem solving, and logical deduction transfer to science</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">🏆</div>
+        <div class="impact-title">NEP 2020 Goals</div>
+        <div class="impact-desc">Directly measurable implementation of national education policy at the classroom level</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" style="text-align:center;">
+    <div class="author-card" style="margin:0 auto;">
+      <img class="author-photo" src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'"/>
+      <div>
+        <div class="author-name">Mateen Yousuf</div>
+        <div class="author-role">Concept Developer &amp; Author</div>
+        <div class="author-org">Teacher – School Education Department, J&amp;K</div>
+      </div>
+    </div>
+    <p style="margin-top:16px;font-size:13px;color:var(--muted);font-style:italic;">"True coding education begins not with syntax, but with thought. Build the thinker first — the programmer follows."</p>
+  </div>
+
+</div>
+</body>
+</html>
